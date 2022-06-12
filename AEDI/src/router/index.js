@@ -22,9 +22,39 @@ const routes = [
     component: () => import("./../pages/ContestListPage.vue"),
   },
   {
+    path: "/contest/info",
+    name: "공모전 소개",
+    component: () => import("./../pages/ContestInfoPage.vue"),
+  },
+  {
+    path: "/contest/upload",
+    name: "공모전 프로젝트 업로드",
+    component: () => import("./../pages/ContestProjectUploadPage.vue"),
+  },
+  {
+    path: "/contest/project",
+    name: "공모전 프로젝트",
+    component: () => import("./../pages/ContestProjectPage.vue"),
+  },
+  {
     path: "/graduation",
     name: "졸업작품",
     component: () => import("./../pages/GraduationListPage.vue"),
+  },
+  {
+    path: "/graduation/info",
+    name: "졸업작품 소개",
+    component: () => import("./../pages/GraduationInfoPage.vue"),
+  },
+  {
+    path: "/graduation/upload",
+    name: "졸업작품 프로젝트 업로드",
+    component: () => import("./../pages/GraduationProjectUploadPage.vue"),
+  },
+  {
+    path: "/graduation/project",
+    name: "졸업작품 프로젝트",
+    component: () => import("./../pages/GraduationProjectPage.vue"),
   },
   {
     path: "/notice",
@@ -32,9 +62,19 @@ const routes = [
     component: () => import("./../pages/NocticeListPage.vue"),
   },
   {
+    path: "/notice/post",
+    name: "공지사항",
+    component: () => import("./../pages/NoticePostPage.vue"),
+  },
+  {
     path: "/event",
     name: "이벤트",
     component: () => import("./../pages/EventListPage.vue"),
+  },
+  {
+    path: "/event/post",
+    name: "이벤트",
+    component: () => import("./../pages/EventPostPage.vue"),
   },
 ];
 

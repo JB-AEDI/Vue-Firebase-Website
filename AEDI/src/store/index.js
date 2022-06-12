@@ -11,4 +11,4 @@ const store = createStore({
   // plugins: {}
 });
 
-export default { store };
+export default store;

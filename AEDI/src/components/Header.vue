@@ -25,8 +25,8 @@
         </div>
       </a>
     </RouterLink>
-    <RouterLink :to="{ name: '공모전' }" class="text-lg">졸업작품</RouterLink>
-    <RouterLink :to="{ name: '졸업작품' }" class="text-lg">공모전</RouterLink>
+    <RouterLink :to="{ name: '졸업작품' }" class="text-lg">졸업작품</RouterLink>
+    <RouterLink :to="{ name: '공모전' }" class="text-lg">공모전</RouterLink>
     <RouterLink :to="{ name: '공지사항' }" class="text-lg">공지사항</RouterLink>
     <RouterLink :to="{ name: '이벤트' }" class="text-lg">이벤트</RouterLink>
     <label class="relative block">

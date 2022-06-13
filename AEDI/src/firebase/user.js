@@ -20,10 +20,10 @@ onAuthStateChanged(auth, (data) => {
   }
 });
 
-export const createUser = async (email, password) => {
+export const createUser = async (email, password, name) => {
   const result = await createUserWithEmailAndPassword(auth, email, password);
   await setDoc(doc(db, "profiles", result.user.uid), {
-    name: "",
+    name: name,
     admin: false,
   });
 };
@@ -54,8 +54,28 @@ export const useUserProfile = () => {
   return userProfile;
 };
 
-export const setUserName = async (name) =>
-  updateDoc(doc(db, "profiles", user?.value?.uid), {
-    name: name,
-    admin: false,
-  });
+export const getUserName = async () => {
+  const docRef = doc(db, "profiles", user?.value?.uid);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    console.log("Document data:", docSnap.data().name);
+    return docSnap.data().name;
+  } else {
+    // doc.data() will be undefined in this case
+    console.log("No such document!");
+  }
+};
+
+export const getUserAdmin = async () => {
+  const docRef = doc(db, "profiles", user?.value?.uid);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    console.log("Document data:", docSnap.data().admin);
+    return docSnap.data().admin;
+  } else {
+    // doc.data() will be undefined in this case
+    console.log("No such document!");
+  }
+};

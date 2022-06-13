@@ -9,8 +9,8 @@
       </RouterLink>
     </div>
     <div v-else>
-      <span>{{ userProfile.name }}</span>
-      <span v-if="userProfile.admin">(관리자)</span>
+      <span>{{ userName.name }}</span>
+      <span v-if="userAdmin">(관리자)</span>
       <span>님</span>
       <span @click="doLogout" class="cursor-pointer ml-2">로그아웃</span>
     </div>
@@ -25,16 +25,16 @@
         </div>
       </a>
     </RouterLink>
-    <RouterLink :to="{ name: '졸업작품' }" class="text-lg font-semibold"
+    <RouterLink to="/graduation/page/1" class="text-lg font-semibold"
       >졸업작품</RouterLink
     >
-    <RouterLink :to="{ name: '공모전' }" class="text-lg font-semibold"
+    <RouterLink to="/contest/page/1" class="text-lg font-semibold"
       >공모전</RouterLink
     >
-    <RouterLink :to="{ name: '공지사항' }" class="text-lg font-semibold"
+    <RouterLink to="/notice/page/1" class="text-lg font-semibold"
       >공지사항</RouterLink
     >
-    <RouterLink :to="{ name: '이벤트' }" class="text-lg font-semibold"
+    <RouterLink to="/event/page/1" class="text-lg font-semibold"
       >이벤트</RouterLink
     >
     <label class="relative block">
@@ -70,9 +70,16 @@
 <script setup>
 import { RouterLink } from "vue-router";
 import { user, logout, useUserProfile } from "../firebase/user";
+import { useStore } from "vuex";
+import { SET_USER_NAME, SET_USER_ADMIN } from "./../store/mutation-types";
+
+const store = useStore();
+const userName = store.state.user.userName;
+const userAdmin = store.state.user.userAdmin;
 
 const doLogout = async () => {
   await logout();
+  store.commit(`user/${SET_USER_NAME}`, "");
+  store.commit(`user/${SET_USER_ADMIN}`, false);
 };
-const userProfile = useUserProfile();
 </script>

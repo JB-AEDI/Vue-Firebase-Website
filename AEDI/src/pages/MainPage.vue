@@ -31,7 +31,7 @@
       </div>
     </div>
     <div>
-      <RouterLink :to="{ name: '졸업작품' }">
+      <RouterLink to="/graduation/page/1">
         <a href="@" class="text-xl">
           <span><i class="fa-solid fa-graduation-cap fa-1x"></i></span>
           <span class="font-semibold ml-1">졸업작품</span>
@@ -48,7 +48,7 @@
       </div>
     </div>
     <div class="mt-10">
-      <RouterLink :to="{ name: '공모전' }">
+      <RouterLink to="/contest/page/1">
         <a href="@" class="text-xl">
           <span><i class="fa-solid fa-book fa-1x"></i></span>
           <span class="font-semibold ml-1">졸업작품</span>

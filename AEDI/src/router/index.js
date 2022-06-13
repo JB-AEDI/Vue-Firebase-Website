@@ -17,9 +17,14 @@ const routes = [
     component: () => import("./../pages/SignupPage.vue"),
   },
   {
-    path: "/contest",
+    path: "/contest/page/:page_id",
     name: "공모전",
     component: () => import("./../pages/ContestListPage.vue"),
+  },
+  {
+    path: "/contest/upload",
+    name: "공모전 업로드",
+    component: () => import("./../pages/ContestUploadPage.vue"),
   },
   {
     path: "/contest/info",
@@ -27,7 +32,7 @@ const routes = [
     component: () => import("./../pages/ContestInfoPage.vue"),
   },
   {
-    path: "/contest/upload",
+    path: "/contest/project/upload",
     name: "공모전 프로젝트 업로드",
     component: () => import("./../pages/ContestProjectUploadPage.vue"),
   },
@@ -37,9 +42,14 @@ const routes = [
     component: () => import("./../pages/ContestProjectPage.vue"),
   },
   {
-    path: "/graduation",
+    path: "/graduation/page/:page_id",
     name: "졸업작품",
     component: () => import("./../pages/GraduationListPage.vue"),
+  },
+  {
+    path: "/graduation/upload",
+    name: "졸업작품 업로드",
+    component: () => import("./../pages/GraduationUploadPage.vue"),
   },
   {
     path: "/graduation/info",
@@ -47,7 +57,7 @@ const routes = [
     component: () => import("./../pages/GraduationInfoPage.vue"),
   },
   {
-    path: "/graduation/upload",
+    path: "/graduation/project/upload",
     name: "졸업작품 프로젝트 업로드",
     component: () => import("./../pages/GraduationProjectUploadPage.vue"),
   },
@@ -57,22 +67,32 @@ const routes = [
     component: () => import("./../pages/GraduationProjectPage.vue"),
   },
   {
-    path: "/notice",
+    path: "/notice/page/:page_id",
     name: "공지사항",
     component: () => import("./../pages/NocticeListPage.vue"),
   },
   {
-    path: "/notice/post",
+    path: "/notice/upload",
+    name: "공지사항 업로드",
+    component: () => import("./../pages/NoticeUploadPage.vue"),
+  },
+  {
+    path: "/notice/post/:post_id",
     name: "공지사항 게시물",
     component: () => import("./../pages/NoticePostPage.vue"),
   },
   {
-    path: "/event",
+    path: "/event/page/:page_id",
     name: "이벤트",
     component: () => import("./../pages/EventListPage.vue"),
   },
   {
-    path: "/event/post",
+    path: "/event/upload",
+    name: "이벤트 업로드",
+    component: () => import("./../pages/EventUploadPage.vue"),
+  },
+  {
+    path: "/event/post/:post_id",
     name: "이벤트 게시물",
     component: () => import("./../pages/EventPostPage.vue"),
   },

@@ -44,7 +44,7 @@
   </div>
 
   <div v-if="$route.name == 'main'" class="border-b"></div>
-  <div v-else class="flex justify-between p-5 bg-indigo-500 text-white mb-20">
+  <div v-else class="flex justify-between p-5 bg-indigo-500 text-white mb-2">
     <h2 class="text-xl ml-1">{{ $route.name }}</h2>
 
     <div class="flex">

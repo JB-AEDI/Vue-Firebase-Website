@@ -63,7 +63,7 @@ const routes = [
   },
   {
     path: "/notice/post",
-    name: "공지사항",
+    name: "공지사항 게시물",
     component: () => import("./../pages/NoticePostPage.vue"),
   },
   {
@@ -73,7 +73,7 @@ const routes = [
   },
   {
     path: "/event/post",
-    name: "이벤트",
+    name: "이벤트 게시물",
     component: () => import("./../pages/EventPostPage.vue"),
   },
 ];

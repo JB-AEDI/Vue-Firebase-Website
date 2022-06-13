@@ -21,14 +21,22 @@
       <a href="@">
         <div class="flex items-center">
           <i class="fa-regular fa-lightbulb fa-2xl"></i>
-          <h1 class="text-3xl">AEDI</h1>
+          <h1 class="text-3xl font-bold">AEDI</h1>
         </div>
       </a>
     </RouterLink>
-    <RouterLink :to="{ name: '졸업작품' }" class="text-lg">졸업작품</RouterLink>
-    <RouterLink :to="{ name: '공모전' }" class="text-lg">공모전</RouterLink>
-    <RouterLink :to="{ name: '공지사항' }" class="text-lg">공지사항</RouterLink>
-    <RouterLink :to="{ name: '이벤트' }" class="text-lg">이벤트</RouterLink>
+    <RouterLink :to="{ name: '졸업작품' }" class="text-lg font-semibold"
+      >졸업작품</RouterLink
+    >
+    <RouterLink :to="{ name: '공모전' }" class="text-lg font-semibold"
+      >공모전</RouterLink
+    >
+    <RouterLink :to="{ name: '공지사항' }" class="text-lg font-semibold"
+      >공지사항</RouterLink
+    >
+    <RouterLink :to="{ name: '이벤트' }" class="text-lg font-semibold"
+      >이벤트</RouterLink
+    >
     <label class="relative block">
       <span class="sr-only">Search</span>
       <span class="absolute inset-y-0 left-0 flex items-center pl-2">

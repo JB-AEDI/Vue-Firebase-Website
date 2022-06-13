@@ -1,6 +1,9 @@
 <template>
-  <div class="px-5 pt-4 pb-2">
+  <div class="px-5 pt-4 pb-2 flex justify-between items-center">
     <h3 class="ml-1 text-xl font-bold">공지사항</h3>
+    <button class="mr-5 bg-indigo-500 py-2 px-3 rounded-md text-white">
+      <i class="fa-solid fa-upload mr-2"></i>업로드
+    </button>
   </div>
   <div class="p-5">
     <div

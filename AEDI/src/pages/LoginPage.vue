@@ -56,25 +56,14 @@
 
 <script setup>
 import { useCredentials } from "../composable/useCredentials";
-import { login, getUserName, getUserAdmin } from "../firebase/user";
+import { login } from "../firebase/user";
 import { useRouter, RouterLink } from "vue-router";
-import { useStore } from "vuex";
-import { SET_USER_NAME, SET_USER_ADMIN } from "./../store/mutation-types";
 
 const { credentials, error, perform } = useCredentials();
 const router = useRouter();
-const store = useStore();
 
 const signin = perform(async () => {
   await login(credentials.email, credentials.password);
-  getUserName().then((name) => {
-    store.commit(`user/${SET_USER_NAME}`, {
-      name,
-    });
-  });
-  getUserAdmin().then((admin) => {
-    store.commit(`user/${SET_USER_ADMIN}`, admin);
-  });
   await router.push({ name: "main" });
 });
 </script>

@@ -54,28 +54,15 @@ export const useUserProfile = () => {
   return userProfile;
 };
 
-export const getUserName = async () => {
+export const getUserProfile = async () => {
   const docRef = doc(db, "profiles", user?.value?.uid);
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
-    console.log("Document data:", docSnap.data().name);
-    return docSnap.data().name;
+    // console.log("Document data:", docSnap.data());
+    return docSnap.data();
   } else {
     // doc.data() will be undefined in this case
-    console.log("No such document!");
-  }
-};
-
-export const getUserAdmin = async () => {
-  const docRef = doc(db, "profiles", user?.value?.uid);
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    console.log("Document data:", docSnap.data().admin);
-    return docSnap.data().admin;
-  } else {
-    // doc.data() will be undefined in this case
-    console.log("No such document!");
+    // console.log("No such document!");
   }
 };

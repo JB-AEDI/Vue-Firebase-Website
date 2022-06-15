@@ -4,7 +4,7 @@
   <div class="px-5 pt-4 pb-2 flex justify-between items-center">
     <h3 class="ml-1 text-xl font-bold">IT/웹/모바일/게임</h3>
     <button
-      v-if="userAdmin"
+      v-if="userProfile.admin"
       @click="pushUpload"
       class="mr-5 bg-indigo-500 py-2 px-3 rounded-md text-white"
     >
@@ -50,12 +50,12 @@
 <script setup>
 import Catgory from "../components/Catgory.vue";
 
-import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { inject } from "vue";
 
-const store = useStore();
 const router = useRouter();
 
-const userAdmin = store.state.user.userAdmin;
+const userProfile = inject("userProfile");
+
 const pushUpload = async () => router.push({ path: "/contest/upload" });
 </script>

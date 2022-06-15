@@ -71,15 +71,12 @@
 import { useCredentials } from "../composable/useCredentials";
 import { useRouter, RouterLink } from "vue-router";
 import { createUser } from "../firebase/user";
-import { useStore } from "vuex";
-import { SET_USER_NAME } from "./../store/mutation-types";
 
 const { credentials, error, perform } = useCredentials();
 const router = useRouter();
-const store = useStore();
+
 const signup = perform(async () => {
   await createUser(credentials.email, credentials.password, credentials.name);
-  store.commit(`user/${SET_USER_NAME}`, credentials.name);
   router.push({ name: "main" });
 });
 </script>

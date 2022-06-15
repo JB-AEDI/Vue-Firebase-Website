@@ -9,8 +9,8 @@
       </RouterLink>
     </div>
     <div v-else>
-      <span>{{ userName.name }}</span>
-      <span v-if="userAdmin">(관리자)</span>
+      <span>{{ userProfile.name }}</span>
+      <span v-if="userProfile.admin">(관리자)</span>
       <span>님</span>
       <span @click="doLogout" class="cursor-pointer ml-2">로그아웃</span>
     </div>
@@ -69,17 +69,12 @@
 
 <script setup>
 import { RouterLink } from "vue-router";
-import { user, logout, useUserProfile } from "../firebase/user";
-import { useStore } from "vuex";
-import { SET_USER_NAME, SET_USER_ADMIN } from "./../store/mutation-types";
+import { user, logout } from "../firebase/user";
+import { inject } from "vue";
 
-const store = useStore();
-const userName = store.state.user.userName;
-const userAdmin = store.state.user.userAdmin;
+const userProfile = inject("userProfile");
 
 const doLogout = async () => {
   await logout();
-  store.commit(`user/${SET_USER_NAME}`, "");
-  store.commit(`user/${SET_USER_ADMIN}`, false);
 };
 </script>

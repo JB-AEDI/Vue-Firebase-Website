@@ -25,9 +25,7 @@
   </div>
 
   <div class="px-5 pt-4 pb-2 flex justify-between items-center">
-    <h3 class="ml-1 text-xl font-bold">
-      정보보호학과{{ $route.params.page_id }}
-    </h3>
+    <h3 class="ml-1 text-xl font-bold">정보보호학과</h3>
     <button
       v-if="userAdmin"
       @click="pushUpload"

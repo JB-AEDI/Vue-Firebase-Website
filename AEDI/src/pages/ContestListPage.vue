@@ -2,9 +2,7 @@
   <Catgory></Catgory>
 
   <div class="px-5 pt-4 pb-2 flex justify-between items-center">
-    <h3 class="ml-1 text-xl font-bold">
-      IT/웹/모바일/게임{{ $route.params.page_id }}
-    </h3>
+    <h3 class="ml-1 text-xl font-bold">IT/웹/모바일/게임</h3>
     <button
       v-if="userAdmin"
       @click="pushUpload"

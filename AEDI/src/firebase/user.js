@@ -1,4 +1,4 @@
-import { onSnapshot, doc, updateDoc, setDoc, getDoc } from "firebase/firestore";
+import { onSnapshot, doc, setDoc, getDoc } from "firebase/firestore";
 import { ref, onUnmounted, watch } from "vue";
 import { db } from "./firebase";
 import {

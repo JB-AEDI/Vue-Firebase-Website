@@ -48,7 +48,7 @@
 </template>
 
 <script setup>
-import Catgory from "../components/Catgory.vue";
+import Catgory from "../../components/Catgory.vue";
 
 import { useRouter } from "vue-router";
 import { inject } from "vue";

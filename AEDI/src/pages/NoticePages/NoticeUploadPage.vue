@@ -29,7 +29,7 @@
       />
     </div>
 
-    <TuiEditor v-model="content"></TuiEditor>
+    <TuiEditor v-model="content" @add-image="addImage" :loading="loading"></TuiEditor>
     <button
       class="mr-5 mt-4 float-right bg-indigo-500 py-2 px-3 rounded-md text-white"
       type="submit"
@@ -43,12 +43,12 @@
 import { ref } from "vue";
 
 import TuiEditor from "../../components/editor/TuiEditor.vue";
-import { createNotice, uploadFile } from "../../firebase/post";
+import { createNotice, uploadFile, getUrl } from "../../firebase/post";
 
 const title = ref();
 const content = ref();
-let formFile;
-let formFilePath;
+let formFile = null;
+let formFilePath = null;
 
 const handleFileChange = (e) => {
   formFile = e.target.files[0];
@@ -57,6 +57,16 @@ const handleFileChange = (e) => {
 
 const upload = () => {
   createNotice(title, content);
-  uploadFile(formFilePath, formFile);
+  if (formFile !== null && formFilePath !== null) {
+    uploadFile(formFilePath, formFile);
+  }
+};
+
+const addImage = async (file, callback) => {
+  const imagePath = `images/${file.name}`;
+  uploadFile(imagePath, file);
+  const image = await getUrl(imagePath);
+
+  callback(image);
 };
 </script>

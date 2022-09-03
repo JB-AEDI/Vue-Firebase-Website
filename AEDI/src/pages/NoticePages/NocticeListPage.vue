@@ -14,48 +14,57 @@
     <div
       class="grid grid-cols-12 bg-indigo-500 text-white text-center border-b border-white"
     >
-      <div class="col-span-1 border p-3">번호</div>
       <div class="col-span-5 border-y p-3">제목</div>
-      <div class="col-span-2 border p-3">등록일</div>
+      <div class="col-span-3 border p-3">등록일</div>
       <div class="col-span-2 border-y border-r p-3">조회수</div>
       <div class="col-span-2 border-y border-r p-3">작성자</div>
     </div>
 
-    <div v-for="notice in 10" class="grid grid-cols-12 bg-gray-200">
-      <div class="col-span-1 border-x border-b border-white p-3 text-center">
-        {{ notice }}
-      </div>
+    <div v-for="postData in postsData" class="grid grid-cols-12 bg-gray-200">
       <div class="col-span-5 border-r border-b border-white p-3">
-        공지사항 {{ notice }}
+        {{ postData.data().title }}
+      </div>
+      <div class="col-span-3 border-r border-b border-white p-3 text-center">
+        {{ postData.data().timestamp }}
       </div>
       <div class="col-span-2 border-r border-b border-white p-3 text-center">
-        등록일
+        {{ postData.data().views }}
       </div>
       <div class="col-span-2 border-r border-b border-white p-3 text-center">
-        조회수
-      </div>
-      <div class="col-span-2 border-r border-b border-white p-3 text-center">
-        작성자
+        {{ postData.data().uid }}
       </div>
     </div>
   </div>
 
-  <div class="mt-4 flex justify-center gap-2">
-    <div class="bg-gray-200 px-2 py-1">&lt&lt</div>
-    <div class="bg-gray-200 px-3 py-1" v-for="listNumber in 8">
-      {{ listNumber }}
-    </div>
-    <div class="bg-gray-200 px-2 py-1">&gt&gt</div>
+  <div class="mt-4 flex justify-center gap-16">
+    <div class="bg-gray-200 px-3 py-1" @click="back">&lt</div>
+    <div class="bg-gray-200 px-3 py-1" @click="next">&gt</div>
   </div>
 </template>
 
 <script setup>
 import { useRouter } from "vue-router";
-import { inject } from "vue";
+import { inject, ref, watch } from "vue";
+import { pagingPost, nextPaging, beforePaging } from "../../firebase/post";
 
 const router = useRouter();
-
 const userProfile = inject("userProfile");
+
+const postsData = ref();
+const updatePosts = () => {
+  postsData.value = pagingPost();
+};
+
+const back = async () => {
+  await beforePaging();
+  updatePosts();
+};
+const next = async () => {
+  await nextPaging();
+  updatePosts();
+};
+
+updatePosts();
 
 const pushUpload = async () => router.push({ path: "/notice/upload" });
 </script>

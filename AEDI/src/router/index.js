@@ -17,7 +17,7 @@ const routes = [
     component: () => import("./../pages/SignupPage.vue"),
   },
   {
-    path: "/contest/page/:page_id",
+    path: "/contest/page",
     name: "공모전",
     component: () => import("./../pages/ContestPages/ContestListPage.vue"),
   },
@@ -43,7 +43,7 @@ const routes = [
     component: () => import("./../pages/ContestPages/ContestProjectPage.vue"),
   },
   {
-    path: "/graduation/page/:page_id",
+    path: "/graduation/page",
     name: "졸업작품",
     component: () =>
       import("./../pages/GraduationPages/GraduationListPage.vue"),
@@ -73,7 +73,7 @@ const routes = [
       import("./../pages/GraduationPages/GraduationProjectPage.vue"),
   },
   {
-    path: "/notice/page/:page_id",
+    path: "/notice/page",
     name: "공지사항",
     component: () => import("./../pages/NoticePages/NocticeListPage.vue"),
   },
@@ -88,7 +88,7 @@ const routes = [
     component: () => import("./../pages/NoticePages/NoticePostPage.vue"),
   },
   {
-    path: "/event/page/:page_id",
+    path: "/event/page",
     name: "이벤트",
     component: () => import("./../pages/EventPages/EventListPage.vue"),
   },

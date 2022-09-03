@@ -15,11 +15,13 @@ import { user } from "./user";
 
 const storage = getStorage();
 
-export const createNotice = async (title, description) => {
+export const createNotice = async (title, description, name, admin) => {
   await addDoc(collection(db, "notices"), {
     title: title?.value,
-    description: description.value,
+    description: description?.value,
     uid: user?.value?.uid,
+    name: name,
+    admin: admin,
     timestamp: serverTimestamp(),
     views: 0,
   });

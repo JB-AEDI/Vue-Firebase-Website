@@ -25,18 +25,19 @@
         {{ postData.data().title }}
       </div>
       <div class="col-span-3 border-r border-b border-white p-3 text-center">
-        {{ postData.data().timestamp }}
+        {{ postData.data().timestamp.toDate() }}
       </div>
       <div class="col-span-2 border-r border-b border-white p-3 text-center">
         {{ postData.data().views }}
       </div>
       <div class="col-span-2 border-r border-b border-white p-3 text-center">
-        {{ postData.data().uid }}
+        <span>{{ postData.data().name }}</span>
+        <span v-if="postData.data().admin">(관리자)</span>
       </div>
     </div>
   </div>
 
-  <div class="mt-4 flex justify-center gap-16">
+  <div class="mt-4 mb-10 flex justify-center gap-16">
     <div class="bg-gray-200 px-3 py-1" @click="back">&lt</div>
     <div class="bg-gray-200 px-3 py-1" @click="next">&gt</div>
   </div>
@@ -44,7 +45,7 @@
 
 <script setup>
 import { useRouter } from "vue-router";
-import { inject, ref, watch } from "vue";
+import { inject, ref } from "vue";
 import { pagingPost, nextPaging, beforePaging } from "../../firebase/post";
 
 const router = useRouter();
@@ -54,6 +55,7 @@ const postsData = ref();
 const updatePosts = () => {
   postsData.value = pagingPost();
 };
+updatePosts();
 
 const back = async () => {
   await beforePaging();
@@ -63,8 +65,6 @@ const next = async () => {
   await nextPaging();
   updatePosts();
 };
-
-updatePosts();
 
 const pushUpload = async () => router.push({ path: "/notice/upload" });
 </script>

@@ -22,7 +22,9 @@
 
     <div v-for="postData in postsData" class="grid grid-cols-12 bg-gray-200">
       <div class="col-span-5 border-r border-b border-white p-3">
-        {{ postData.data().title }}
+        <span class="cursor-pointer" @click="movePost(postData)">
+          {{ postData.data().title }}
+        </span>
       </div>
       <div class="col-span-3 border-r border-b border-white p-3 text-center">
         {{ postData.data().timestamp.toDate() }}
@@ -38,8 +40,8 @@
   </div>
 
   <div class="mt-4 mb-10 flex justify-center gap-16">
-    <div class="bg-gray-200 px-3 py-1" @click="back">&lt</div>
-    <div class="bg-gray-200 px-3 py-1" @click="next">&gt</div>
+    <div class="bg-gray-200 px-3 py-1 cursor-pointer" @click="back">&lt</div>
+    <div class="bg-gray-200 px-3 py-1 cursor-pointer" @click="next">&gt</div>
   </div>
 </template>
 
@@ -67,4 +69,9 @@ const next = async () => {
 };
 
 const pushUpload = async () => router.push({ path: "/notice/upload" });
+const movePost = (post) => {
+  router.push({
+    path: `/notice/post/${post.id}`,
+  });
+};
 </script>

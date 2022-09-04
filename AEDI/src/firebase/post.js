@@ -2,6 +2,7 @@ import {
   addDoc,
   serverTimestamp,
   collection,
+  doc,
   query,
   orderBy,
   limit,
@@ -12,8 +13,12 @@ import {
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { db } from "./firebase";
 import { user } from "./user";
+import { createGlobalState } from "@vueuse/core";
+import { useFirestore } from "@vueuse/firebase/useFirestore";
 
 const storage = getStorage();
+
+// Create Post
 
 export const createNotice = async (title, description, name, admin) => {
   await addDoc(collection(db, "notices"), {
@@ -26,6 +31,8 @@ export const createNotice = async (title, description, name, admin) => {
     views: 0,
   });
 };
+
+// Upload Post
 
 export const uploadFile = (path, file) => {
   const storageRef = ref(storage, path);
@@ -83,3 +90,9 @@ export const pagingPost = () => {
   });
   return documentSnapshots.docs;
 };
+
+// GetPost
+export const getPostData = (id) => useFirestore(doc(db, "notices", id));
+export const usePost = createGlobalState(() =>
+  useFirestore(doc(db, "notices", "0eznZjrAs7AdBERZCaXQ"))
+);

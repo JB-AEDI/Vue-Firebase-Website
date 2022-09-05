@@ -1,29 +1,25 @@
 <template>
   <div>
-    <h1>공지사항 게시물 페이지</h1>
-    <p>{{ $route.params.post_id }}</p>
-    <p>{{ post?.views }}</p>
-    <p>{{ post?.timestamp }}</p>
     <p>{{ post?.title }}</p>
-    <p>{{ post?.admin }}</p>
-    <p>{{ post?.name }}</p>
-    <p>{{ post?.description }}</p>
+    <p>{{ postDocSnap.data().name }}</p>
     <TuiViewer :content="content"></TuiViewer>
   </div>
 </template>
 
 <script setup>
-import { useRouteParams } from "@vueuse/router";
-import { ref } from "vue";
-import { usePost } from "../../firebase/post";
-
+import { onMounted, ref } from "vue";
 import TuiViewer from "../../components/editor/TuiViewer.vue";
+import { postDocSnap, getPost, getContent } from "../../firebase/post";
+import { useRouteParams } from "@vueuse/router";
 
 const postId = useRouteParams("post_id");
-console.log(postId?.value);
 
-const post = usePost();
-console.log(post?.value?.title);
+const post = ref(null);
+const content = ref("");
 
-const content = ref(post?.value?.description);
+onMounted(async () => {
+  const doc = await getPost(postId.value);
+  post.value = doc.data();
+  content.value = await getContent(postId.value);
+});
 </script>

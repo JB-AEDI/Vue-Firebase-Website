@@ -25,10 +25,18 @@
         </div>
       </a>
     </RouterLink>
-    <RouterLink to="/graduation/page" class="text-lg font-semibold">졸업작품</RouterLink>
-    <RouterLink to="/contest/page" class="text-lg font-semibold">공모전</RouterLink>
-    <RouterLink to="/notice/page" class="text-lg font-semibold">공지사항</RouterLink>
-    <RouterLink to="/event/page" class="text-lg font-semibold">이벤트</RouterLink>
+    <RouterLink to="/graduation/page" class="text-lg font-semibold"
+      >졸업작품</RouterLink
+    >
+    <RouterLink to="/contest/page" class="text-lg font-semibold"
+      >공모전</RouterLink
+    >
+    <RouterLink to="/notice/page" class="text-lg font-semibold"
+      >공지사항</RouterLink
+    >
+    <RouterLink to="/event/page" class="text-lg font-semibold"
+      >이벤트</RouterLink
+    >
     <label class="relative block">
       <span class="sr-only">Search</span>
       <span class="absolute inset-y-0 left-0 flex items-center pl-2">

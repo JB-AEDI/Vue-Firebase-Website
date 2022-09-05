@@ -17,17 +17,10 @@ const editor = ref<Editor | null>();
 const props = defineProps<{ modelValue: string; loading: boolean }>();
 const emits = defineEmits<{
   (e: "update:modelValue", value: string): void;
-  (
-    e: "addImage",
-    file: File,
-    callback: (url: string, text?: string) => void
-  ): void;
+  (e: "addImage", file: File, callback: (url: string, text?: string) => void): void;
 }>();
 
-const add = (
-  blob: Blob | File,
-  callback: (url: string, text?: string) => void
-) => {
+const add = (blob: Blob | File, callback: (url: string, text?: string) => void) => {
   emits("addImage", blob as File, callback);
 };
 
@@ -51,7 +44,7 @@ const initialize = () => {
     events: {
       change: () => {
         if (!editor.value) return;
-        emits("update:modelValue", editor.value.getMarkdown());
+        emits("update:modelValue", editor.value.getHTML());
       },
     },
     hooks: {

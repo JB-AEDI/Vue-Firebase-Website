@@ -7,14 +7,14 @@ import {
   orderBy,
   limit,
   startAfter,
+  getDoc,
   getDocs,
   endBefore,
 } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { db } from "./firebase";
 import { user } from "./user";
-import { createGlobalState } from "@vueuse/core";
-import { useFirestore } from "@vueuse/firebase/useFirestore";
+import { useRouteParams } from "@vueuse/router";
 
 const storage = getStorage();
 
@@ -84,15 +84,23 @@ export const beforePaging = async () => {
   }
 };
 
-export const pagingPost = () => {
-  documentSnapshots.docs.forEach((doc) => {
-    console.log(doc.data());
-  });
-  return documentSnapshots.docs;
-};
+export const pagingPost = () => documentSnapshots.docs;
 
 // GetPost
-export const getPostData = (id) => useFirestore(doc(db, "notices", id));
-export const usePost = createGlobalState(() =>
-  useFirestore(doc(db, "notices", "0eznZjrAs7AdBERZCaXQ"))
-);
+
+const postDocRef = doc(db, "notices", "0eznZjrAs7AdBERZCaXQ");
+export const postDocSnap = await getDoc(postDocRef);
+
+export const getPost = async (id) => {
+  const docRef = doc(db, "notices", id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap;
+};
+
+export const getContent = async (id) => {
+  const docRef = doc(db, "notices", id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().description;
+};

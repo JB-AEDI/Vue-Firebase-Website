@@ -88,6 +88,11 @@ const routes = [
     component: () => import("./../pages/NoticePages/NoticePostPage.vue"),
   },
   {
+    path: "/notice/post/:post_id/update",
+    name: "공지사항 게시물 수정",
+    component: () => import("./../pages/NoticePages/NoticeUpdatePage.vue"),
+  },
+  {
     path: "/event/page",
     name: "이벤트",
     component: () => import("./../pages/EventPages/EventListPage.vue"),

@@ -1,0 +1,80 @@
+<template>
+  <form class="px-5" @submit.prevent="upload">
+    <div>
+      <label
+        for="title"
+        class="block ml-1 mb-1 text-lg font-bold text-gray-900 dark:text-gray-300"
+        >제목</label
+      >
+      <input
+        type="text"
+        id="title"
+        class="mb-5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+        placeholder="제목을 입력하세요."
+        required
+        v-model="title"
+      />
+    </div>
+    <div class="mb-3">
+      <label
+        for="formFile"
+        class="form-label inline-block mb-2 text-lg font-bold text-gray-900 dark:text-gray-300"
+        >첨부파일</label
+      >
+      <input
+        class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+        type="file"
+        id="formFile"
+        @change="handleFileChange"
+      />
+    </div>
+
+    <TuiEditor v-model="content" @add-image="addImage" :loading="loading"></TuiEditor>
+    <button
+      class="mr-5 mt-4 float-right bg-indigo-500 py-2 px-3 rounded-md text-white"
+      type="submit"
+    >
+      <i class="fa-solid fa-upload mr-2"></i>업로드
+    </button>
+  </form>
+</template>
+
+<script setup>
+import { ref, inject } from "vue";
+
+import TuiEditor from "../../components/editor/TuiEditor.vue";
+import { createNotice, uploadFile, getUrl } from "../../firebase/post";
+
+/**
+ * 포스트 데이터를 가져와 각각의 필드에 바인딩
+ * 수정 후 그리고 파이어베이스에 업로드
+ * 이후 해당 포스트로 다시 라우팅
+ */
+
+const title = ref();
+const content = ref();
+let formFile = null;
+let formFilePath = null;
+
+const userProfile = inject("userProfile");
+
+const handleFileChange = (e) => {
+  formFile = e.target.files[0];
+  formFilePath = "file/" + formFile.name;
+};
+
+const upload = () => {
+  createNotice(title, content, userProfile?.value?.name, userProfile?.value?.admin);
+  if (formFile !== null && formFilePath !== null) {
+    uploadFile(formFilePath, formFile);
+  }
+};
+
+const addImage = async (file, callback) => {
+  const imagePath = `images/${file.name}`;
+  uploadFile(imagePath, file);
+  const image = await getUrl(imagePath);
+
+  callback(image);
+};
+</script>

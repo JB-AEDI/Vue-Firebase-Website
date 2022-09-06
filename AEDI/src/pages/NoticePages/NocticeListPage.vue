@@ -27,7 +27,17 @@
         </span>
       </div>
       <div class="col-span-3 border-r border-b border-white p-3 text-center">
-        {{ postData.data().timestamp.toDate() }}
+        <span>{{ postData.data().timestamp.toDate().getFullYear() }}</span>
+        <span>-</span>
+        <span v-if="postData.data().timestamp.toDate().getMonth() < 10"
+          >0{{ postData.data().timestamp.toDate().getMonth() }}</span
+        >
+        <span v-else>{{ postData.data().timestamp.toDate().getMonth() }}</span>
+        <span>-</span>
+        <span v-if="postData.data().timestamp.toDate().getDate() < 10"
+          >0{{ postData.data().timestamp.toDate().getDate() }}</span
+        >
+        <span v-else>0{{ postData.data().timestamp.toDate().getDate() }}</span>
       </div>
       <div class="col-span-2 border-r border-b border-white p-3 text-center">
         {{ postData.data().views }}
@@ -69,6 +79,7 @@ const next = async () => {
 };
 
 const pushUpload = async () => router.push({ path: "/notice/upload" });
+
 const movePost = (post) => {
   router.push({
     path: `/notice/post/${post.id}`,

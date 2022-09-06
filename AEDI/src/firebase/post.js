@@ -14,12 +14,12 @@ import {
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { db } from "./firebase";
 import { user } from "./user";
-import { useRouteParams } from "@vueuse/router";
 
 const storage = getStorage();
 
 // Create Post
 
+// Notices
 export const createNotice = async (title, description, name, admin) => {
   await addDoc(collection(db, "notices"), {
     title: title?.value,
@@ -87,9 +87,6 @@ export const beforePaging = async () => {
 export const pagingPost = () => documentSnapshots.docs;
 
 // GetPost
-
-const postDocRef = doc(db, "notices", "0eznZjrAs7AdBERZCaXQ");
-export const postDocSnap = await getDoc(postDocRef);
 
 export const getPost = async (id) => {
   const docRef = doc(db, "notices", id);

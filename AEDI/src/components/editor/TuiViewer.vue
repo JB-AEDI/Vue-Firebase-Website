@@ -1,11 +1,10 @@
 <template>
-  <div v-html="content"></div>
+  <div class="markdown-body" v-html="md(content)"></div>
 </template>
 
 <script setup>
-import "@toast-ui/editor/dist/toastui-editor-viewer.css";
-
 import { defineProps } from "vue";
+import "github-markdown-css";
 
 const props = defineProps({ content: String });
 </script>

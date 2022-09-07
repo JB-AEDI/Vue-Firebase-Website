@@ -44,7 +44,7 @@ const initialize = () => {
     events: {
       change: () => {
         if (!editor.value) return;
-        emits("update:modelValue", editor.value.getHTML());
+        emits("update:modelValue", editor.value.getMarkdown());
       },
     },
     hooks: {

@@ -10,7 +10,9 @@ import {
   getDoc,
   getDocs,
   endBefore,
-  setDoc,
+  updateDoc,
+  increment,
+  deleteDoc,
 } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { db } from "./firebase";
@@ -34,6 +36,8 @@ export const createNotice = async (title, description, name, admin) => {
 };
 
 // Update Post
+
+// Notices
 export const updateNotice = async (
   title,
   description,
@@ -41,15 +45,27 @@ export const updateNotice = async (
   admin,
   post_id
 ) => {
-  await setDoc(doc(db, "notices", post_id), {
+  await updateDoc(doc(db, "notices", post_id), {
     title: title?.value,
     description: description?.value,
     uid: user?.value?.uid,
     name: name,
     admin: admin,
-    timestamp: serverTimestamp(),
-    views: 0,
   });
+};
+
+// Views Count
+export const updateViewsCount = async (post_id) => {
+  await updateDoc(doc(db, "notices", post_id), {
+    views: increment(1),
+  });
+};
+
+// Delete Post
+
+// Notices
+export const deleteNotice = async (post_id) => {
+  await deleteDoc(doc(db, "notices", post_id));
 };
 
 // Upload Post
@@ -122,4 +138,18 @@ export const getContent = async (id) => {
   const docSnap = await getDoc(docRef);
 
   return docSnap.data().description;
+};
+
+export const getTitle = async (id) => {
+  const docRef = doc(db, "notices", id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().title;
+};
+
+export const getTimestamp = async (id) => {
+  const docRef = doc(db, "notices", id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().timestamp;
 };

@@ -29,7 +29,8 @@
       />
     </div>
 
-    <TuiEditor v-model="content" @add-image="addImage" :loading="loading"></TuiEditor>
+    <TuiEditor v-if="content" v-model="content" @add-image="addImage"></TuiEditor>
+
     <button
       class="mr-5 mt-4 float-right bg-indigo-500 py-2 px-3 rounded-md text-white"
       type="submit"
@@ -40,23 +41,37 @@
 </template>
 
 <script setup>
-import { ref, inject } from "vue";
+import { useRouteParams } from "@vueuse/router";
+import { ref, inject, onMounted } from "vue";
+import { useRouter } from "vue-router";
 
 import TuiEditor from "../../components/editor/TuiEditor.vue";
-import { createNotice, uploadFile, getUrl } from "../../firebase/post";
+import {
+  updateNotice,
+  uploadFile,
+  getUrl,
+  getPost,
+  getContent,
+  getTitle,
+} from "../../firebase/post";
 
-/**
- * 포스트 데이터를 가져와 각각의 필드에 바인딩
- * 수정 후 그리고 파이어베이스에 업로드
- * 이후 해당 포스트로 다시 라우팅
- */
+const router = useRouter();
 
+const postId = useRouteParams("post_id").value;
+const userProfile = inject("userProfile");
+const post = ref(null);
+const content = ref("");
 const title = ref();
-const content = ref();
+
+onMounted(async () => {
+  const doc = await getPost(postId);
+  post.value = doc.data();
+  title.value = await getTitle(postId);
+  content.value = await getContent(postId);
+});
+
 let formFile = null;
 let formFilePath = null;
-
-const userProfile = inject("userProfile");
 
 const handleFileChange = (e) => {
   formFile = e.target.files[0];
@@ -64,10 +79,17 @@ const handleFileChange = (e) => {
 };
 
 const upload = () => {
-  createNotice(title, content, userProfile?.value?.name, userProfile?.value?.admin);
+  updateNotice(
+    title,
+    content,
+    userProfile?.value?.name,
+    userProfile?.value?.admin,
+    postId
+  );
   if (formFile !== null && formFilePath !== null) {
     uploadFile(formFilePath, formFile);
   }
+  router.go(-1);
 };
 
 const addImage = async (file, callback) => {

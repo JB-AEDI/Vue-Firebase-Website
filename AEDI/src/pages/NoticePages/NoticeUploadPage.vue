@@ -1,5 +1,5 @@
 <template>
-  <form class="px-5" @submit.prevent="upload">
+  <form class="px-5" @submit.prevent="[upload(), movePost()]">
     <div>
       <label
         for="title"
@@ -29,11 +29,7 @@
       />
     </div>
 
-    <TuiEditor
-      v-model="content"
-      @add-image="addImage"
-      :loading="loading"
-    ></TuiEditor>
+    <TuiEditor v-model="content" @add-image="addImage"></TuiEditor>
     <button
       class="mr-5 mt-4 float-right bg-indigo-500 py-2 px-3 rounded-md text-white"
       type="submit"
@@ -48,6 +44,9 @@ import { ref, inject } from "vue";
 
 import TuiEditor from "../../components/editor/TuiEditor.vue";
 import { createNotice, uploadFile, getUrl } from "../../firebase/post";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const title = ref();
 const content = ref();
@@ -62,12 +61,7 @@ const handleFileChange = (e) => {
 };
 
 const upload = () => {
-  createNotice(
-    title,
-    content,
-    userProfile?.value?.name,
-    userProfile?.value?.admin
-  );
+  createNotice(title, content, userProfile?.value?.name, userProfile?.value?.admin);
   if (formFile !== null && formFilePath !== null) {
     uploadFile(formFilePath, formFile);
   }
@@ -79,5 +73,11 @@ const addImage = async (file, callback) => {
   const image = await getUrl(imagePath);
 
   callback(image);
+};
+
+const movePost = () => {
+  router.push({
+    path: `/notice/page`,
+  });
 };
 </script>

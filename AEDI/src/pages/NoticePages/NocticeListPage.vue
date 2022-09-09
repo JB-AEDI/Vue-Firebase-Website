@@ -29,10 +29,10 @@
       <div class="col-span-3 border-r border-b border-white p-3 text-center">
         <span>{{ postData.data().timestamp.toDate().getFullYear() }}</span>
         <span>-</span>
-        <span v-if="postData.data().timestamp.toDate().getMonth() < 10"
-          >0{{ postData.data().timestamp.toDate().getMonth() }}</span
+        <span v-if="postData.data().timestamp.toDate().getMonth() < 11"
+          >0{{ postData.data().timestamp.toDate().getMonth() + 1 }}</span
         >
-        <span v-else>{{ postData.data().timestamp.toDate().getMonth() }}</span>
+        <span v-else>{{ postData.data().timestamp.toDate().getMonth() + 1 }}</span>
         <span>-</span>
         <span v-if="postData.data().timestamp.toDate().getDate() < 10"
           >0{{ postData.data().timestamp.toDate().getDate() }}</span

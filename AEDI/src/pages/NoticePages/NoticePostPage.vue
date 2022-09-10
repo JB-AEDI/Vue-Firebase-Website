@@ -1,22 +1,22 @@
 <template>
   <div class="mx-5">
-    <h1 class="font-bold text-lg mb-5">{{ post?.title }}</h1>
+    <h1 class="font-bold text-lg mb-5">{{ postSnapshot?.value?.title }}</h1>
     <div class="flex gap-3 justify-end bg-gray-50 py-2 px-4 mb-8">
-      <div>{{ post?.name }}<span v-if="post?.admin">(관리자)</span></div>
+      <div>{{ postSnapshot?.value?.name }}<span v-if="postSnapshot?.value?.admin">(관리자)</span></div>
       <div class="text-sm">&#124</div>
-      <div v-if="post?.timestamp">
-        <span>{{ post?.timestamp.toDate().getFullYear() }}</span>
+      <div v-if="postSnapshot?.value?.timestamp">
+        <span>{{ postSnapshot?.value?.timestamp.toDate().getFullYear() }}</span>
         <span>-</span>
-        <span v-if="post?.timestamp.toDate().getMonth() < 11"
-      >0{{ post?.timestamp.toDate().getMonth() + 1 }}</span
+        <span v-if="postSnapshot?.value?.timestamp.toDate().getMonth() < 11"
+      >0{{ postSnapshot?.value?.timestamp.toDate().getMonth() + 1 }}</span
     >
-        <span v-else>{{ post?.timestamp.toDate().getMonth() + 1 }}</span>
+        <span v-else>{{ postSnapshot?.value?.timestamp.toDate().getMonth() + 1 }}</span>
         <span>-</span>
-        <span v-if="post?.timestamp.toDate().getDate() < 10">0{{ post?.timestamp.toDate().getDate() }}</span>
-        <span v-else>{{ post?.timestamp.toDate().getDate() }}</span>
+        <span v-if="postSnapshot?.value?.timestamp.toDate().getDate() < 10">0{{ postSnapshot?.value?.timestamp.toDate().getDate() }}</span>
+        <span v-else>{{ postSnapshot?.value?.timestamp.toDate().getDate() }}</span>
       </div>
       <div class="text-sm">&#124</div>
-      <div>{{ post?.views }}</div>
+      <div>{{ postSnapshot?.value?.views }}</div>
     </div>
     <TuiViewer v-if="content" :content="content"></TuiViewer>
     <div class="mt-8 text-end">
@@ -30,7 +30,7 @@
 
       <button
         v-if="userProfile.admin"
-        @click="[deleteNotice(postId), backList()]"
+        @click="[deleteNotice('notices', postId), backList()]"
         class="bg-indigo-500 py-2 px-3 rounded-md text-white"
       >
         <i class="fa-solid fa-trash mr-2"></i>삭제
@@ -43,7 +43,7 @@
 <script setup>
 import { onMounted, ref, inject } from "vue";
 import { useRouter } from "vue-router";
-import { getPost, getContent, updateViewsCount, deleteNotice } from "../../firebase/post";
+import { getContent, updateViewsCount, deleteNotice, onSnapshotPost } from "../../firebase/post";
 import { useRouteParams } from "@vueuse/router";
 
 import TuiViewer from "../../components/editor/TuiViewer.vue";
@@ -52,13 +52,13 @@ const router = useRouter();
 
 const postId = useRouteParams("post_id").value;
 const userProfile = inject("userProfile");
-const post = ref(null);
 const content = ref("");
+const postSnapshot = ref()
+
+postSnapshot.value = onSnapshotPost("notices", postId);
 
 onMounted(async () => {
-  const doc = await getPost(postId);
-  post.value = doc.data();
-  content.value = await getContent(postId);
+  content.value = await getContent("notices", postId);
   updateViewsCount(postId);
 });
 

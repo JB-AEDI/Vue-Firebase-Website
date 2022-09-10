@@ -64,10 +64,10 @@ const content = ref("");
 const title = ref();
 
 onMounted(async () => {
-  const doc = await getPost(postId);
+  const doc = await getPost("notices", postId);
   post.value = doc.data();
-  title.value = await getTitle(postId);
-  content.value = await getContent(postId);
+  title.value = await getTitle("notices", postId);
+  content.value = await getContent("notices", postId);
 });
 
 let formFile = null;

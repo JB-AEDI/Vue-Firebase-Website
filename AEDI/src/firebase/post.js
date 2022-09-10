@@ -13,8 +13,10 @@ import {
   updateDoc,
   increment,
   deleteDoc,
+  onSnapshot,
 } from "firebase/firestore";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, getStorage, uploadBytes } from "firebase/storage";
+import { onUnmounted, ref } from "vue";
 import { db } from "./firebase";
 import { user } from "./user";
 
@@ -62,14 +64,11 @@ export const updateViewsCount = async (post_id) => {
 };
 
 // Delete Post
-
-// Notices
-export const deleteNotice = async (post_id) => {
-  await deleteDoc(doc(db, "notices", post_id));
+export const deleteNotice = async (menu, post_id) => {
+  await deleteDoc(doc(db, menu, post_id));
 };
 
-// Upload Post
-
+// Upload File
 export const uploadFile = (path, file) => {
   const storageRef = ref(storage, path);
   return uploadBytes(storageRef, file);
@@ -126,30 +125,49 @@ export const pagingPost = () => documentSnapshots.docs;
 
 // GetPost
 
-export const getPost = async (id) => {
-  const docRef = doc(db, "notices", id);
+export const onSnapshotPost = (menu, post_id) => {
+  const post = ref();
+  let unsub = () => {};
+  unsub();
+  unsub = onSnapshot(
+    doc(db, menu, post_id),
+    (doc) => (post.value = doc.data())
+  );
+  onUnmounted(() => unsub());
+
+  return post;
+};
+
+export const onSnapshotPostContent = (menu, post_id) => {
+  const post = ref();
+  let unsub = () => {};
+  unsub();
+  unsub = onSnapshot(
+    doc(db, menu, post_id),
+    (doc) => (post.value = doc.data().description)
+  );
+  onUnmounted(() => unsub());
+
+  return post;
+};
+
+export const getPost = async (menu, id) => {
+  const docRef = doc(db, menu, id);
   const docSnap = await getDoc(docRef);
 
   return docSnap;
 };
 
-export const getContent = async (id) => {
-  const docRef = doc(db, "notices", id);
+export const getContent = async (menu, id) => {
+  const docRef = doc(db, menu, id);
   const docSnap = await getDoc(docRef);
 
   return docSnap.data().description;
 };
 
-export const getTitle = async (id) => {
-  const docRef = doc(db, "notices", id);
+export const getTitle = async (menu, id) => {
+  const docRef = doc(db, menu, id);
   const docSnap = await getDoc(docRef);
 
   return docSnap.data().title;
-};
-
-export const getTimestamp = async (id) => {
-  const docRef = doc(db, "notices", id);
-  const docSnap = await getDoc(docRef);
-
-  return docSnap.data().timestamp;
 };

@@ -24,10 +24,32 @@ const storage = getStorage();
 
 // Create Post
 
-// Notices
+// Notice
 export const createNotice = async (title, description, name, admin) => {
   await addDoc(collection(db, "notices"), {
     title: title?.value,
+    description: description?.value,
+    uid: user?.value?.uid,
+    name: name,
+    admin: admin,
+    timestamp: serverTimestamp(),
+    views: 0,
+  });
+};
+
+// Event
+export const createEvent = async (
+  title,
+  startDate,
+  endDate,
+  description,
+  name,
+  admin
+) => {
+  await addDoc(collection(db, "events"), {
+    title: title?.value,
+    startDate: startDate?.value,
+    endDate: endDate?.value,
     description: description?.value,
     uid: user?.value?.uid,
     name: name,
@@ -56,15 +78,36 @@ export const updateNotice = async (
   });
 };
 
+// Events
+export const updateEvent = async (
+  title,
+  startDate,
+  endDate,
+  description,
+  name,
+  admin,
+  post_id
+) => {
+  await updateDoc(doc(db, "events", post_id), {
+    title: title?.value,
+    startDate: startDate?.value,
+    endDate: endDate?.value,
+    description: description?.value,
+    uid: user?.value?.uid,
+    name: name,
+    admin: admin,
+  });
+};
+
 // Views Count
-export const updateViewsCount = async (post_id) => {
-  await updateDoc(doc(db, "notices", post_id), {
+export const updateViewsCount = async (menu, post_id) => {
+  await updateDoc(doc(db, menu, post_id), {
     views: increment(1),
   });
 };
 
 // Delete Post
-export const deleteNotice = async (menu, post_id) => {
+export const deletePost = async (menu, post_id) => {
   await deleteDoc(doc(db, menu, post_id));
 };
 
@@ -81,47 +124,93 @@ export const getUrl = (path) => {
 
 // Loading PostList
 
+// Notice
+
 // 첫번째 post 컬렉션의 스냅샷을 작성날짜 기준 내림차순 (orderBy 2번째 인자 생략시 기본 내림차순)으로 정렬해 10개의 문서만 받아오기
-const firstPosts = query(
+const firstNoticesPosts = query(
   collection(db, "notices"),
   orderBy("timestamp"),
   limit(10)
 );
-let documentSnapshots = await getDocs(firstPosts);
+let documentSnapshotsNotices = await getDocs(firstNoticesPosts);
 
 // 마지막 문서 스냅샷 기억해두기 (쿼리결과 스냅샷 크기 - 1 = 마지막 문서 위치)
-let lastVisible = documentSnapshots.docs[documentSnapshots.docs.length - 1];
+let lastVisibleNotices =
+  documentSnapshotsNotices.docs[documentSnapshotsNotices.docs.length - 1];
 
 // 앞서 기억해둔 문서값으로 새로운 쿼리 요청
-let firstVisible;
-export const nextPaging = async () => {
+let firstVisibleNotices;
+export const nextNoticesPaging = async () => {
   const nextPosts = query(
     collection(db, "notices"),
     orderBy("timestamp"),
-    startAfter(lastVisible),
+    startAfter(lastVisibleNotices),
     limit(10)
   );
-  documentSnapshots = await getDocs(nextPosts);
-  firstVisible = documentSnapshots.docs[0];
+  documentSnapshotsNotices = await getDocs(nextPosts);
+  firstVisibleNotices = documentSnapshotsNotices.docs[0];
 };
 
 // 이전 스냅샷으로 변경
-export const beforePaging = async () => {
+export const beforeNoticesPaging = async () => {
   const beforePosts = query(
     collection(db, "notices"),
     orderBy("timestamp"),
-    endBefore(firstVisible),
+    endBefore(firstVisibleNotices),
     limit(10)
   );
   const beforeSnapshots = await getDocs(beforePosts);
   if (beforeSnapshots.length === 0) {
     console.log("첫페이지 입니다.");
   } else {
-    documentSnapshots = await getDocs(beforePosts);
+    documentSnapshotsNotices = await getDocs(beforePosts);
   }
 };
 
-export const pagingPost = () => documentSnapshots.docs;
+export const pagingNoticesPost = () => documentSnapshotsNotices.docs;
+
+// Event
+const firstEventsPosts = query(
+  collection(db, "events"),
+  orderBy("timestamp"),
+  limit(10)
+);
+let documentSnapshotsEvents = await getDocs(firstEventsPosts);
+
+// 마지막 문서 스냅샷 기억해두기 (쿼리결과 스냅샷 크기 - 1 = 마지막 문서 위치)
+let lastVisibleEvents =
+  documentSnapshotsEvents.docs[documentSnapshotsEvents.docs.length - 1];
+
+// 앞서 기억해둔 문서값으로 새로운 쿼리 요청
+let firstVisibleEvents;
+export const nextEventsPaging = async () => {
+  const nextPosts = query(
+    collection(db, "events"),
+    orderBy("timestamp"),
+    startAfter(lastVisibleEvents),
+    limit(10)
+  );
+  documentSnapshotsEvents = await getDocs(nextPosts);
+  firstVisibleEvents = documentSnapshotsEvents.docs[0];
+};
+
+// 이전 스냅샷으로 변경
+export const beforeEventsPaging = async () => {
+  const beforePosts = query(
+    collection(db, "events"),
+    orderBy("timestamp"),
+    endBefore(firstVisibleEvents),
+    limit(10)
+  );
+  const beforeSnapshots = await getDocs(beforePosts);
+  if (beforeSnapshots.length === 0) {
+    console.log("첫페이지 입니다.");
+  } else {
+    documentSnapshotsEvents = await getDocs(beforePosts);
+  }
+};
+
+export const pagingEventsPost = () => documentSnapshotsEvents.docs;
 
 // GetPost
 
@@ -170,4 +259,18 @@ export const getTitle = async (menu, id) => {
   const docSnap = await getDoc(docRef);
 
   return docSnap.data().title;
+};
+
+export const getStartDate = async (menu, id) => {
+  const docRef = doc(db, menu, id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().startDate;
+};
+
+export const getEndDate = async (menu, id) => {
+  const docRef = doc(db, menu, id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().endDate;
 };

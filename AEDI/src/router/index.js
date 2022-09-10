@@ -107,6 +107,11 @@ const routes = [
     name: "이벤트 게시물",
     component: () => import("./../pages/EventPages/EventPostPage.vue"),
   },
+  {
+    path: "/event/post/:post_id/update",
+    name: "이벤트 게시물 수정",
+    component: () => import("./../pages/EventPages/EventUpdatePage.vue"),
+  },
 ];
 
 const router = createRouter({

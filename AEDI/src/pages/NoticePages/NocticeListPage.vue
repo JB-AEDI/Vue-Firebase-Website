@@ -32,7 +32,9 @@
         <span v-if="postData.data().timestamp.toDate().getMonth() < 11"
           >0{{ postData.data().timestamp.toDate().getMonth() + 1 }}</span
         >
-        <span v-else>{{ postData.data().timestamp.toDate().getMonth() + 1 }}</span>
+        <span v-else>{{
+          postData.data().timestamp.toDate().getMonth() + 1
+        }}</span>
         <span>-</span>
         <span v-if="postData.data().timestamp.toDate().getDate() < 10"
           >0{{ postData.data().timestamp.toDate().getDate() }}</span
@@ -58,23 +60,27 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { inject, ref } from "vue";
-import { pagingPost, nextPaging, beforePaging } from "../../firebase/post";
+import {
+  pagingNoticesPost,
+  nextNoticesPaging,
+  beforeNoticesPaging,
+} from "../../firebase/post";
 
 const router = useRouter();
 const userProfile = inject("userProfile");
 
 const postsData = ref();
 const updatePosts = () => {
-  postsData.value = pagingPost();
+  postsData.value = pagingNoticesPost();
 };
 updatePosts();
 
 const back = async () => {
-  await beforePaging();
+  await beforeNoticesPaging();
   updatePosts();
 };
 const next = async () => {
-  await nextPaging();
+  await nextNoticesPaging();
   updatePosts();
 };
 

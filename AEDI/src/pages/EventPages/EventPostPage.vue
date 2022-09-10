@@ -1,7 +1,85 @@
 <template>
-  <div>
-    <h1>이벤트 게시물 페이지</h1>
+  <div class="mx-5">
+    <h1 class="font-bold text-lg mb-5">{{ postSnapshot?.value?.title }}</h1>
+
+    <div class="flex justify-between bg-gray-50 py-2 px-4 mb-8">
+      <div>
+        <span class="mr-4 font-bold">이벤트 기간</span>
+        <span>{{ postSnapshot?.value?.startDate }}</span>
+        <span class="mx-2">~</span>
+        <span>{{ postSnapshot?.value?.endDate }}</span>
+      </div>
+      <div class="flex gap-2">
+        <div>{{ postSnapshot?.value?.name }}<span v-if="postSnapshot?.value?.admin">(관리자)</span></div>
+        <div class="text-sm">&#124</div>
+        <div v-if="postSnapshot?.value?.timestamp">
+          <span>{{ postSnapshot?.value?.timestamp.toDate().getFullYear() }}</span>
+          <span>-</span>
+          <span v-if="postSnapshot?.value?.timestamp.toDate().getMonth() < 11"
+            >0{{ postSnapshot?.value?.timestamp.toDate().getMonth() + 1 }}</span>
+          <span v-else>{{ postSnapshot?.value?.timestamp.toDate().getMonth() + 1 }}</span>
+          <span>-</span>
+          <span v-if="postSnapshot?.value?.timestamp.toDate().getDate() < 10">0{{ postSnapshot?.value?.timestamp.toDate().getDate() }}</span>
+          <span v-else>{{ postSnapshot?.value?.timestamp.toDate().getDate() }}</span>
+        </div>
+        <div class="text-sm">&#124</div>
+        <div>{{ postSnapshot?.value?.views }}</div>
+      </div>
+    </div>
+  
+    <TuiViewer v-if="content" :content="content"></TuiViewer>
+    <div class="mt-8 text-end">
+      <button
+        v-if="userProfile.admin"
+        @click="updatePost(postId)"
+        class="mr-3 bg-indigo-500 py-2 px-3 rounded-md text-white"
+      >
+        <i class="fa-solid fa-upload mr-2"></i>수정
+      </button>
+
+      <button
+        v-if="userProfile.admin"
+        @click="[deletePost('events', postId), backList()]"
+        class="bg-indigo-500 py-2 px-3 rounded-md text-white"
+      >
+        <i class="fa-solid fa-trash mr-2"></i>삭제
+      </button>
+    </div>
+    
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+  import { onMounted, ref, inject } from "vue";
+import { useRouter } from "vue-router";
+import { getContent, updateViewsCount, deletePost, onSnapshotPost } from "../../firebase/post";
+import { useRouteParams } from "@vueuse/router";
+
+import TuiViewer from "../../components/editor/TuiViewer.vue";
+
+const router = useRouter();
+
+const postId = useRouteParams("post_id").value;
+const userProfile = inject("userProfile");
+const content = ref("");
+const postSnapshot = ref()
+
+postSnapshot.value = onSnapshotPost("events", postId);
+
+onMounted(async () => {
+  content.value = await getContent("events", postId);
+  updateViewsCount("events", postId);
+});
+
+const updatePost = (post_id) => {
+  router.push({
+    path: `/event/post/${post_id}/update`,
+  });
+};
+
+const backList = () => {
+  router.push({
+    path: `/event/page/`,
+  });
+}
+</script>

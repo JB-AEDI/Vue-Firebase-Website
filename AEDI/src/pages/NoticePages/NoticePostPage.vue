@@ -30,7 +30,7 @@
 
       <button
         v-if="userProfile.admin"
-        @click="[deleteNotice('notices', postId), backList()]"
+        @click="[deletePost('notices', postId), backList()]"
         class="bg-indigo-500 py-2 px-3 rounded-md text-white"
       >
         <i class="fa-solid fa-trash mr-2"></i>삭제
@@ -43,7 +43,7 @@
 <script setup>
 import { onMounted, ref, inject } from "vue";
 import { useRouter } from "vue-router";
-import { getContent, updateViewsCount, deleteNotice, onSnapshotPost } from "../../firebase/post";
+import { getContent, updateViewsCount, deletePost, onSnapshotPost } from "../../firebase/post";
 import { useRouteParams } from "@vueuse/router";
 
 import TuiViewer from "../../components/editor/TuiViewer.vue";
@@ -59,7 +59,7 @@ postSnapshot.value = onSnapshotPost("notices", postId);
 
 onMounted(async () => {
   content.value = await getContent("notices", postId);
-  updateViewsCount(postId);
+  updateViewsCount("notices", postId);
 });
 
 const updatePost = (post_id) => {

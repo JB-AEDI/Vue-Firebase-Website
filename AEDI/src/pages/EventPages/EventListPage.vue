@@ -9,6 +9,7 @@
       <i class="fa-solid fa-upload mr-2"></i>업로드
     </button>
   </div>
+
   <div class="p-5">
     <div
       class="grid grid-cols-12 bg-indigo-500 text-white text-center border-b border-white"
@@ -19,32 +20,62 @@
       <div class="col-span-3 border-y border-r p-3">진행상태</div>
     </div>
 
-    <div v-for="event in 10" class="grid grid-cols-12 bg-gray-200">
-      <div class="col-span-5 border-r border-b border-white p-3">이벤트 {{ event }}</div>
-      <div class="col-span-2 border-r border-b border-white p-3 text-center">주최사</div>
-      <div class="col-span-2 border-r border-b border-white p-3 text-center">조회수</div>
+    <div v-for="postData in postsData" class="grid grid-cols-12 bg-gray-200">
+      <div class="col-span-5 border-r border-b border-white p-3">
+        <span class="cursor-pointer" @click="movePost(postData)">
+          {{ postData.data().title }}
+        </span>
+      </div>
+      <div class="col-span-2 border-r border-b border-white p-3 text-center">AEDI</div>
+      <div class="col-span-2 border-r border-b border-white p-3 text-center">
+        {{ postData.data().views }}
+      </div>
       <div class="col-span-3 border-r border-b border-white p-3 text-center">
-        진행상태
+        <span>{{ postData.data().startDate }}</span>
+        <span class="mx-2">~</span>
+        <span>{{ postData.data().endDate }}</span>
       </div>
     </div>
   </div>
 
-  <div class="mt-4 flex justify-center gap-2">
-    <div class="bg-gray-200 px-2 py-1">&lt&lt</div>
-    <div class="bg-gray-200 px-3 py-1" v-for="listNumber in 8">
-      {{ listNumber }}
-    </div>
-    <div class="bg-gray-200 px-2 py-1">&gt&gt</div>
+  <div class="mt-4 mb-10 flex justify-center gap-16">
+    <div class="bg-gray-200 px-3 py-1 cursor-pointer" @click="back">&lt</div>
+    <div class="bg-gray-200 px-3 py-1 cursor-pointer" @click="next">&gt</div>
   </div>
 </template>
 
 <script setup>
 import { useRouter } from "vue-router";
-import { inject } from "vue";
+import { inject, ref } from "vue";
+import {
+  pagingEventsPost,
+  nextEventsPaging,
+  beforeEventsPaging,
+} from "../../firebase/post";
 
 const router = useRouter();
-
 const userProfile = inject("userProfile");
 
+const postsData = ref();
+const updatePosts = () => {
+  postsData.value = pagingEventsPost();
+};
+updatePosts();
+
+const back = async () => {
+  await beforeEventsPaging();
+  updatePosts();
+};
+const next = async () => {
+  await nextEventsPaging();
+  updatePosts();
+};
+
 const pushUpload = async () => router.push({ path: "/event/upload" });
+
+const movePost = (post) => {
+  router.push({
+    path: `/event/post/${post.id}`,
+  });
+};
 </script>

@@ -5,6 +5,17 @@
         class="w-full form-select block px-3 py-1.5 text-base font-normal text-white bg-indigo-500 bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-white focus:bg-indigo-500 focus:border-blue-600 focus:outline-none"
         aria-label="Default select example"
       >
+        <option selected>학교별<span></span></option>
+        <option value="1">One</option>
+        <option value="2">Two</option>
+        <option value="3">Three</option>
+      </select>
+    </div>
+    <div class="mb-3 xl:w-96">
+      <select
+        class="w-full form-select block px-3 py-1.5 text-base font-normal text-white bg-indigo-500 bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-white focus:bg-indigo-500 focus:border-blue-600 focus:outline-none"
+        aria-label="Default select example"
+      >
         <option selected>학과별<span></span></option>
         <option value="1">One</option>
         <option value="2">Two</option>
@@ -39,20 +50,24 @@
     <div
       class="grid grid-cols-12 bg-indigo-500 text-white text-center border-b border-white"
     >
-      <div class="col-span-6 border p-3">프로젝트명</div>
-      <div class="col-span-4 border-y p-3">팀이름</div>
-      <div class="col-span-2 border p-3">조회수</div>
+      <div class="col-span-1 border p-3">연도</div>
+      <div class="col-span-5 border p-3">제목</div>
+      <div class="col-span-2 border-y p-3">학교</div>
+      <div class="col-span-2 border p-3">학과</div>
+      <div class="col-span-2 border p-3">프로젝트 수</div>
     </div>
     <div v-for="graduation in 10" class="grid grid-cols-12 bg-gray-200">
-      <div class="col-span-6 border-x border-b border-white p-3">
+      <div class="col-span-1 border-x border-b border-white p-3 text-center">2022</div>
+      <div class="col-span-5 border-r border-b border-white p-3 text-center">
         졸업작품 {{ graduation }}
       </div>
-      <div class="col-span-4 border-r border-b border-white p-3 text-center">
-        팀이름
+      <div class="col-span-2 border-r border-b border-white p-3 text-center">
+        중부대학교
       </div>
       <div class="col-span-2 border-r border-b border-white p-3 text-center">
-        조회수
+        정보보호학과
       </div>
+      <div class="col-span-2 border-r border-b border-white p-3 text-center">34</div>
     </div>
   </div>
 

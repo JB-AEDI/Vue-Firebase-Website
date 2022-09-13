@@ -31,7 +31,7 @@
       </div>
     </div>
     <div>
-      <RouterLink to="/graduation/page/1">
+      <RouterLink to="/graduation/page">
         <a href="@" class="text-xl">
           <span><i class="fa-solid fa-graduation-cap fa-1x"></i></span>
           <span class="font-semibold ml-1">졸업작품</span>
@@ -48,10 +48,10 @@
       </div>
     </div>
     <div class="mt-10">
-      <RouterLink to="/contest/page/1">
+      <RouterLink to="/contest/page">
         <a href="@" class="text-xl">
           <span><i class="fa-solid fa-book fa-1x"></i></span>
-          <span class="font-semibold ml-1">졸업작품</span>
+          <span class="font-semibold ml-1">공모전</span>
         </a>
       </RouterLink>
       <div class="grid grid-cols-4 w-full gap-6 text-white my-5">

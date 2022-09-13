@@ -43,7 +43,8 @@
 import { ref, inject } from "vue";
 
 import TuiEditor from "../../components/editor/TuiEditor.vue";
-import { createNotice, uploadFile, getUrl } from "../../firebase/post";
+import { createNotice } from "../../firebase/post";
+import { uploadFile, getUrl } from "../../firebase/firestore";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -61,12 +62,7 @@ const handleFileChange = (e) => {
 };
 
 const upload = () => {
-  createNotice(
-    title,
-    content,
-    userProfile?.value?.name,
-    userProfile?.value?.admin
-  );
+  createNotice(title, content, userProfile?.value?.name, userProfile?.value?.admin);
   if (formFile !== null && formFilePath !== null) {
     uploadFile(formFilePath, formFile);
   }

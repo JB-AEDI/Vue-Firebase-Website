@@ -14,13 +14,11 @@ import {
   increment,
   deleteDoc,
   onSnapshot,
+  setDoc,
 } from "firebase/firestore";
-import { getDownloadURL, getStorage, uploadBytes } from "firebase/storage";
 import { onUnmounted, ref } from "vue";
 import { db } from "./firebase";
 import { user } from "./user";
-
-const storage = getStorage();
 
 // Create Post
 
@@ -56,6 +54,33 @@ export const createEvent = async (
     admin: admin,
     timestamp: serverTimestamp(),
     views: 0,
+  });
+};
+
+// Graduation
+export const createGraduation = async (
+  title,
+  year,
+  university,
+  department,
+  img,
+  url
+) => {
+  await addDoc(collection(db, "graduations"), {
+    title: title?.value,
+    year: year?.value,
+    university: university?.value,
+    department: department?.value,
+    img: img?.value,
+    url: url?.value,
+    views: 0,
+    timestamp: serverTimestamp(),
+  });
+};
+
+export const pushGraduationLike = async (post_id) => {
+  await setDoc(doc(db, `graduations/${post_id}/likes`, user?.value?.id), {
+    uid: user?.value?.id,
   });
 };
 
@@ -109,17 +134,6 @@ export const updateViewsCount = async (menu, post_id) => {
 // Delete Post
 export const deletePost = async (menu, post_id) => {
   await deleteDoc(doc(db, menu, post_id));
-};
-
-// Upload File
-export const uploadFile = (path, file) => {
-  const storageRef = ref(storage, path);
-  return uploadBytes(storageRef, file);
-};
-
-export const getUrl = (path) => {
-  const storageRef = ref(storage, path);
-  return getDownloadURL(storageRef);
 };
 
 // Loading PostList

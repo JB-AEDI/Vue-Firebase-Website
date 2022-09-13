@@ -56,37 +56,54 @@
       <div class="col-span-2 border p-3">학과</div>
       <div class="col-span-2 border p-3">프로젝트 수</div>
     </div>
-    <div v-for="graduation in 10" class="grid grid-cols-12 bg-gray-200">
-      <div class="col-span-1 border-x border-b border-white p-3 text-center">2022</div>
-      <div class="col-span-5 border-r border-b border-white p-3 text-center">
-        졸업작품 {{ graduation }}
+    <div v-for="postData in postsData" class="grid grid-cols-12 bg-gray-200">
+      <div class="col-span-1 border-x border-b border-white p-3 text-center">
+        {{ postData.data().year }}
+      </div>
+      <div
+        class="col-span-5 border-r border-b border-white p-3 text-center cursor-pointer"
+        @click="movePost(postData)"
+      >
+        {{ postData.data().title }}
       </div>
       <div class="col-span-2 border-r border-b border-white p-3 text-center">
-        중부대학교
+        {{ postData.data().university }}
       </div>
       <div class="col-span-2 border-r border-b border-white p-3 text-center">
-        정보보호학과
+        {{ postData.data().department }}
       </div>
-      <div class="col-span-2 border-r border-b border-white p-3 text-center">34</div>
+      <div class="col-span-2 border-r border-b border-white p-3 text-center">0</div>
     </div>
   </div>
 
-  <div class="mt-4 flex justify-center gap-2">
-    <div class="bg-gray-200 px-2 py-1">&lt&lt</div>
-    <div class="bg-gray-200 px-3 py-1" v-for="listNumber in 8">
-      {{ listNumber }}
-    </div>
-    <div class="bg-gray-200 px-2 py-1">&gt&gt</div>
-  </div>
+  <!-- <div class="mt-4 mb-10 flex justify-center gap-16">
+    <div class="bg-gray-200 px-3 py-1 cursor-pointer" @click="back">&lt</div>
+    <div class="bg-gray-200 px-3 py-1 cursor-pointer" @click="next">&gt</div>
+  </div> -->
 </template>
 
 <script setup>
 import { useRouter } from "vue-router";
-import { inject } from "vue";
+import { inject, ref } from "vue";
+import { pagingGraduationsPost } from "../../firebase/post";
 
 const router = useRouter();
 
 const userProfile = inject("userProfile");
 
+const postsData = ref();
+
+const updatePosts = () => {
+  postsData.value = pagingGraduationsPost();
+};
+updatePosts();
+console.log(postsData);
+
 const pushUpload = async () => router.push({ path: "/graduation/upload" });
+
+const movePost = (post) => {
+  router.push({
+    path: `/graduation/info/${post.id}`,
+  });
+};
 </script>

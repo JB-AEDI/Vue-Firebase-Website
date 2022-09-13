@@ -226,6 +226,15 @@ export const beforeEventsPaging = async () => {
 
 export const pagingEventsPost = () => documentSnapshotsEvents.docs;
 
+// Graduation
+const graduationsPosts = query(
+  collection(db, "graduations"),
+  orderBy("timestamp")
+);
+let documentSnapshotsGraduations = await getDocs(graduationsPosts);
+
+export const pagingGraduationsPost = () => documentSnapshotsGraduations.docs;
+
 // GetPost
 
 export const onSnapshotPost = (menu, post_id) => {

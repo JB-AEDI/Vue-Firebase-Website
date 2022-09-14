@@ -74,7 +74,6 @@ const updatePosts = () => {
   postsData.value = pagingNoticesPost();
 };
 updatePosts();
-console.log(postsData);
 
 const back = async () => {
   await beforeNoticesPaging();

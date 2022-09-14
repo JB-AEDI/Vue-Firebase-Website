@@ -72,7 +72,9 @@
       <div class="col-span-2 border-r border-b border-white p-3 text-center">
         {{ postData.data().department }}
       </div>
-      <div class="col-span-2 border-r border-b border-white p-3 text-center">0</div>
+      <div class="col-span-2 border-r border-b border-white p-3 text-center">
+        0
+      </div>
     </div>
   </div>
 
@@ -97,7 +99,6 @@ const updatePosts = () => {
   postsData.value = pagingGraduationsPost();
 };
 updatePosts();
-console.log(postsData);
 
 const pushUpload = async () => router.push({ path: "/graduation/upload" });
 

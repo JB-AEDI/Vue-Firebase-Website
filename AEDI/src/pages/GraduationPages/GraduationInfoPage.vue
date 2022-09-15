@@ -1,42 +1,146 @@
 <template>
-  <div class="grid grid-cols-12 px-5">
-    <div class="col-span-3">
-      <img :src="imgSrc" alt="poster" class="w-full" />
+  <div class="flex px-5">
+    <div class="w-64 h-96 bg-gray-200 flex justify-center items-center">
+      <img :src="postSnapshot?.value?.img" alt="poster" class="w-full" />
     </div>
-    <div class="col-span-9 px-6">
-      <div class="border-b border-gray-300 pb-2">
-        <span class="text-yellow-300 mr-1">★</span>
-        <span class="mr-4">{{ likes }}</span>
-        <span>프로젝트 수 - </span>
-        <span>{{ projectsCount }}</span>
+    <div class="px-6 w-4/5">
+      <div class="h-5/6">
+        <div class="border-b border-gray-300 pb-2">
+          <span class="text-yellow-300 mr-1">★</span>
+          <span class="mr-4">{{ likes }}</span>
+          <span>프로젝트 수 - </span>
+          <span>{{ projectsCount }}</span>
+        </div>
+        <div class="border-b border-gray-300 py-2">
+          <h1 class="text-xl font-bold mb-3">
+            {{ postSnapshot?.value?.title }}
+          </h1>
+          <div class="flex flex-col gap-1">
+            <div>
+              <span class="text-gray-400 inline-block w-24">학교</span>
+              <span>{{ postSnapshot?.value?.university }}</span>
+            </div>
+            <div>
+              <span class="text-gray-400 inline-block w-24">학과</span>
+              <span>{{ postSnapshot?.value?.department }}</span>
+            </div>
+            <div>
+              <span class="text-gray-400 inline-block w-24">연도</span>
+              <span>{{ postSnapshot?.value?.year }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="mt-2">
+          <div class="flex flex-col gap-1">
+            <div class="flex">
+              <span class="text-gray-400 inline-block w-24">게시일</span>
+              <div v-if="postSnapshot?.value?.timestamp">
+                <span>{{ postSnapshot?.value?.timestamp.toDate().getFullYear() }}</span>
+                <span>-</span>
+                <span v-if="postSnapshot?.value?.timestamp.toDate().getMonth() < 11"
+                  >0{{ postSnapshot?.value?.timestamp.toDate().getMonth() + 1 }}</span
+                >
+                <span v-else>{{
+                  postSnapshot?.value?.timestamp.toDate().getMonth() + 1
+                }}</span>
+                <span>-</span>
+                <span v-if="postSnapshot?.value?.timestamp.toDate().getDate() < 10"
+                  >0{{ postSnapshot?.value?.timestamp.toDate().getDate() }}</span
+                >
+                <span v-else>{{
+                  postSnapshot?.value?.timestamp.toDate().getDate()
+                }}</span>
+              </div>
+            </div>
+            <div>
+              <span class="text-gray-400 inline-block w-24">조회수</span>
+              <span>{{ postSnapshot?.value?.views }}</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="border-b border-gray-300 py-2">
-        <h1 class="text-lg font-bold mb-3">{{ title }}</h1>
-        <div class="mb-1">
-          <span>학교</span>
-          <span>중부대학교</span>
-        </div>
-        <div class="mb-1">
-          <span>학과</span>
-          <span>정보보호학과</span>
-        </div>
-        <div>
-          <span>연도</span>
-          <span>2021</span>
+
+      <div class="h-1/6 flex flex-col justify-end items-start">
+        <div class="w-full flex justify-between">
+          <div>
+            <button
+              class="ml-3 p-3 bg-yellow-300 rounded-md"
+              @click="openUrl(postSnapshot?.value?.url)"
+            >
+              <span class="font-bold">졸업작품 발표회 바로가기</span>
+              <span class="ml-3"><i class="fa-solid fa-chevron-right"></i></span>
+            </button>
+            <button class="ml-12 p-2 border-4 border-yellow-300 rounded-md box-content">
+              <span class="text-yellow-300"><i class="fa-solid fa-star"></i></span>
+              <span class="font-bold ml-2">좋아요</span>
+            </button>
+          </div>
+          <div class="flex items-end">
+            <button
+              v-if="userProfile.admin"
+              @click="updatePost(postId)"
+              class="mr-3 bg-indigo-500 py-2 px-3 rounded-md text-white"
+            >
+              <i class="fa-solid fa-upload mr-2"></i>수정
+            </button>
+
+            <button
+              v-if="userProfile.admin"
+              @click="[deletePost('graduations', postId), backList()]"
+              class="bg-indigo-500 py-2 px-3 rounded-md text-white"
+            >
+              <i class="fa-solid fa-trash mr-2"></i>삭제
+            </button>
+          </div>
         </div>
       </div>
-      <div>사이트링크 / 좋아요</div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, inject, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { useRouteParams } from "@vueuse/router";
+import { deletePost, onSnapshotPost, updateViewsCount } from "../../firebase/post";
 
-const imgSrc = ref(
-  "https://images.unsplash.com/photo-1663051636926-a9719e8f174c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80"
-);
+const router = useRouter();
+
+const userProfile = inject("userProfile");
+
+const postId = useRouteParams("post_id").value;
+const postSnapshot = ref();
 const likes = ref(19);
 const projectsCount = ref(34);
-const title = ref("2021 정보보호학과 졸업작품전");
+// const imgSrc = ref(
+//   "https://images.unsplash.com/photo-1663051636926-a9719e8f174c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80"
+// );
+// const title = ref("2021 정보보호학과 졸업작품전");
+// const university = ref("중부대학교");
+// const department = ref("정보보호학과");
+// const year = ref(2021);
+// const timestamp = ref("2021-09-15");
+// const views = ref(348);
+
+postSnapshot.value = onSnapshotPost("graduations", postId);
+
+onMounted(() => {
+  updateViewsCount("graduations", postId);
+});
+
+const openUrl = (url) => {
+  window.open(url, "_blank");
+};
+
+const updatePost = (post_id) => {
+  router.push({
+    path: `/graduation/info/${post_id}/update`,
+  });
+};
+
+const backList = () => {
+  router.push({
+    path: `/graduation/page/`,
+  });
+};
 </script>

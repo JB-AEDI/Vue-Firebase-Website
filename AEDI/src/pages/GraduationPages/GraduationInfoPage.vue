@@ -112,15 +112,6 @@ const postId = useRouteParams("post_id").value;
 const postSnapshot = ref();
 const likes = ref(19);
 const projectsCount = ref(34);
-// const imgSrc = ref(
-//   "https://images.unsplash.com/photo-1663051636926-a9719e8f174c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2787&q=80"
-// );
-// const title = ref("2021 정보보호학과 졸업작품전");
-// const university = ref("중부대학교");
-// const department = ref("정보보호학과");
-// const year = ref(2021);
-// const timestamp = ref("2021-09-15");
-// const views = ref(348);
 
 postSnapshot.value = onSnapshotPost("graduations", postId);
 

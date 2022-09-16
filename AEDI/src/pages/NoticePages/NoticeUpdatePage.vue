@@ -29,7 +29,11 @@
       />
     </div>
 
-    <TuiEditor v-if="content" v-model="content" @add-image="addImage"></TuiEditor>
+    <TuiEditor
+      v-if="content"
+      v-model="content"
+      @add-image="addImage"
+    ></TuiEditor>
 
     <button
       class="mr-5 mt-4 float-right bg-indigo-500 py-2 px-3 rounded-md text-white"
@@ -46,14 +50,8 @@ import { ref, inject, onMounted } from "vue";
 import { useRouter } from "vue-router";
 
 import TuiEditor from "../../components/editor/TuiEditor.vue";
-import {
-  updateNotice,
-  uploadFile,
-  getUrl,
-  getPost,
-  getContent,
-  getTitle,
-} from "../../firebase/post";
+import { updateNotice, getContent, getTitle } from "../../firebase/post";
+import { uploadFile, getUrl } from "../../firebase/firestore";
 
 const router = useRouter();
 const postId = useRouteParams("post_id").value;

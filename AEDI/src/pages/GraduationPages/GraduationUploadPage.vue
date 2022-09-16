@@ -114,7 +114,9 @@ const year = ref("2022");
 const university = ref("");
 const department = ref("");
 const url = ref("");
-const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
+const previewImgSrc = ref(
+  "https://via.placeholder.com/384x500?text=Upload+Image"
+);
 const imgSrc = ref("");
 
 let formFile = null;

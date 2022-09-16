@@ -76,13 +76,12 @@
 import { ref, inject, onMounted } from "vue";
 import {
   updateEvent,
-  uploadFile,
-  getUrl,
   getTitle,
   getContent,
   getStartDate,
   getEndDate,
 } from "../../firebase/post";
+import { uploadFile, getUrl } from "../../firebase/firestore";
 import { useRouter } from "vue-router";
 import { useRouteParams } from "@vueuse/router";
 import TuiEditor from "../../components/editor/TuiEditor.vue";

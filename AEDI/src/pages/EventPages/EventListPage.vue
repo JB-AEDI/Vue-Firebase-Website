@@ -46,8 +46,9 @@
 
 <script setup>
 import { useRouter } from "vue-router";
-import { inject, ref } from "vue";
+import { inject, onMounted, ref } from "vue";
 import {
+  setFirstEventsPage,
   pagingEventsPost,
   nextEventsPaging,
   beforeEventsPaging,
@@ -57,18 +58,22 @@ const router = useRouter();
 const userProfile = inject("userProfile");
 
 const postsData = ref();
-const updatePosts = () => {
+const updatePosts = async () => {
+  await setFirstEventsPage();
   postsData.value = pagingEventsPost();
 };
-updatePosts();
+
+onMounted(() => {
+  updatePosts();
+});
 
 const back = async () => {
   await beforeEventsPaging();
-  updatePosts();
+  postsData.value = pagingEventsPost();
 };
 const next = async () => {
   await nextEventsPaging();
-  updatePosts();
+  postsData.value = pagingEventsPost();
 };
 
 const pushUpload = async () => router.push({ path: "/event/upload" });

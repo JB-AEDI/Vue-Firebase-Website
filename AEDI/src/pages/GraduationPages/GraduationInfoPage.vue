@@ -3,7 +3,7 @@
     <div class="w-64 h-96 bg-gray-200 flex justify-center items-center">
       <img :src="postSnapshot?.value?.img" alt="poster" class="w-full" />
     </div>
-    <div class="px-6 w-4/5">
+    <div class="pl-6 w-4/5">
       <div class="h-5/6">
         <div class="border-b border-gray-300 pb-2">
           <span class="text-yellow-300 mr-1">★</span>
@@ -35,17 +35,25 @@
             <div class="flex">
               <span class="text-gray-400 inline-block w-24">게시일</span>
               <div v-if="postSnapshot?.value?.timestamp">
-                <span>{{ postSnapshot?.value?.timestamp.toDate().getFullYear() }}</span>
+                <span>{{
+                  postSnapshot?.value?.timestamp.toDate().getFullYear()
+                }}</span>
                 <span>-</span>
-                <span v-if="postSnapshot?.value?.timestamp.toDate().getMonth() < 11"
-                  >0{{ postSnapshot?.value?.timestamp.toDate().getMonth() + 1 }}</span
+                <span
+                  v-if="postSnapshot?.value?.timestamp.toDate().getMonth() < 11"
+                  >0{{
+                    postSnapshot?.value?.timestamp.toDate().getMonth() + 1
+                  }}</span
                 >
                 <span v-else>{{
                   postSnapshot?.value?.timestamp.toDate().getMonth() + 1
                 }}</span>
                 <span>-</span>
-                <span v-if="postSnapshot?.value?.timestamp.toDate().getDate() < 10"
-                  >0{{ postSnapshot?.value?.timestamp.toDate().getDate() }}</span
+                <span
+                  v-if="postSnapshot?.value?.timestamp.toDate().getDate() < 10"
+                  >0{{
+                    postSnapshot?.value?.timestamp.toDate().getDate()
+                  }}</span
                 >
                 <span v-else>{{
                   postSnapshot?.value?.timestamp.toDate().getDate()
@@ -68,10 +76,16 @@
               @click="openUrl(postSnapshot?.value?.url)"
             >
               <span class="font-bold">졸업작품 발표회 바로가기</span>
-              <span class="ml-3"><i class="fa-solid fa-chevron-right"></i></span>
+              <span class="ml-3"
+                ><i class="fa-solid fa-chevron-right"></i
+              ></span>
             </button>
-            <button class="ml-12 p-2 border-4 border-yellow-300 rounded-md box-content">
-              <span class="text-yellow-300"><i class="fa-solid fa-star"></i></span>
+            <button
+              class="ml-12 p-2 border-4 border-yellow-300 rounded-md box-content"
+            >
+              <span class="text-yellow-300"
+                ><i class="fa-solid fa-star"></i
+              ></span>
               <span class="font-bold ml-2">좋아요</span>
             </button>
           </div>
@@ -96,13 +110,34 @@
       </div>
     </div>
   </div>
+  <div class="px-5 mt-24">
+    <div
+      class="flex justify-between items-center pb-3 border-b border-gray-400"
+    >
+      <span class="font-bold text-xl">프로젝트</span>
+      <button
+        v-if="user"
+        @click="uploadProject"
+        class="px-3 py-2 bg-yellow-300 rounded-md"
+      >
+        업로드
+      </button>
+    </div>
+    <ProjectList></ProjectList>
+  </div>
 </template>
 
 <script setup>
 import { ref, inject, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useRouteParams } from "@vueuse/router";
-import { deletePost, onSnapshotPost, updateViewsCount } from "../../firebase/post";
+import { user } from "../../firebase/user";
+import {
+  deletePost,
+  onSnapshotPost,
+  updateViewsCount,
+} from "../../firebase/post";
+import ProjectList from "../../components/ProjectList.vue";
 
 const router = useRouter();
 
@@ -132,6 +167,12 @@ const updatePost = (post_id) => {
 const backList = () => {
   router.push({
     path: `/graduation/page/`,
+  });
+};
+
+const uploadProject = () => {
+  router.push({
+    path: `/graduation/info/${postId}/project/upload`,
   });
 };
 </script>

@@ -59,8 +59,9 @@
 
 <script setup>
 import { useRouter } from "vue-router";
-import { inject, ref } from "vue";
+import { inject, onMounted, ref } from "vue";
 import {
+  setFirstNoticesPage,
   pagingNoticesPost,
   nextNoticesPaging,
   beforeNoticesPaging,
@@ -70,18 +71,22 @@ const router = useRouter();
 const userProfile = inject("userProfile");
 
 const postsData = ref();
-const updatePosts = () => {
+const updatePosts = async () => {
+  await setFirstNoticesPage();
   postsData.value = pagingNoticesPost();
 };
-updatePosts();
+
+onMounted(() => {
+  updatePosts();
+});
 
 const back = async () => {
   await beforeNoticesPaging();
-  updatePosts();
+  postsData.value = pagingNoticesPost();
 };
 const next = async () => {
   await nextNoticesPaging();
-  updatePosts();
+  postsData.value = pagingNoticesPost();
 };
 
 const pushUpload = async () => router.push({ path: "/notice/upload" });

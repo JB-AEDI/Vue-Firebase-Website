@@ -72,9 +72,7 @@
       <div class="col-span-2 border-r border-b border-white p-3 text-center">
         {{ postData.data().department }}
       </div>
-      <div class="col-span-2 border-r border-b border-white p-3 text-center">
-        0
-      </div>
+      <div class="col-span-2 border-r border-b border-white p-3 text-center">0</div>
     </div>
   </div>
 
@@ -86,8 +84,8 @@
 
 <script setup>
 import { useRouter } from "vue-router";
-import { inject, ref } from "vue";
-import { pagingGraduationsPost } from "../../firebase/post";
+import { inject, onMounted, ref } from "vue";
+import { setFirstGraduationsPage, pagingGraduationsPost } from "../../firebase/post";
 
 const router = useRouter();
 
@@ -95,10 +93,14 @@ const userProfile = inject("userProfile");
 
 const postsData = ref();
 
-const updatePosts = () => {
+const updatePosts = async () => {
+  await setFirstGraduationsPage();
   postsData.value = pagingGraduationsPost();
 };
-updatePosts();
+
+onMounted(() => {
+  updatePosts();
+});
 
 const pushUpload = async () => router.push({ path: "/graduation/upload" });
 

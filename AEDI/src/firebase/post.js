@@ -78,6 +78,22 @@ export const createGraduation = async (
   });
 };
 
+export const createGraduationProject = async (
+  title,
+  name,
+  description,
+  post_id
+) => {
+  await addDoc(collection(db, "graduations", post_id, "projects"), {
+    title: title?.value,
+    name: name,
+    description: description?.value,
+    uid: user?.value?.uid,
+    views: 0,
+    timestamp: serverTimestamp(),
+  });
+};
+
 export const pushGraduationLike = async (post_id) => {
   await setDoc(doc(db, `graduations/${post_id}/likes`, user?.value?.id), {
     uid: user?.value?.id,
@@ -124,6 +140,26 @@ export const updateEvent = async (
   });
 };
 
+// Graduations
+export const updateGraduation = async (
+  title,
+  year,
+  university,
+  department,
+  img,
+  url,
+  post_id
+) => {
+  await updateDoc(doc(db, "graduations", post_id), {
+    title: title?.value,
+    year: year?.value,
+    university: university?.value,
+    department: department?.value,
+    img: img?.value,
+    url: url?.value,
+  });
+};
+
 // Views Count
 export const updateViewsCount = async (menu, post_id) => {
   await updateDoc(doc(db, menu, post_id), {
@@ -146,15 +182,20 @@ const firstNoticesPosts = query(
   orderBy("timestamp"),
   limit(10)
 );
-let documentSnapshotsNotices = await getDocs(firstNoticesPosts);
 
-// 마지막 문서 스냅샷 기억해두기 (쿼리결과 스냅샷 크기 - 1 = 마지막 문서 위치)
-let lastVisibleNotices =
-  documentSnapshotsNotices.docs[documentSnapshotsNotices.docs.length - 1];
+let documentSnapshotsNotices;
+let firstVisibleNotices;
+
+export const setFirstNoticesPage = async () => {
+  documentSnapshotsNotices = await getDocs(firstNoticesPosts);
+};
 
 // 앞서 기억해둔 문서값으로 새로운 쿼리 요청
-let firstVisibleNotices;
 export const nextNoticesPaging = async () => {
+  // 마지막 문서 스냅샷 기억해두기 (쿼리결과 스냅샷 크기 - 1 = 마지막 문서 위치)
+  const lastVisibleNotices =
+    documentSnapshotsNotices.docs[documentSnapshotsNotices.docs.length - 1];
+
   const nextPosts = query(
     collection(db, "notices"),
     orderBy("timestamp"),
@@ -181,7 +222,7 @@ export const beforeNoticesPaging = async () => {
   }
 };
 
-export const pagingNoticesPost = () => documentSnapshotsNotices.docs;
+export const pagingNoticesPost = () => documentSnapshotsNotices?.docs;
 
 // Event
 const firstEventsPosts = query(
@@ -189,15 +230,20 @@ const firstEventsPosts = query(
   orderBy("timestamp"),
   limit(10)
 );
-let documentSnapshotsEvents = await getDocs(firstEventsPosts);
-
-// 마지막 문서 스냅샷 기억해두기 (쿼리결과 스냅샷 크기 - 1 = 마지막 문서 위치)
-let lastVisibleEvents =
-  documentSnapshotsEvents.docs[documentSnapshotsEvents.docs.length - 1];
 
 // 앞서 기억해둔 문서값으로 새로운 쿼리 요청
+let documentSnapshotsEvents;
 let firstVisibleEvents;
+
+export const setFirstEventsPage = async () => {
+  documentSnapshotsEvents = await getDocs(firstEventsPosts);
+};
+
 export const nextEventsPaging = async () => {
+  documentSnapshotsEvents = await getDocs(firstEventsPosts);
+  // 마지막 문서 스냅샷 기억해두기 (쿼리결과 스냅샷 크기 - 1 = 마지막 문서 위치)
+  const lastVisibleEvents =
+    documentSnapshotsEvents.docs[documentSnapshotsEvents.docs.length - 1];
   const nextPosts = query(
     collection(db, "events"),
     orderBy("timestamp"),
@@ -224,14 +270,18 @@ export const beforeEventsPaging = async () => {
   }
 };
 
-export const pagingEventsPost = () => documentSnapshotsEvents.docs;
+export const pagingEventsPost = () => documentSnapshotsEvents?.docs;
 
 // Graduation
 const graduationsPosts = query(
   collection(db, "graduations"),
   orderBy("timestamp")
 );
-let documentSnapshotsGraduations = await getDocs(graduationsPosts);
+
+let documentSnapshotsGraduations;
+export const setFirstGraduationsPage = async () => {
+  documentSnapshotsGraduations = await getDocs(graduationsPosts);
+};
 
 export const pagingGraduationsPost = () => documentSnapshotsGraduations.docs;
 
@@ -296,4 +346,39 @@ export const getEndDate = async (menu, id) => {
   const docSnap = await getDoc(docRef);
 
   return docSnap.data().endDate;
+};
+
+export const getYear = async (menu, id) => {
+  const docRef = doc(db, menu, id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().year;
+};
+
+export const getUniversity = async (menu, id) => {
+  const docRef = doc(db, menu, id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().university;
+};
+
+export const getDepartment = async (menu, id) => {
+  const docRef = doc(db, menu, id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().department;
+};
+
+export const getImg = async (menu, id) => {
+  const docRef = doc(db, menu, id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().img;
+};
+
+export const getPostUrl = async (menu, id) => {
+  const docRef = doc(db, menu, id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().url;
 };

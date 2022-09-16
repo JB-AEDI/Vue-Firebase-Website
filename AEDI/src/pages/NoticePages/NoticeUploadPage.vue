@@ -62,7 +62,12 @@ const handleFileChange = (e) => {
 };
 
 const upload = () => {
-  createNotice(title, content, userProfile?.value?.name, userProfile?.value?.admin);
+  createNotice(
+    title,
+    content,
+    userProfile?.value?.name,
+    userProfile?.value?.admin
+  );
   if (formFile !== null && formFilePath !== null) {
     uploadFile(formFilePath, formFile);
   }

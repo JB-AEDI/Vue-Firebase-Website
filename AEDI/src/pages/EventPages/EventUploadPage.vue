@@ -76,7 +76,8 @@
 import { ref, inject } from "vue";
 
 import TuiEditor from "../../components/editor/TuiEditor.vue";
-import { createEvent, uploadFile, getUrl } from "../../firebase/post";
+import { createEvent } from "../../firebase/post";
+import { uploadFile, getUrl } from "../../firebase/firestore";
 import { useRouter } from "vue-router";
 
 const router = useRouter();

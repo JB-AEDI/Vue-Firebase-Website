@@ -15,11 +15,11 @@
         v-model="title"
       />
     </div>
-    <div class="mb-3">
+    <div class="mb-5">
       <label
         for="formFile"
         class="form-label inline-block mb-2 text-lg font-bold text-gray-900 dark:text-gray-300"
-        >첨부파일</label
+        >이미지</label
       >
       <input
         class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
@@ -28,6 +28,7 @@
         @change="handleFileChange"
       />
     </div>
+    <img :src="previewImgSrc" alt="preview-image" class="max-w-sm mb-10" />
 
     <TuiEditor v-model="content" @add-image="addImage"></TuiEditor>
     <button
@@ -53,29 +54,32 @@ const postId = useRouteParams("post_id").value;
 
 const title = ref();
 const content = ref();
+const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
+const imgSrc = ref("");
+
 let formFile = null;
 let formFilePath = null;
 
 const userProfile = inject("userProfile");
 
-const handleFileChange = (e) => {
-  formFile = e.target.files[0];
-  formFilePath = "file/" + formFile.name;
+const handleFileChange = (input) => {
+  const reader = new FileReader();
+
+  reader.onload = (e) => {
+    previewImgSrc.value = e.target.result;
+  };
+  reader.readAsDataURL(input.target.files[0]);
+
+  formFile = input.target.files[0];
+  formFilePath = "images/graduation/" + formFile.name;
 };
 
-const upload = () => {
-  createGraduationProject(title, userProfile?.value?.name, content, postId);
+const upload = async () => {
   if (formFile !== null && formFilePath !== null) {
-    uploadFile(formFilePath, formFile);
+    await uploadFile(formFilePath, formFile);
+    imgSrc.value = await getUrl(formFilePath);
   }
-};
-
-const addImage = async (file, callback) => {
-  const imagePath = `images/${file.name}`;
-  uploadFile(imagePath, file);
-  const image = await getUrl(imagePath);
-
-  callback(image);
+  createGraduationProject(title, userProfile?.value?.name, content, imgSrc, postId);
 };
 
 const movePost = () => {

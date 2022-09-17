@@ -14,7 +14,7 @@ import {
   increment,
   deleteDoc,
   onSnapshot,
-  setDoc,
+  where,
 } from "firebase/firestore";
 import { onUnmounted, ref } from "vue";
 import { db } from "./firebase";
@@ -74,6 +74,8 @@ export const createGraduation = async (
     img: img?.value,
     url: url?.value,
     views: 0,
+    likes: 0,
+    projects: 0,
     timestamp: serverTimestamp(),
   });
 };
@@ -82,22 +84,101 @@ export const createGraduationProject = async (
   title,
   name,
   description,
+  img,
   post_id
 ) => {
   await addDoc(collection(db, "graduations", post_id, "projects"), {
     title: title?.value,
     name: name,
     description: description?.value,
+    img: img?.value,
     uid: user?.value?.uid,
     views: 0,
+    likes: 0,
+    projects: 0,
     timestamp: serverTimestamp(),
+  });
+  await updateDoc(doc(db, "graduations", post_id), {
+    projects: increment(1),
   });
 };
 
-export const pushGraduationLike = async (post_id) => {
-  await setDoc(doc(db, `graduations/${post_id}/likes`, user?.value?.id), {
-    uid: user?.value?.id,
+// 졸업작품 좋아요
+
+const createGraduationLike = async (post_id) => {
+  await addDoc(collection(db, "graduations", post_id, "likes"), {
+    uid: user?.value?.uid,
   });
+};
+
+const deleteGraduationLike = async (post_id, like_id) => {
+  await deleteDoc(doc(db, `graduations/${post_id}/likes/${like_id}`));
+};
+
+export const pushGraduationLike = async (post_id) => {
+  const likesRef = collection(db, "graduations", post_id, "likes");
+  const q = query(likesRef, where("uid", "==", user?.value?.uid));
+  const querySnapshot = await getDocs(q);
+  if (querySnapshot.docs.length === 0) {
+    createGraduationLike(post_id);
+    await updateDoc(doc(db, "graduations", post_id), {
+      likes: increment(1),
+    });
+    return;
+  }
+  if (querySnapshot.docs[0].data().uid === user?.value?.uid) {
+    deleteGraduationLike(post_id, querySnapshot.docs[0].id);
+    await updateDoc(doc(db, "graduations", post_id), {
+      likes: increment(-1),
+    });
+    return;
+  }
+};
+
+// 졸업작품 프로젝트 좋아요
+const createGraduationProjectLike = async (post_id, project_id) => {
+  await addDoc(
+    collection(db, "graduations", post_id, "projects", project_id, "likes"),
+    {
+      uid: user?.value?.uid,
+    }
+  );
+};
+
+const deleteGraduationProjectLike = async (post_id, project_id, like_id) => {
+  await deleteDoc(
+    doc(db, `graduations/${post_id}/projects/${project_id}/likes/${like_id}`)
+  );
+};
+
+export const pushGraduationProjectLike = async (post_id, project_id) => {
+  if (!user || !user?.value?.uid) {
+    return;
+  }
+  const likesRef = collection(
+    db,
+    "graduations",
+    post_id,
+    "projects",
+    project_id,
+    "likes"
+  );
+  const q = query(likesRef, where("uid", "==", user?.value?.uid));
+  const querySnapshot = await getDocs(q);
+  if (querySnapshot.docs.length === 0) {
+    createGraduationProjectLike(post_id, project_id);
+    await updateDoc(doc(db, "graduations", post_id, "projects", project_id), {
+      likes: increment(1),
+    });
+    return;
+  }
+  if (querySnapshot.docs[0].data().uid === user?.value?.uid) {
+    deleteGraduationProjectLike(post_id, project_id, querySnapshot.docs[0].id);
+    await updateDoc(doc(db, "graduations", post_id, "projects", project_id), {
+      likes: increment(-1),
+    });
+    return;
+  }
 };
 
 // Update Post
@@ -163,6 +244,12 @@ export const updateGraduation = async (
 // Views Count
 export const updateViewsCount = async (menu, post_id) => {
   await updateDoc(doc(db, menu, post_id), {
+    views: increment(1),
+  });
+};
+
+export const updateViewsProjectCount = async (menu, post_id, project_id) => {
+  await updateDoc(doc(db, menu, post_id, "projects", project_id), {
     views: increment(1),
   });
 };
@@ -285,6 +372,24 @@ export const setFirstGraduationsPage = async () => {
 
 export const pagingGraduationsPost = () => documentSnapshotsGraduations.docs;
 
+export const onSnapshotGraduationProjects = (post_id) => {
+  const projects = ref([]);
+  let unsub = () => {};
+  unsub();
+  unsub = onSnapshot(
+    collection(db, "graduations", post_id, "projects"),
+    (snapshot) => {
+      projects.value = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+    }
+  );
+  onUnmounted(() => unsub());
+
+  return projects;
+};
+
 // GetPost
 
 export const onSnapshotPost = (menu, post_id) => {
@@ -298,6 +403,19 @@ export const onSnapshotPost = (menu, post_id) => {
   onUnmounted(() => unsub());
 
   return post;
+};
+
+export const onSnapshotProject = (menu, post_id, project_id) => {
+  const project = ref();
+  let unsub = () => {};
+  unsub();
+  unsub = onSnapshot(
+    doc(db, menu, post_id, "projects", project_id),
+    (doc) => (project.value = doc.data())
+  );
+  onUnmounted(() => unsub());
+
+  return project;
 };
 
 export const onSnapshotPostContent = (menu, post_id) => {

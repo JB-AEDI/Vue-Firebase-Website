@@ -73,7 +73,7 @@ const routes = [
       import("./../pages/GraduationPages/GraduationProjectUploadPage.vue"),
   },
   {
-    path: "/graduation/project",
+    path: "/graduation/:post_id/project/:project_id",
     name: "졸업작품 프로젝트",
     component: () =>
       import("./../pages/GraduationPages/GraduationProjectPage.vue"),

@@ -56,10 +56,10 @@
         </div>
         <div class="flex justify-between mt-10">
           <button
-            class="p-2 border-4 border-yellow-300 rounded-md box-content"
+            class="p-2 border-4 border-red-400 rounded-md box-content"
             @click="pushGraduationProjectLike(postId, projectId)"
           >
-            <span class="text-yellow-300"><i class="fa-solid fa-star"></i></span>
+            <span class="text-red-400"><i class="fa-solid fa-heart"></i></span>
             <span class="font-bold ml-2">좋아요</span>
             <span class="ml-2 mr-1">{{ projectData?.likes }}</span>
           </button>
@@ -78,6 +78,7 @@
       v-if="projectData?.description"
       :content="projectData?.description"
     ></TuiViewer>
+    <Chart></Chart>
   </div>
 </template>
 
@@ -92,6 +93,7 @@ import {
 } from "../../firebase/post";
 import { user } from "../../firebase/user";
 import TuiViewer from "../../components/editor/TuiViewer.vue";
+import Chart from "../../components/Chart.vue";
 
 const postId = useRouteParams("post_id").value;
 const projectId = useRouteParams("project_id").value;

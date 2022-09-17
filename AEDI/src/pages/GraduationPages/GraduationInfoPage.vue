@@ -6,7 +6,7 @@
     <div class="pl-6 w-4/5">
       <div class="h-5/6">
         <div class="border-b border-gray-300 pb-2">
-          <span class="text-yellow-300 mr-1">★</span>
+          <span class="text-red-400 mr-1.5"><i class="fa-solid fa-heart"></i></span>
           <span class="mr-4">{{ postSnapshot?.value?.likes }}</span>
           <span>프로젝트 수 - </span>
           <span>{{ postSnapshot?.value?.projects }}</span>
@@ -71,10 +71,10 @@
               <span class="ml-3"><i class="fa-solid fa-chevron-right"></i></span>
             </button>
             <button
-              class="ml-12 p-2 border-4 border-yellow-300 rounded-md box-content"
+              class="ml-12 p-2 border-4 border-red-400 rounded-md box-content"
               @click="pushGraduationLike(postId)"
             >
-              <span class="text-yellow-300"><i class="fa-solid fa-star"></i></span>
+              <span class="text-red-400"><i class="fa-solid fa-heart"></i></span>
               <span class="font-bold ml-2">좋아요</span>
             </button>
           </div>

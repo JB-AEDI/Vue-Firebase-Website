@@ -12,7 +12,7 @@
         ></div>
         <div class="px-2">
           <span
-            class="font-bold text-lg mt-1 mb-2 cursor-pointer"
+            class="font-bold text-lg mt-1 cursor-pointer"
             @click="moveProject(project.id)"
             >{{ project.title }}</span
           >

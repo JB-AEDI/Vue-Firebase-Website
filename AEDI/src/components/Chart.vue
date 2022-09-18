@@ -54,7 +54,11 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  menu: String,
 });
+
+const num1 = 48;
+console.log(props.menu);
 
 const chartData = {
   labels: ["완성도", "창의성", "기술성", "사업성", "예술성"],
@@ -72,7 +76,7 @@ const chartData = {
       pointBorderColor: "#fff",
       pointHoverBackgroundColor: "#fff",
       pointHoverBorderColor: "rgba(255,99,132,1)",
-      data: [28, 48, 40, 19, 64],
+      data: [num1, 42, 59, 18, 34],
     },
   ],
 };

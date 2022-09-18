@@ -29,11 +29,7 @@
       />
     </div>
 
-    <TuiEditor
-      v-if="content"
-      v-model="content"
-      @add-image="addImage"
-    ></TuiEditor>
+    <TuiEditor v-if="content" v-model="content" @add-image="addImage"></TuiEditor>
 
     <button
       class="mr-5 mt-4 float-right bg-indigo-500 py-2 px-3 rounded-md text-white"
@@ -58,7 +54,7 @@ const postId = useRouteParams("post_id").value;
 
 const userProfile = inject("userProfile");
 const content = ref("");
-const title = ref();
+const title = ref("");
 
 onMounted(async () => {
   title.value = await getTitle("notices", postId);

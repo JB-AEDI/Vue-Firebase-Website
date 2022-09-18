@@ -161,9 +161,17 @@
         </div>
       </Transition>
     </Teleport>
+
     <h2 class="mt-16 mb-5 text-2xl font-bold pb-2 border-b border-gray-400">댓글</h2>
-    <AddComment></AddComment>
-    <Comment v-for="i in 10" :comment="i"></Comment>
+    <AddComment v-if="!isComment"></AddComment>
+    <Comment
+      v-if="commentsData"
+      v-for="commentData in commentsData"
+      :rating="commentData?.rating"
+      :comment="commentData?.comment"
+      :name="commentData?.name"
+      class="mb-8"
+    ></Comment>
   </div>
 </template>
 
@@ -181,6 +189,8 @@ import {
   getMyGraduationProjectReview,
   deleteMyGraduationProjectReview,
   onSnapshotGraduationProjectReviews,
+  checkGraduationProjectComments,
+  onSnapshotGraduationProjectComments,
 } from "../../firebase/post";
 import { user } from "../../firebase/user";
 import TuiViewer from "../../components/editor/TuiViewer.vue";
@@ -195,13 +205,14 @@ const graduationTitle = ref("");
 const projectData = onSnapshotProject("graduations", postId, projectId);
 
 const props = defineProps({
-  comment: Number,
-  menu: String,
   perfectionSum: Number,
   creativitySum: Number,
   technicalitySum: Number,
   businessSum: Number,
   designSum: Number,
+  comment: String,
+  rating: Number,
+  name: String,
 });
 
 const {
@@ -211,8 +222,6 @@ const {
   businessSum,
   designSum,
 } = onSnapshotGraduationProjectReviews(postId, projectId);
-
-const menu = ref("graduations");
 
 const isModalOpen = ref(false);
 const modal = ref(null);
@@ -224,6 +233,7 @@ const business = ref();
 const design = ref();
 
 const isReview = ref(false);
+const isComment = ref(false);
 
 onClickOutside(modal, () => (isModalOpen.value = false));
 
@@ -252,10 +262,17 @@ const getReview = async () => {
   myReviewData.value = await getMyGraduationProjectReview(postId, projectId);
 };
 
+const checkComment = async () => {
+  isComment.value = await checkGraduationProjectComments(postId, projectId);
+};
+
+const commentsData = onSnapshotGraduationProjectComments(postId, projectId);
+
 onMounted(async () => {
   graduationTitle.value = await getTitle("graduations", postId);
   checkReview();
   getReview();
+  checkComment();
   updateViewsProjectCount("graduations", postId, projectId);
 });
 </script>

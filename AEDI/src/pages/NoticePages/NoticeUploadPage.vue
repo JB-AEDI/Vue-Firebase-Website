@@ -49,8 +49,8 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 
-const title = ref();
-const content = ref();
+const title = ref("");
+const content = ref("");
 let formFile = null;
 let formFilePath = null;
 
@@ -62,12 +62,7 @@ const handleFileChange = (e) => {
 };
 
 const upload = () => {
-  createNotice(
-    title,
-    content,
-    userProfile?.value?.name,
-    userProfile?.value?.admin
-  );
+  createNotice(title, content, userProfile?.value?.name, userProfile?.value?.admin);
   if (formFile !== null && formFilePath !== null) {
     uploadFile(formFilePath, formFile);
   }

@@ -333,6 +333,69 @@ export const onSnapshotGraduationProjectReviews = (post_id, project_id) => {
   };
 };
 
+// 졸업작품 프로젝트 댓글 - 추가
+export const createGraduationProjectComment = async (
+  post_id,
+  project_id,
+  rating,
+  comment,
+  name
+) => {
+  await addDoc(
+    collection(db, "graduations", post_id, "projects", project_id, "comments"),
+    {
+      uid: user?.value?.uid,
+      rating: rating.value,
+      comment: comment.value,
+      name: name,
+    }
+  );
+};
+
+// 졸업작품 프로젝트 댓글 - 유무확인
+export const checkGraduationProjectComments = async (post_id, project_id) => {
+  const commentsRef = collection(
+    db,
+    "graduations",
+    post_id,
+    "projects",
+    project_id,
+    "comments"
+  );
+  const q = query(commentsRef, where("uid", "==", user?.value?.uid));
+  const querySnapshot = await getDocs(q);
+  if (querySnapshot.docs[0]?.data().uid === user?.value?.uid) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+// 졸업작품 프로젝트 댓글 - 가져오기
+export const onSnapshotGraduationProjectComments = (post_id, project_id) => {
+  const comments = ref([]);
+  let unsub = () => {};
+  unsub();
+  const commentsRef = collection(
+    db,
+    "graduations",
+    post_id,
+    "projects",
+    project_id,
+    "comments"
+  );
+  const q = query(commentsRef, orderBy("timestamp"));
+  unsub = onSnapshot(q, (snapshot) => {
+    comments.value = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  });
+  onUnmounted(() => unsub());
+
+  return comments;
+};
+
 // Update Post
 
 // Notices

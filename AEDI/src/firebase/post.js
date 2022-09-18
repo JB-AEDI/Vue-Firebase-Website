@@ -268,6 +268,70 @@ export const deleteMyGraduationProjectReview = async (post_id, project_id) => {
 };
 
 // 졸업작품 프로젝트 평가 - 실시간 가져오기
+export const onSnapshotGraduationProjectReviews = (post_id, project_id) => {
+  const perfectionSum = ref(0);
+  const creativitySum = ref(0);
+  const technicalitySum = ref(0);
+  const businessSum = ref(0);
+  const designSum = ref(0);
+
+  let unsub = () => {};
+  unsub();
+  unsub = onSnapshot(
+    collection(db, "graduations", post_id, "projects", project_id, "reviews"),
+    (snapshot) => {
+      // perfection
+      const perfectionArray = [];
+      snapshot.forEach((doc) => {
+        perfectionArray.push(Number(doc.data().perfection));
+      });
+      perfectionArray.forEach((value) => {
+        perfectionSum.value += value;
+      });
+      // creativity
+      const creativityArray = [];
+      snapshot.forEach((doc) => {
+        creativityArray.push(Number(doc.data().creativity));
+      });
+      creativityArray.forEach((value) => {
+        creativitySum.value += value;
+      });
+      // technicality
+      const technicalityArray = [];
+      snapshot.forEach((doc) => {
+        technicalityArray.push(Number(doc.data().technicality));
+      });
+      technicalityArray.forEach((value) => {
+        technicalitySum.value += value;
+      });
+      // business
+      const businessArray = [];
+      snapshot.forEach((doc) => {
+        businessArray.push(Number(doc.data().business));
+      });
+      businessArray.forEach((value) => {
+        businessSum.value += value;
+      });
+      // design
+      const designArray = [];
+      snapshot.forEach((doc) => {
+        designArray.push(Number(doc.data().design));
+      });
+      designArray.forEach((value) => {
+        designSum.value += value;
+      });
+    }
+  );
+  onUnmounted(() => unsub());
+
+  return {
+    perfectionSum,
+    creativitySum,
+    technicalitySum,
+    businessSum,
+    designSum,
+  };
+};
 
 // Update Post
 

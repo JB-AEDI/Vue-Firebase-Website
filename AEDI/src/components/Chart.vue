@@ -54,11 +54,12 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
-  menu: String,
+  perfectionSum: Number,
+  creativitySum: Number,
+  technicalitySum: Number,
+  businessSum: Number,
+  designSum: Number,
 });
-
-const num1 = 48;
-console.log(props.menu);
 
 const chartData = {
   labels: ["완성도", "창의성", "기술성", "사업성", "예술성"],
@@ -76,7 +77,13 @@ const chartData = {
       pointBorderColor: "#fff",
       pointHoverBackgroundColor: "#fff",
       pointHoverBorderColor: "rgba(255,99,132,1)",
-      data: [num1, 42, 59, 18, 34],
+      data: [
+        props.perfectionSum,
+        props.creativitySum,
+        props.technicalitySum,
+        props.businessSum,
+        props.designSum,
+      ],
     },
   ],
 };

@@ -79,7 +79,14 @@
       :content="projectData?.description"
     ></TuiViewer>
     <h2 class="mt-16 mb-5 text-2xl font-bold pb-2 border-b border-gray-400">평가</h2>
-    <Chart :menu="menu"></Chart>
+    <Chart
+      v-if="perfectionSum && creativitySum && technicalitySum && businessSum && designSum"
+      :perfectionSum="perfectionSum"
+      :creativitySum="creativitySum"
+      :technicalitySum="technicalitySum"
+      :businessSum="businessSum"
+      :designSum="designSum"
+    ></Chart>
     <!-- 평가하지 않았을때 나타남 -->
     <div class="text-end" v-if="!isReview">
       <!-- 버튼 클릭시 평가 모달창 나타남 -->
@@ -173,6 +180,7 @@ import {
   checkGraduationProjectReview,
   getMyGraduationProjectReview,
   deleteMyGraduationProjectReview,
+  onSnapshotGraduationProjectReviews,
 } from "../../firebase/post";
 import { user } from "../../firebase/user";
 import TuiViewer from "../../components/editor/TuiViewer.vue";
@@ -189,7 +197,20 @@ const projectData = onSnapshotProject("graduations", postId, projectId);
 const props = defineProps({
   comment: Number,
   menu: String,
+  perfectionSum: Number,
+  creativitySum: Number,
+  technicalitySum: Number,
+  businessSum: Number,
+  designSum: Number,
 });
+
+const {
+  perfectionSum,
+  creativitySum,
+  technicalitySum,
+  businessSum,
+  designSum,
+} = onSnapshotGraduationProjectReviews(postId, projectId);
 
 const menu = ref("graduations");
 

@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col gap-4">
-    <!-- 완성도 (perfaction) -->
+    <!-- 완성도 (perfection) -->
     <div class="grid grid-cols-6">
       <div class="col-span-1 flex items-center font-bold text-lg">완성도</div>
       <div class="col-span-5">
@@ -8,15 +8,15 @@
           <li class="col-span-1">
             <input
               type="radio"
-              v-model="perfactionValue"
-              id="perfaction-1"
-              name="perfaction"
+              v-model="perfectionValue"
+              id="perfection-1"
+              name="perfection"
               value="1"
               class="hidden peer"
               required
             />
             <label
-              for="perfaction-1"
+              for="perfection-1"
               class="inline-flex justify-center items-center p-2 w-full text-gray-500 bg-white rounded-lg border border-gray-200 cursor-pointer peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100"
             >
               <span class="font-semibold text-sm">매우낮음</span>
@@ -25,14 +25,14 @@
           <li class="col-span-1">
             <input
               type="radio"
-              v-model="perfactionValue"
-              id="perfaction-2"
-              name="perfaction"
+              v-model="perfectionValue"
+              id="perfection-2"
+              name="perfection"
               value="2"
               class="hidden peer"
             />
             <label
-              for="perfaction-2"
+              for="perfection-2"
               class="inline-flex justify-center items-center p-2 w-full text-gray-500 bg-white rounded-lg border border-gray-200 cursor-pointer peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100"
             >
               <span class="font-semibold text-sm">낮음</span>
@@ -41,14 +41,14 @@
           <li class="col-span-1">
             <input
               type="radio"
-              v-model="perfactionValue"
-              id="perfaction-3"
-              name="perfaction"
+              v-model="perfectionValue"
+              id="perfection-3"
+              name="perfection"
               value="3"
               class="hidden peer"
             />
             <label
-              for="perfaction-3"
+              for="perfection-3"
               class="inline-flex justify-center items-center p-2 w-full text-gray-500 bg-white rounded-lg border border-gray-200 cursor-pointer peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100"
             >
               <span class="font-semibold text-sm">보통</span>
@@ -57,14 +57,14 @@
           <li class="col-span-1">
             <input
               type="radio"
-              v-model="perfactionValue"
-              id="perfaction-4"
-              name="perfaction"
+              v-model="perfectionValue"
+              id="perfection-4"
+              name="perfection"
               value="4"
               class="hidden peer"
             />
             <label
-              for="perfaction-4"
+              for="perfection-4"
               class="inline-flex justify-center items-center p-2 w-full text-gray-500 bg-white rounded-lg border border-gray-200 cursor-pointer peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100"
             >
               <span class="font-semibold text-sm">높음</span>
@@ -73,14 +73,14 @@
           <li class="col-span-1">
             <input
               type="radio"
-              v-model="perfactionValue"
-              id="perfaction-5"
-              name="perfaction"
+              v-model="perfectionValue"
+              id="perfection-5"
+              name="perfection"
               value="5"
               class="hidden peer"
             />
             <label
-              for="perfaction-5"
+              for="perfection-5"
               class="inline-flex justify-center items-center p-2 w-full text-gray-500 bg-white rounded-lg border border-gray-200 cursor-pointer peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100"
             >
               <span class="font-semibold text-sm">매우높음</span>
@@ -449,11 +449,51 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
-const perfactionValue = ref("");
+const perfectionValue = ref("");
 const creativityValue = ref("");
 const technicalityValue = ref("");
 const businessValue = ref("");
 const designValue = ref("");
+
+const emits = defineEmits([
+  "sendPerfection",
+  "sendCreativity",
+  "sendTechnicality",
+  "sendBusiness",
+  "sendDesign",
+]);
+
+const changePerfection = () => {
+  emits("sendPerfection", perfectionValue.value);
+};
+const changeCreativity = () => {
+  emits("sendCreativity", creativityValue.value);
+};
+const changeTechnicality = () => {
+  emits("sendTechnicality", technicalityValue.value);
+};
+const changeBusiness = () => {
+  emits("sendBusiness", businessValue.value);
+};
+const changeDesign = () => {
+  emits("sendDesign", designValue.value);
+};
+
+watch(perfectionValue, () => {
+  changePerfection();
+});
+watch(creativityValue, () => {
+  changeCreativity();
+});
+watch(technicalityValue, () => {
+  changeTechnicality();
+});
+watch(businessValue, () => {
+  changeBusiness();
+});
+watch(designValue, () => {
+  changeDesign();
+});
 </script>

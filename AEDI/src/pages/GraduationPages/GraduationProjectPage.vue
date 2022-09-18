@@ -80,7 +80,8 @@
     ></TuiViewer>
     <h2 class="mt-16 mb-5 text-2xl font-bold pb-2 border-b border-gray-400">평가</h2>
     <Chart :menu="menu"></Chart>
-    <div class="text-end">
+    <!-- 평가하지 않았을때 나타남 -->
+    <div class="text-end" v-if="!isReview">
       <!-- 버튼 클릭시 평가 모달창 나타남 -->
       <button
         class="bg-indigo-500 py-3 px-4 rounded-md text-white text-lg close-btn"
@@ -90,13 +91,56 @@
         <span class="ml-2">평가하기</span>
       </button>
     </div>
+    <!-- 평가했을때 나타남 -->
+    <div v-else class="mt-5">
+      <h3 class="text-lg font-bold">나의 평가</h3>
+      <div>
+        <span class="mr-4">완성도: {{ myReviewData?.perfection }}</span>
+        <span class="mr-4">창의성: {{ myReviewData?.creativity }}</span>
+        <span class="mr-4">기술성: {{ myReviewData?.technicality }}</span>
+        <span class="mr-4">사업성: {{ myReviewData?.business }}</span>
+        <span>예술성: {{ myReviewData?.design }}</span>
+        <button
+          class="bg-indigo-500 py-2 px-3 rounded-md text-white text-lg float-right"
+          @click="
+            [deleteMyGraduationProjectReview(postId, projectId), (isReview = false)]
+          "
+        >
+          <span><i class="fa-solid fa-trash-can"></i></span>
+          <span class="ml-2">삭제</span>
+        </button>
+      </div>
+    </div>
     <Teleport to="#modal">
       <Transition name="modal">
         <div class="modal-bg" v-if="isModalOpen">
           <div class="modal" ref="modal">
-            <form @submit.prevent="[uploadReview(), (isModalOpen = false)]">
+            <form
+              @submit.prevent="
+                [
+                  createGraduationProjectReview(
+                    postId,
+                    projectId,
+                    perfection,
+                    creativity,
+                    technicality,
+                    business,
+                    design
+                  ),
+                  (isModalOpen = false),
+                  checkReview(),
+                  getReview(),
+                ]
+              "
+            >
               <button class="close-btn" @click="isModalOpen = false">x</button>
-              <Review></Review>
+              <Review
+                @send-perfection="getPerfection"
+                @send-creativity="getCreativity"
+                @send-technicality="getTechnicality"
+                @send-business="getBusiness"
+                @send-design="getDesign"
+              ></Review>
               <div class="flex justify-center mt-5">
                 <button
                   class="bg-indigo-500 py-2 px-3 rounded-md text-white"
@@ -125,6 +169,10 @@ import {
   onSnapshotProject,
   pushGraduationProjectLike,
   updateViewsProjectCount,
+  createGraduationProjectReview,
+  checkGraduationProjectReview,
+  getMyGraduationProjectReview,
+  deleteMyGraduationProjectReview,
 } from "../../firebase/post";
 import { user } from "../../firebase/user";
 import TuiViewer from "../../components/editor/TuiViewer.vue";
@@ -148,14 +196,45 @@ const menu = ref("graduations");
 const isModalOpen = ref(false);
 const modal = ref(null);
 
+const perfection = ref();
+const creativity = ref();
+const technicality = ref();
+const business = ref();
+const design = ref();
+
+const isReview = ref(false);
+
 onClickOutside(modal, () => (isModalOpen.value = false));
 
-const uploadReview = () => {
-  console.log("평가 업로드");
+const getPerfection = (payload) => {
+  perfection.value = payload;
+};
+const getCreativity = (payload) => {
+  creativity.value = payload;
+};
+const getTechnicality = (payload) => {
+  technicality.value = payload;
+};
+const getBusiness = (payload) => {
+  business.value = payload;
+};
+const getDesign = (payload) => {
+  design.value = payload;
+};
+
+const myReviewData = ref();
+
+const checkReview = async () => {
+  isReview.value = await checkGraduationProjectReview(postId, projectId);
+};
+const getReview = async () => {
+  myReviewData.value = await getMyGraduationProjectReview(postId, projectId);
 };
 
 onMounted(async () => {
   graduationTitle.value = await getTitle("graduations", postId);
+  checkReview();
+  getReview();
   updateViewsProjectCount("graduations", postId, projectId);
 });
 </script>

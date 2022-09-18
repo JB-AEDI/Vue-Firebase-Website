@@ -181,6 +181,94 @@ export const pushGraduationProjectLike = async (post_id, project_id) => {
   }
 };
 
+// 졸업작품 프로젝트 평가 추가
+export const createGraduationProjectReview = async (
+  post_id,
+  project_id,
+  perfection,
+  creativity,
+  technicality,
+  business,
+  design
+) => {
+  await addDoc(
+    collection(db, "graduations", post_id, "projects", project_id, "reviews"),
+    {
+      uid: user?.value?.uid,
+      perfection: perfection,
+      creativity: creativity,
+      technicality: technicality,
+      business: business,
+      design: design,
+    }
+  );
+};
+
+// 졸업작품 프로젝트 평가 - 유무확인
+export const checkGraduationProjectReview = async (post_id, project_id) => {
+  const reviewRef = collection(
+    db,
+    "graduations",
+    post_id,
+    "projects",
+    project_id,
+    "reviews"
+  );
+  const q = query(reviewRef, where("uid", "==", user?.value?.uid));
+  const querySnapshot = await getDocs(q);
+  if (querySnapshot.docs[0]?.data().uid === user?.value?.uid) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+// 내가 작성한 졸업작품 프로젝트 평가 - 가져오기
+export const getMyGraduationProjectReview = async (post_id, project_id) => {
+  const reviewRef = collection(
+    db,
+    "graduations",
+    post_id,
+    "projects",
+    project_id,
+    "reviews"
+  );
+  const q = query(reviewRef, where("uid", "==", user?.value?.uid));
+  const querySnapshot = await getDocs(q);
+  if (querySnapshot.docs[0]?.data().uid === user?.value?.uid) {
+    return querySnapshot.docs[0].data();
+  }
+};
+
+// 내가 작성한 졸업작품 프로젝트 평가 - 삭제
+export const deleteMyGraduationProjectReview = async (post_id, project_id) => {
+  const reviewRef = collection(
+    db,
+    "graduations",
+    post_id,
+    "projects",
+    project_id,
+    "reviews"
+  );
+  const q = query(reviewRef, where("uid", "==", user?.value?.uid));
+  const querySnapshot = await getDocs(q);
+  if (querySnapshot.docs[0]?.data().uid === user?.value?.uid) {
+    await deleteDoc(
+      doc(
+        db,
+        "graduations",
+        post_id,
+        "projects",
+        project_id,
+        "reviews",
+        querySnapshot.docs[0].id
+      )
+    );
+  }
+};
+
+// 졸업작품 프로젝트 평가 - 실시간 가져오기
+
 // Update Post
 
 // Notices

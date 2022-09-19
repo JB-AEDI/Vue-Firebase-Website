@@ -170,7 +170,9 @@
       :rating="commentData?.rating"
       :comment="commentData?.comment"
       :name="commentData?.name"
-      class="mb-8"
+      :comment-uid="commentData?.uid"
+      :comment-id="commentData?.id"
+      class="mb-4 pb-4 border-b border-gray-300"
     ></Comment>
   </div>
 </template>
@@ -213,6 +215,8 @@ const props = defineProps({
   comment: String,
   rating: Number,
   name: String,
+  commentUid: String,
+  commentId: String,
 });
 
 const {

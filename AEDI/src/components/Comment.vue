@@ -10,10 +10,42 @@
     ></StarRating>
     <span class="font-bold ml-8">{{ name }}</span>
     <div class="ml-10">{{ comment }}</div>
+    <button
+      v-if="commentUid === user?.uid"
+      @click="
+        [
+          deleteGraduationProjectComments(postId, projectId, commentUid, commentId),
+          refresh(0),
+        ]
+      "
+      class="ml-auto py-1 px-2 bg-indigo-500 text-white rounded-md"
+    >
+      <span><i class="fa-solid fa-trash-can"></i></span>
+      <span class="ml-1.5">삭제</span>
+    </button>
   </div>
 </template>
 
 <script setup>
 import StarRating from "vue-star-rating";
-const props = defineProps({ comment: String, rating: Number, name: String });
+import { user } from "../firebase/user";
+import { useRouteParams } from "@vueuse/router";
+import { deleteGraduationProjectComments } from "../firebase/post";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const props = defineProps({
+  comment: String,
+  rating: Number,
+  name: String,
+  commentUid: String,
+  commentId: String,
+});
+const postId = useRouteParams("post_id").value;
+const projectId = useRouteParams("project_id").value;
+
+const refresh = () => {
+  router.go(0);
+};
 </script>

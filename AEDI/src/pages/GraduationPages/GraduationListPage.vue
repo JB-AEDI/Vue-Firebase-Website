@@ -56,51 +56,61 @@
       <div class="col-span-2 border p-3">학과</div>
       <div class="col-span-2 border p-3">프로젝트 수</div>
     </div>
-    <div v-for="postData in postsData" class="grid grid-cols-12 bg-gray-200">
+    <div
+      v-for="graduation in graduationsPage[currentPage]"
+      class="grid grid-cols-12 bg-gray-200"
+    >
       <div class="col-span-1 border-x border-b border-white p-3 text-center">
-        {{ postData.data().year }}
+        {{ graduation?.year }}
       </div>
       <div
         class="col-span-5 border-r border-b border-white p-3 text-center cursor-pointer"
-        @click="movePost(postData)"
+        @click="movePost(graduation)"
       >
-        {{ postData.data().title }}
+        {{ graduation?.title }}
       </div>
       <div class="col-span-2 border-r border-b border-white p-3 text-center">
-        {{ postData.data().university }}
+        {{ graduation?.university }}
       </div>
       <div class="col-span-2 border-r border-b border-white p-3 text-center">
-        {{ postData.data().department }}
+        {{ graduation?.department }}
       </div>
-      <div class="col-span-2 border-r border-b border-white p-3 text-center">0</div>
+      <div class="col-span-2 border-r border-b border-white p-3 text-center">
+        {{ graduation?.projects }}
+      </div>
     </div>
   </div>
 
-  <!-- <div class="mt-4 mb-10 flex justify-center gap-16">
-    <div class="bg-gray-200 px-3 py-1 cursor-pointer" @click="back">&lt</div>
-    <div class="bg-gray-200 px-3 py-1 cursor-pointer" @click="next">&gt</div>
-  </div> -->
+  <div v-if="graduationsPage" class="mt-4 flex justify-center gap-2">
+    <div class="bg-gray-200 px-2 py-1 cursor-pointer" @click="[(currentPage = 0)]">
+      &lt&lt
+    </div>
+    <div
+      class="bg-gray-200 px-3 py-1 cursor-pointer"
+      v-for="listNumber in graduationsPage?.length"
+      @click="[(currentPage = listNumber - 1)]"
+    >
+      {{ listNumber }}
+    </div>
+    <div
+      class="bg-gray-200 px-2 py-1 cursor-pointer"
+      @click="[(currentPage = graduationsPage?.length - 1)]"
+    >
+      &gt&gt
+    </div>
+  </div>
 </template>
 
 <script setup>
 import { useRouter } from "vue-router";
-import { inject, onMounted, ref } from "vue";
-import { setFirstGraduationsPage, pagingGraduationsPost } from "../../firebase/post";
+import { inject, ref } from "vue";
+import { onSnapshotPostsPage } from "../../firebase/post";
 
 const router = useRouter();
 
 const userProfile = inject("userProfile");
-
-const postsData = ref();
-
-const updatePosts = async () => {
-  await setFirstGraduationsPage();
-  postsData.value = pagingGraduationsPost();
-};
-
-onMounted(() => {
-  updatePosts();
-});
+const currentPage = ref(0);
+const graduationsPage = onSnapshotPostsPage("graduations");
 
 const pushUpload = async () => router.push({ path: "/graduation/upload" });
 

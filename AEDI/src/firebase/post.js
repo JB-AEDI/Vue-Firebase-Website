@@ -574,118 +574,6 @@ export const deletePost = async (menu, post_id) => {
 };
 
 // Loading PostList
-
-// Notice
-
-// 첫번째 post 컬렉션의 스냅샷을 작성날짜 기준 내림차순 (orderBy 2번째 인자 생략시 기본 내림차순)으로 정렬해 10개의 문서만 받아오기
-const firstNoticesPosts = query(
-  collection(db, "notices"),
-  orderBy("timestamp"),
-  limit(10)
-);
-
-let documentSnapshotsNotices;
-let firstVisibleNotices;
-
-export const setFirstNoticesPage = async () => {
-  documentSnapshotsNotices = await getDocs(firstNoticesPosts);
-};
-
-// 앞서 기억해둔 문서값으로 새로운 쿼리 요청
-export const nextNoticesPaging = async () => {
-  // 마지막 문서 스냅샷 기억해두기 (쿼리결과 스냅샷 크기 - 1 = 마지막 문서 위치)
-  const lastVisibleNotices =
-    documentSnapshotsNotices.docs[documentSnapshotsNotices.docs.length - 1];
-
-  const nextPosts = query(
-    collection(db, "notices"),
-    orderBy("timestamp"),
-    startAfter(lastVisibleNotices),
-    limit(10)
-  );
-  documentSnapshotsNotices = await getDocs(nextPosts);
-  firstVisibleNotices = documentSnapshotsNotices.docs[0];
-};
-
-// 이전 스냅샷으로 변경
-export const beforeNoticesPaging = async () => {
-  const beforePosts = query(
-    collection(db, "notices"),
-    orderBy("timestamp"),
-    endBefore(firstVisibleNotices),
-    limit(10)
-  );
-  const beforeSnapshots = await getDocs(beforePosts);
-  if (beforeSnapshots.length === 0) {
-    console.log("첫페이지 입니다.");
-  } else {
-    documentSnapshotsNotices = await getDocs(beforePosts);
-  }
-};
-
-export const pagingNoticesPost = () => documentSnapshotsNotices?.docs;
-
-// Event
-const firstEventsPosts = query(
-  collection(db, "events"),
-  orderBy("timestamp"),
-  limit(10)
-);
-
-// 앞서 기억해둔 문서값으로 새로운 쿼리 요청
-let documentSnapshotsEvents;
-let firstVisibleEvents;
-
-export const setFirstEventsPage = async () => {
-  documentSnapshotsEvents = await getDocs(firstEventsPosts);
-};
-
-export const nextEventsPaging = async () => {
-  documentSnapshotsEvents = await getDocs(firstEventsPosts);
-  // 마지막 문서 스냅샷 기억해두기 (쿼리결과 스냅샷 크기 - 1 = 마지막 문서 위치)
-  const lastVisibleEvents =
-    documentSnapshotsEvents.docs[documentSnapshotsEvents.docs.length - 1];
-  const nextPosts = query(
-    collection(db, "events"),
-    orderBy("timestamp"),
-    startAfter(lastVisibleEvents),
-    limit(10)
-  );
-  documentSnapshotsEvents = await getDocs(nextPosts);
-  firstVisibleEvents = documentSnapshotsEvents.docs[0];
-};
-
-// 이전 스냅샷으로 변경
-export const beforeEventsPaging = async () => {
-  const beforePosts = query(
-    collection(db, "events"),
-    orderBy("timestamp"),
-    endBefore(firstVisibleEvents),
-    limit(10)
-  );
-  const beforeSnapshots = await getDocs(beforePosts);
-  if (beforeSnapshots.length === 0) {
-    console.log("첫페이지 입니다.");
-  } else {
-    documentSnapshotsEvents = await getDocs(beforePosts);
-  }
-};
-
-export const pagingEventsPost = () => documentSnapshotsEvents?.docs;
-
-// Graduation
-const graduationsPosts = query(
-  collection(db, "graduations"),
-  orderBy("timestamp")
-);
-
-let documentSnapshotsGraduations;
-export const setFirstGraduationsPage = async () => {
-  documentSnapshotsGraduations = await getDocs(graduationsPosts);
-};
-
-export const pagingGraduationsPost = () => documentSnapshotsGraduations.docs;
-
 export const onSnapshotGraduationProjects = (post_id) => {
   const projects = ref([]);
   let unsub = () => {};
@@ -704,8 +592,40 @@ export const onSnapshotGraduationProjects = (post_id) => {
   return projects;
 };
 
-// GetPost
+// 리스트 페이지 - 스냅샷
+export const onSnapshotPostsPage = (menu) => {
+  let posts = [];
+  const postsPage = ref([]);
+  // 배열 n개씩 나누는 함수
+  const division = (array, n) => {
+    const length = array.length;
+    const divide =
+      Math.floor(length / n) + (Math.floor(length % n) > 0 ? 1 : 0);
+    const newArray = [];
 
+    for (let i = 0; i < divide; i++) {
+      newArray.push(array.splice(0, n));
+    }
+
+    return newArray;
+  };
+  const postRef = collection(db, menu);
+  const q = query(postRef, orderBy("timestamp"));
+  let unsub = () => {};
+  unsub();
+  unsub = onSnapshot(q, (snapshot) => {
+    posts = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    postsPage.value = division(posts, 10);
+  });
+  onUnmounted(() => unsub());
+
+  return postsPage;
+};
+
+// 일반 게시물 데이터(공지사항, 이벤트) - 스냅샷
 export const onSnapshotPost = (menu, post_id) => {
   const post = ref();
   let unsub = () => {};
@@ -719,6 +639,7 @@ export const onSnapshotPost = (menu, post_id) => {
   return post;
 };
 
+// 프로젝트 게시물 데이터(졸업작품, 공모전 - 프로젝트) - 스냅샷
 export const onSnapshotProject = (menu, post_id, project_id) => {
   const project = ref();
   let unsub = () => {};
@@ -744,6 +665,8 @@ export const onSnapshotPostContent = (menu, post_id) => {
 
   return post;
 };
+
+// 업데이트(수정) 페이지 V-model 바인딩용 getDoc
 
 export const getPost = async (menu, id) => {
   const docRef = doc(db, menu, id);

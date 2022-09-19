@@ -20,61 +20,58 @@
       <div class="col-span-3 border-y border-r p-3">진행상태</div>
     </div>
 
-    <div v-for="postData in postsData" class="grid grid-cols-12 bg-gray-200">
+    <div
+      v-if="eventsPage"
+      v-for="event in eventsPage[currentPage]"
+      class="grid grid-cols-12 bg-gray-200"
+    >
       <div class="col-span-5 border-r border-b border-white p-3">
-        <span class="cursor-pointer" @click="movePost(postData)">
-          {{ postData.data().title }}
+        <span class="cursor-pointer" @click="movePost(event)">
+          {{ event?.title }}
         </span>
       </div>
       <div class="col-span-2 border-r border-b border-white p-3 text-center">AEDI</div>
       <div class="col-span-2 border-r border-b border-white p-3 text-center">
-        {{ postData.data().views }}
+        {{ event?.views }}
       </div>
       <div class="col-span-3 border-r border-b border-white p-3 text-center">
-        <span>{{ postData.data().startDate }}</span>
+        <span>{{ event?.startDate }}</span>
         <span class="mx-2">~</span>
-        <span>{{ postData.data().endDate }}</span>
+        <span>{{ event?.endDate }}</span>
       </div>
     </div>
   </div>
 
-  <div class="mt-4 mb-10 flex justify-center gap-16">
-    <div class="bg-gray-200 px-3 py-1 cursor-pointer" @click="back">&lt</div>
-    <div class="bg-gray-200 px-3 py-1 cursor-pointer" @click="next">&gt</div>
+  <div v-if="eventsPage" class="mt-4 flex justify-center gap-2">
+    <div class="bg-gray-200 px-2 py-1 cursor-pointer" @click="[(currentPage = 0)]">
+      &lt&lt
+    </div>
+    <div
+      class="bg-gray-200 px-3 py-1 cursor-pointer"
+      v-for="listNumber in eventsPage?.length"
+      @click="[(currentPage = listNumber - 1)]"
+    >
+      {{ listNumber }}
+    </div>
+    <div
+      class="bg-gray-200 px-2 py-1 cursor-pointer"
+      @click="[(currentPage = eventsPage?.length - 1)]"
+    >
+      &gt&gt
+    </div>
   </div>
 </template>
 
 <script setup>
 import { useRouter } from "vue-router";
-import { inject, onMounted, ref } from "vue";
-import {
-  setFirstEventsPage,
-  pagingEventsPost,
-  nextEventsPaging,
-  beforeEventsPaging,
-} from "../../firebase/post";
+import { inject, ref } from "vue";
+import { onSnapshotPostsPage } from "../../firebase/post";
 
 const router = useRouter();
 const userProfile = inject("userProfile");
 
-const postsData = ref();
-const updatePosts = async () => {
-  await setFirstEventsPage();
-  postsData.value = pagingEventsPost();
-};
-
-onMounted(() => {
-  updatePosts();
-});
-
-const back = async () => {
-  await beforeEventsPaging();
-  postsData.value = pagingEventsPost();
-};
-const next = async () => {
-  await nextEventsPaging();
-  postsData.value = pagingEventsPost();
-};
+const currentPage = ref(0);
+const eventsPage = onSnapshotPostsPage("events");
 
 const pushUpload = async () => router.push({ path: "/event/upload" });
 

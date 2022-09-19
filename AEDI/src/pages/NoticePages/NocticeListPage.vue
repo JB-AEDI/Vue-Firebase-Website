@@ -20,72 +20,65 @@
       <div class="col-span-2 border-y border-r p-3">작성자</div>
     </div>
 
-    <div v-for="postData in postsData" class="grid grid-cols-12 bg-gray-200">
+    <div v-for="notice in noticesPage[currentPage]" class="grid grid-cols-12 bg-gray-200">
       <div class="col-span-5 border-r border-b border-white p-3">
-        <span class="cursor-pointer" @click="movePost(postData)">
-          {{ postData.data().title }}
+        <span class="cursor-pointer" @click="movePost(notice)">
+          {{ notice?.title }}
         </span>
       </div>
       <div class="col-span-3 border-r border-b border-white p-3 text-center">
-        <span>{{ postData.data().timestamp.toDate().getFullYear() }}</span>
+        <span>{{ notice?.timestamp.toDate().getFullYear() }}</span>
         <span>-</span>
-        <span v-if="postData.data().timestamp.toDate().getMonth() < 10"
-          >0{{ postData.data().timestamp.toDate().getMonth() + 1 }}</span
+        <span v-if="notice?.timestamp.toDate().getMonth() < 10"
+          >0{{ notice?.timestamp.toDate().getMonth() + 1 }}</span
         >
-        <span v-else>{{ postData.data().timestamp.toDate().getMonth() + 1 }}</span>
+        <span v-else>{{ notice?.timestamp.toDate().getMonth() + 1 }}</span>
         <span>-</span>
-        <span v-if="postData.data().timestamp.toDate().getDate() < 10"
-          >0{{ postData.data().timestamp.toDate().getDate() }}</span
+        <span v-if="notice?.timestamp.toDate().getDate() < 10"
+          >0{{ notice?.timestamp.toDate().getDate() }}</span
         >
-        <span v-else>0{{ postData.data().timestamp.toDate().getDate() }}</span>
+        <span v-else>0{{ notice?.timestamp.toDate().getDate() }}</span>
       </div>
       <div class="col-span-2 border-r border-b border-white p-3 text-center">
-        {{ postData.data().views }}
+        {{ notice?.views }}
       </div>
       <div class="col-span-2 border-r border-b border-white p-3 text-center">
-        <span>{{ postData.data().name }}</span>
-        <span v-if="postData.data().admin">(관리자)</span>
+        <span>{{ notice?.name }}</span>
+        <span v-if="notice?.admin">(관리자)</span>
       </div>
     </div>
   </div>
 
-  <div class="mt-4 mb-10 flex justify-center gap-16">
-    <div class="bg-gray-200 px-3 py-1 cursor-pointer" @click="back">&lt</div>
-    <div class="bg-gray-200 px-3 py-1 cursor-pointer" @click="next">&gt</div>
+  <div v-if="noticesPage" class="mt-4 flex justify-center gap-2">
+    <div class="bg-gray-200 px-2 py-1 cursor-pointer" @click="[(currentPage = 0)]">
+      &lt&lt
+    </div>
+    <div
+      class="bg-gray-200 px-3 py-1 cursor-pointer"
+      v-for="listNumber in noticesPage?.length"
+      @click="[(currentPage = listNumber - 1)]"
+    >
+      {{ listNumber }}
+    </div>
+    <div
+      class="bg-gray-200 px-2 py-1 cursor-pointer"
+      @click="[(currentPage = noticesPage?.length - 1)]"
+    >
+      &gt&gt
+    </div>
   </div>
 </template>
 
 <script setup>
 import { useRouter } from "vue-router";
-import { inject, onMounted, ref } from "vue";
-import {
-  setFirstNoticesPage,
-  pagingNoticesPost,
-  nextNoticesPaging,
-  beforeNoticesPaging,
-} from "../../firebase/post";
+import { inject, ref } from "vue";
+import { onSnapshotPostsPage } from "../../firebase/post";
 
 const router = useRouter();
+
 const userProfile = inject("userProfile");
-
-const postsData = ref();
-const updatePosts = async () => {
-  await setFirstNoticesPage();
-  postsData.value = pagingNoticesPost();
-};
-
-onMounted(() => {
-  updatePosts();
-});
-
-const back = async () => {
-  await beforeNoticesPaging();
-  postsData.value = pagingNoticesPost();
-};
-const next = async () => {
-  await nextNoticesPaging();
-  postsData.value = pagingNoticesPost();
-};
+const currentPage = ref(0);
+const noticesPage = onSnapshotPostsPage("notices");
 
 const pushUpload = async () => router.push({ path: "/notice/upload" });
 

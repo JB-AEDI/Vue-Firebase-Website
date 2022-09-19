@@ -22,9 +22,13 @@
       <div class="col-span-1 border-y border-r p-3">진행상태</div>
     </div>
 
-    <div v-for="contest in 10" class="grid grid-cols-6 bg-gray-200">
+    <div
+      v-if="contestsPage"
+      v-for="contest in contestsPage[currentPage]"
+      class="grid grid-cols-6 bg-gray-200"
+    >
       <div class="col-span-3 border-x border-b border-white p-3">
-        공모전 {{ contest }}
+        공모전 {{ contest?.title }}
       </div>
       <div class="col-span-1 border-r border-b border-white p-3 text-center">
         주최사
@@ -38,24 +42,40 @@
     </div>
   </div>
 
-  <div class="mt-4 flex justify-center gap-2">
-    <div class="bg-gray-200 px-2 py-1">&lt&lt</div>
-    <div class="bg-gray-200 px-3 py-1" v-for="listNumber in 8">
+  <div v-if="contestsPage" class="mt-4 flex justify-center gap-2">
+    <div
+      class="bg-gray-200 px-2 py-1 cursor-pointer"
+      @click="[(currentPage = 0)]"
+    >
+      &lt&lt
+    </div>
+    <div
+      class="bg-gray-200 px-3 py-1 cursor-pointer"
+      v-for="listNumber in contestsPage?.length"
+      @click="[(currentPage = listNumber - 1)]"
+    >
       {{ listNumber }}
     </div>
-    <div class="bg-gray-200 px-2 py-1">&gt&gt</div>
+    <div
+      class="bg-gray-200 px-2 py-1 cursor-pointer"
+      @click="[(currentPage = contestsPage?.length - 1)]"
+    >
+      &gt&gt
+    </div>
   </div>
 </template>
 
 <script setup>
 import Catgory from "../../components/Catgory.vue";
-
 import { useRouter } from "vue-router";
-import { inject } from "vue";
+import { inject, ref } from "vue";
+import { onSnapshotPostsPage } from "../../firebase/post";
 
 const router = useRouter();
 
 const userProfile = inject("userProfile");
+const currentPage = ref(0);
+const contestsPage = onSnapshotPostsPage("contests");
 
 const pushUpload = async () => router.push({ path: "/contest/upload" });
 </script>

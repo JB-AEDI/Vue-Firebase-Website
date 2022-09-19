@@ -23,6 +23,12 @@ import { user } from "./user";
 // Create Post
 
 // Notice
+/*
+  title,        제목
+  description,  설명
+  name,         이름
+  admin         관리자 bool
+*/
 export const createNotice = async (title, description, name, admin) => {
   await addDoc(collection(db, "notices"), {
     title: title?.value,
@@ -36,6 +42,14 @@ export const createNotice = async (title, description, name, admin) => {
 };
 
 // Event
+/*
+  title,        제목
+  startDate,    시작날짜
+  endDate,      종료날짜
+  description,  설명
+  name,         이름
+  admin         관리자 bool
+*/
 export const createEvent = async (
   title,
   startDate,
@@ -58,6 +72,14 @@ export const createEvent = async (
 };
 
 // Graduation
+/*
+  title,        제목
+  year,         연도
+  university,   학교
+  department,   학과
+  img,          이미지
+  url           URL 사이트링크
+*/
 export const createGraduation = async (
   title,
   year,
@@ -71,6 +93,49 @@ export const createGraduation = async (
     year: year?.value,
     university: university?.value,
     department: department?.value,
+    img: img?.value,
+    url: url?.value,
+    views: 0,
+    likes: 0,
+    projects: 0,
+    timestamp: serverTimestamp(),
+  });
+};
+
+// Contest
+/*
+  title,        제목
+  host,         주최
+  supervision,  주관
+  sponsor,      후원
+  startDate,    시작날짜
+  endDate,      종료날짜
+  target,       대상
+  field,        분야
+  img,          이미지
+  url           URL 사이트링크
+*/
+export const createContest = async (
+  title,
+  host,
+  supervision,
+  sponsor,
+  startDate,
+  endDate,
+  target,
+  field,
+  img,
+  url
+) => {
+  await addDoc(collection(db, "contests"), {
+    title: title?.value,
+    host: host?.value,
+    supervision: supervision?.value,
+    sponsor: sponsor?.value,
+    startDate: startDate?.value,
+    endDate: endDate?.value,
+    target: target?.value,
+    field: field?.value,
     img: img?.value,
     url: url?.value,
     views: 0,
@@ -348,6 +413,7 @@ export const createGraduationProjectComment = async (
       rating: rating.value,
       comment: comment.value,
       name: name,
+      timestamp: serverTimestamp(),
     }
   );
 };
@@ -394,6 +460,39 @@ export const onSnapshotGraduationProjectComments = (post_id, project_id) => {
   onUnmounted(() => unsub());
 
   return comments;
+};
+
+// 졸업작품 프로젝트 댓글 - 삭제
+export const deleteGraduationProjectComments = async (
+  post_id,
+  project_id,
+  comment_uid,
+  comment_id
+) => {
+  if (comment_uid !== user?.value?.uid) return;
+  const commentsRef = collection(
+    db,
+    "graduations",
+    post_id,
+    "projects",
+    project_id,
+    "comments"
+  );
+  const q = query(commentsRef, where("uid", "==", comment_uid));
+  const querySnapshot = await getDocs(q);
+  if (querySnapshot.docs[0]?.data().uid === comment_uid) {
+    deleteDoc(
+      doc(
+        db,
+        "graduations",
+        post_id,
+        "projects",
+        project_id,
+        "comments",
+        comment_id
+      )
+    );
+  }
 };
 
 // Update Post

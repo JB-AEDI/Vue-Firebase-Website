@@ -1,8 +1,8 @@
 <template>
-  <Catgory></Catgory>
+  <!--<Catgory></Catgory>-->
 
   <div class="px-5 pt-4 pb-2 flex justify-between items-center">
-    <h3 class="ml-1 text-xl font-bold">IT/웹/모바일/게임</h3>
+    <h3 class="ml-1 text-xl font-bold"><!--IT/웹/모바일/게임--></h3>
     <button
       v-if="userProfile.admin"
       @click="pushUpload"
@@ -16,10 +16,9 @@
     <div
       class="grid grid-cols-6 bg-indigo-500 text-white text-center border-b border-white"
     >
-      <div class="col-span-3 border p-3">공모전명</div>
-      <div class="col-span-1 border-y p-3">주최사</div>
-      <div class="col-span-1 border p-3">접수기간</div>
-      <div class="col-span-1 border-y border-r p-3">진행상태</div>
+      <div class="col-span-4 border p-3">공모전명</div>
+      <div class="col-span-1 border-y border-r p-3">주최</div>
+      <div class="col-span-1 border-y border-r p-3">접수기간</div>
     </div>
 
     <div
@@ -27,26 +26,42 @@
       v-for="contest in contestsPage[currentPage]"
       class="grid grid-cols-6 bg-gray-200"
     >
-      <div class="col-span-3 border-x border-b border-white p-3">
-        공모전 {{ contest?.title }}
+      <div class="col-span-4 border-x border-b border-white p-3 pl-12">
+        <div>
+          <span class="font-bold cursor-pointer" @click="movePost(contest)">{{
+            contest?.title
+          }}</span>
+        </div>
+        <div class="flex items-center mt-1">
+          <div
+            class="inline-block border-2 border-red-400 py-0.5 px-1.5 rounded-lg text-sm"
+          >
+            <span class="text-red-400"><i class="fa-solid fa-heart"></i></span>
+            <span class="ml-1">{{ contest?.likes }}</span>
+          </div>
+          <span class="font-semibold text-gray-800 text-sm mx-2">[분야]</span>
+          <span class="text-gray-600">{{ contest?.field }}</span>
+        </div>
       </div>
-      <div class="col-span-1 border-r border-b border-white p-3 text-center">
-        주최사
+      <div
+        class="flex justify-center items-center col-span-1 border-r border-b border-white p-3"
+      >
+        {{ contest?.host }}
       </div>
-      <div class="col-span-1 border-r border-b border-white p-3 text-center">
-        접수기간
-      </div>
-      <div class="col-span-1 border-r border-b border-white p-3 text-center">
-        진행상태
+      <div
+        class="flex items-center justify-center col-span-1 border-r border-b border-white p-3 text-sm"
+      >
+        <div>
+          <div>{{ contest?.startDate }}</div>
+          <div class="text-center">~</div>
+          <div>{{ contest?.endDate }}</div>
+        </div>
       </div>
     </div>
   </div>
 
   <div v-if="contestsPage" class="mt-4 flex justify-center gap-2">
-    <div
-      class="bg-gray-200 px-2 py-1 cursor-pointer"
-      @click="[(currentPage = 0)]"
-    >
+    <div class="bg-gray-200 px-2 py-1 cursor-pointer" @click="[(currentPage = 0)]">
       &lt&lt
     </div>
     <div
@@ -78,4 +93,10 @@ const currentPage = ref(0);
 const contestsPage = onSnapshotPostsPage("contests");
 
 const pushUpload = async () => router.push({ path: "/contest/upload" });
+
+const movePost = (post) => {
+  router.push({
+    path: `/contest/info/${post.id}`,
+  });
+};
 </script>

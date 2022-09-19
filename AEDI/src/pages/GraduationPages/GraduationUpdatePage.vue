@@ -122,7 +122,9 @@ const title = ref("");
 const year = ref("");
 const university = ref("");
 const department = ref("");
-const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
+const previewImgSrc = ref(
+  "https://via.placeholder.com/384x500?text=Upload+Image"
+);
 const imgSrc = ref("");
 const url = ref("");
 

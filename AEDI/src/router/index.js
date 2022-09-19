@@ -27,12 +27,17 @@ const routes = [
     component: () => import("./../pages/ContestPages/ContestUploadPage.vue"),
   },
   {
-    path: "/contest/info",
+    path: "/contest/info/:post_id",
     name: "공모전 소개",
     component: () => import("./../pages/ContestPages/ContestInfoPage.vue"),
   },
   {
-    path: "/contest/project/upload",
+    path: "/contest/info/:post_id/update",
+    name: "공모전 업데이트",
+    component: () => import("./../pages/ContestPages/ContestUpdatePage.vue"),
+  },
+  {
+    path: "/contest/info/:post_id/project/upload",
     name: "공모전 프로젝트 업로드",
     component: () =>
       import("./../pages/ContestPages/ContestProjectUploadPage.vue"),

@@ -166,32 +166,36 @@ export const createGraduationProject = async (
   });
 };
 
-// 졸업작품 좋아요
+// 졸업작품, 공모전 좋아요
+export const pushLike = async (menu, post_id) => {
+  if (!user || !user?.value?.uid) {
+    return;
+  }
+  const likesRef = collection(db, menu, post_id, "likes");
 
-const createGraduationLike = async (post_id) => {
-  await addDoc(collection(db, "graduations", post_id, "likes"), {
-    uid: user?.value?.uid,
-  });
-};
+  const createLike = async () => {
+    await addDoc(likesRef, {
+      uid: user?.value?.uid,
+    });
+  };
 
-const deleteGraduationLike = async (post_id, like_id) => {
-  await deleteDoc(doc(db, `graduations/${post_id}/likes/${like_id}`));
-};
+  const deleteLike = async (like_id) => {
+    await deleteDoc(doc(db, `${menu}/${post_id}/likes/${like_id}`));
+  };
 
-export const pushGraduationLike = async (post_id) => {
-  const likesRef = collection(db, "graduations", post_id, "likes");
   const q = query(likesRef, where("uid", "==", user?.value?.uid));
   const querySnapshot = await getDocs(q);
+
   if (querySnapshot.docs.length === 0) {
-    createGraduationLike(post_id);
-    await updateDoc(doc(db, "graduations", post_id), {
+    createLike();
+    await updateDoc(doc(db, menu, post_id), {
       likes: increment(1),
     });
     return;
   }
   if (querySnapshot.docs[0].data().uid === user?.value?.uid) {
-    deleteGraduationLike(post_id, querySnapshot.docs[0].id);
-    await updateDoc(doc(db, "graduations", post_id), {
+    deleteLike(querySnapshot.docs[0].id);
+    await updateDoc(doc(db, menu, post_id), {
       likes: increment(-1),
     });
     return;
@@ -553,6 +557,34 @@ export const updateGraduation = async (
   });
 };
 
+// Contests
+export const updateContest = async (
+  title,
+  host,
+  supervision,
+  sponsor,
+  startDate,
+  endDate,
+  target,
+  field,
+  img,
+  url,
+  post_id
+) => {
+  await updateDoc(doc(db, "contests", post_id), {
+    title: title?.value,
+    host: host?.value,
+    supervision: supervision?.value,
+    sponsor: sponsor?.value,
+    startDate: startDate?.value,
+    endDate: endDate?.value,
+    target: target?.value,
+    field: field?.value,
+    img: img?.value,
+    url: url?.value,
+  });
+};
+
 // Views Count
 export const updateViewsCount = async (menu, post_id) => {
   await updateDoc(doc(db, menu, post_id), {
@@ -572,19 +604,16 @@ export const deletePost = async (menu, post_id) => {
 };
 
 // Loading PostList
-export const onSnapshotGraduationProjects = (post_id) => {
+export const onSnapshotProjects = (menu, post_id) => {
   const projects = ref([]);
   let unsub = () => {};
   unsub();
-  unsub = onSnapshot(
-    collection(db, "graduations", post_id, "projects"),
-    (snapshot) => {
-      projects.value = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-    }
-  );
+  unsub = onSnapshot(collection(db, menu, post_id, "projects"), (snapshot) => {
+    projects.value = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  });
   onUnmounted(() => unsub());
 
   return projects;
@@ -623,7 +652,7 @@ export const onSnapshotPostsPage = (menu) => {
   return postsPage;
 };
 
-// 일반 게시물 데이터(공지사항, 이벤트) - 스냅샷
+// 일반 게시물 데이터(공지사항, 이벤트, 졸업작품소개, 공모전소개) - 스냅샷
 export const onSnapshotPost = (menu, post_id) => {
   const post = ref();
   let unsub = () => {};
@@ -734,4 +763,39 @@ export const getPostUrl = async (menu, id) => {
   const docSnap = await getDoc(docRef);
 
   return docSnap.data().url;
+};
+
+export const getHost = async (menu, id) => {
+  const docRef = doc(db, menu, id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().host;
+};
+
+export const getSupervision = async (menu, id) => {
+  const docRef = doc(db, menu, id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().supervision;
+};
+
+export const getSponsor = async (menu, id) => {
+  const docRef = doc(db, menu, id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().sponsor;
+};
+
+export const getTarget = async (menu, id) => {
+  const docRef = doc(db, menu, id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().target;
+};
+
+export const getField = async (menu, id) => {
+  const docRef = doc(db, menu, id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().field;
 };

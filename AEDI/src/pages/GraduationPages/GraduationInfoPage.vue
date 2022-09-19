@@ -1,32 +1,32 @@
 <template>
   <div class="flex px-5">
     <div class="w-64 h-96 bg-gray-200 flex justify-center items-center">
-      <img :src="postSnapshot?.value?.img" alt="poster" class="w-full" />
+      <img :src="postData?.img" alt="poster" class="w-full" />
     </div>
     <div class="pl-6 w-4/5">
       <div class="h-5/6">
         <div class="border-b border-gray-300 pb-2">
           <span class="text-red-400 mr-1.5"><i class="fa-solid fa-heart"></i></span>
-          <span class="mr-4">{{ postSnapshot?.value?.likes }}</span>
+          <span class="mr-4">{{ postData?.likes }}</span>
           <span>프로젝트 수 - </span>
-          <span>{{ postSnapshot?.value?.projects }}</span>
+          <span>{{ postData?.projects }}</span>
         </div>
         <div class="border-b border-gray-300 py-2">
           <h1 class="text-xl font-bold mb-3">
-            {{ postSnapshot?.value?.title }}
+            {{ postData?.title }}
           </h1>
           <div class="flex flex-col gap-1">
             <div>
               <span class="text-gray-400 inline-block w-24">학교</span>
-              <span>{{ postSnapshot?.value?.university }}</span>
+              <span>{{ postData?.university }}</span>
             </div>
             <div>
               <span class="text-gray-400 inline-block w-24">학과</span>
-              <span>{{ postSnapshot?.value?.department }}</span>
+              <span>{{ postData?.department }}</span>
             </div>
             <div>
               <span class="text-gray-400 inline-block w-24">연도</span>
-              <span>{{ postSnapshot?.value?.year }}</span>
+              <span>{{ postData?.year }}</span>
             </div>
           </div>
         </div>
@@ -34,27 +34,23 @@
           <div class="flex flex-col gap-1">
             <div class="flex">
               <span class="text-gray-400 inline-block w-24">게시일</span>
-              <div v-if="postSnapshot?.value?.timestamp">
-                <span>{{ postSnapshot?.value?.timestamp.toDate().getFullYear() }}</span>
+              <div v-if="postData?.timestamp">
+                <span>{{ postData?.timestamp.toDate().getFullYear() }}</span>
                 <span>-</span>
-                <span v-if="postSnapshot?.value?.timestamp.toDate().getMonth() < 9"
-                  >0{{ postSnapshot?.value?.timestamp.toDate().getMonth() + 1 }}</span
+                <span v-if="postData?.timestamp.toDate().getMonth() < 9"
+                  >0{{ postData?.timestamp.toDate().getMonth() + 1 }}</span
                 >
-                <span v-else>{{
-                  postSnapshot?.value?.timestamp.toDate().getMonth() + 1
-                }}</span>
+                <span v-else>{{ postData?.timestamp.toDate().getMonth() + 1 }}</span>
                 <span>-</span>
-                <span v-if="postSnapshot?.value?.timestamp.toDate().getDate() < 10"
-                  >0{{ postSnapshot?.value?.timestamp.toDate().getDate() }}</span
+                <span v-if="postData?.timestamp.toDate().getDate() < 10"
+                  >0{{ postData?.timestamp.toDate().getDate() }}</span
                 >
-                <span v-else>{{
-                  postSnapshot?.value?.timestamp.toDate().getDate()
-                }}</span>
+                <span v-else>{{ postData?.timestamp.toDate().getDate() }}</span>
               </div>
             </div>
             <div>
               <span class="text-gray-400 inline-block w-24">조회수</span>
-              <span>{{ postSnapshot?.value?.views }}</span>
+              <span>{{ postData?.views }}</span>
             </div>
           </div>
         </div>
@@ -65,14 +61,14 @@
           <div>
             <button
               class="ml-3 p-3 bg-yellow-300 rounded-md"
-              @click="openUrl(postSnapshot?.value?.url)"
+              @click="openUrl(postData?.url)"
             >
               <span class="font-bold">졸업작품 발표회 바로가기</span>
               <span class="ml-3"><i class="fa-solid fa-chevron-right"></i></span>
             </button>
             <button
               class="ml-12 p-2 border-4 border-red-400 rounded-md box-content"
-              @click="pushGraduationLike(postId)"
+              @click="pushLike('graduations', postId)"
             >
               <span class="text-red-400"><i class="fa-solid fa-heart"></i></span>
               <span class="font-bold ml-2">좋아요</span>
@@ -99,6 +95,7 @@
       </div>
     </div>
   </div>
+
   <div class="px-5 mt-24 mb-10">
     <div class="flex justify-between items-center pb-3 border-b border-gray-400">
       <span class="font-bold text-xl">프로젝트</span>
@@ -115,7 +112,7 @@
 </template>
 
 <script setup>
-import { ref, inject, onMounted } from "vue";
+import { inject, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useRouteParams } from "@vueuse/router";
 import { user } from "../../firebase/user";
@@ -123,8 +120,8 @@ import {
   deletePost,
   onSnapshotPost,
   updateViewsCount,
-  pushGraduationLike,
-  onSnapshotGraduationProjects,
+  pushLike,
+  onSnapshotProjects,
 } from "../../firebase/post";
 import ProjectList from "../../components/ProjectList.vue";
 
@@ -132,10 +129,8 @@ const router = useRouter();
 
 const userProfile = inject("userProfile");
 const postId = useRouteParams("post_id").value;
-const postSnapshot = ref();
-const projects = onSnapshotGraduationProjects(postId);
-
-postSnapshot.value = onSnapshotPost("graduations", postId);
+const postData = onSnapshotPost("graduations", postId);
+const projects = onSnapshotProjects("grduations", postId);
 
 onMounted(() => {
   updateViewsCount("graduations", postId);

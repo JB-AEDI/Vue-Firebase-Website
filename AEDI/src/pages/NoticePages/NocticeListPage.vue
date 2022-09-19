@@ -20,7 +20,10 @@
       <div class="col-span-2 border-y border-r p-3">작성자</div>
     </div>
 
-    <div v-for="notice in noticesPage[currentPage]" class="grid grid-cols-12 bg-gray-200">
+    <div
+      v-for="notice in noticesPage[currentPage]"
+      class="grid grid-cols-12 bg-gray-200"
+    >
       <div class="col-span-5 border-r border-b border-white p-3">
         <span class="cursor-pointer" @click="movePost(notice)">
           {{ notice?.title }}
@@ -50,7 +53,10 @@
   </div>
 
   <div v-if="noticesPage" class="mt-4 flex justify-center gap-2">
-    <div class="bg-gray-200 px-2 py-1 cursor-pointer" @click="[(currentPage = 0)]">
+    <div
+      class="bg-gray-200 px-2 py-1 cursor-pointer"
+      @click="[(currentPage = 0)]"
+    >
       &lt&lt
     </div>
     <div

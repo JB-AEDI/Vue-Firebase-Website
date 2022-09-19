@@ -12,12 +12,7 @@
     <div class="ml-10">{{ comment }}</div>
     <button
       v-if="commentUid === user?.uid"
-      @click="
-        [
-          deleteGraduationProjectComments(postId, projectId, commentUid, commentId),
-          refresh(0),
-        ]
-      "
+      @click="[deleteComment()]"
       class="ml-auto py-1 px-2 bg-indigo-500 text-white rounded-md"
     >
       <span><i class="fa-solid fa-trash-can"></i></span>
@@ -30,7 +25,7 @@
 import StarRating from "vue-star-rating";
 import { user } from "../firebase/user";
 import { useRouteParams } from "@vueuse/router";
-import { deleteGraduationProjectComments } from "../firebase/post";
+import { deleteProjectComment } from "../firebase/post";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -41,11 +36,19 @@ const props = defineProps({
   name: String,
   commentUid: String,
   commentId: String,
+  menu: String,
 });
 const postId = useRouteParams("post_id").value;
 const projectId = useRouteParams("project_id").value;
 
-const refresh = () => {
+const deleteComment = async () => {
+  await deleteProjectComment(
+    props.menu,
+    postId,
+    projectId,
+    props.commentUid,
+    props.commentId
+  );
   router.go(0);
 };
 </script>

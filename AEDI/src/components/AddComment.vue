@@ -40,7 +40,7 @@
 import StarRating from "vue-star-rating";
 import { ref, inject } from "vue";
 import { useRouteParams } from "@vueuse/router";
-import { createGraduationProjectComment } from "../firebase/post";
+import { createProjectComment } from "../firebase/post";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -52,8 +52,13 @@ const comment = ref("");
 const postId = useRouteParams("post_id").value;
 const projectId = useRouteParams("project_id").value;
 
+const props = defineProps({
+  menu: String,
+});
+
 const submitComment = async () => {
-  await createGraduationProjectComment(
+  await createProjectComment(
+    props.menu,
     postId,
     projectId,
     rating,

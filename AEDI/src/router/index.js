@@ -43,7 +43,7 @@ const routes = [
       import("./../pages/ContestPages/ContestProjectUploadPage.vue"),
   },
   {
-    path: "/contest/project",
+    path: "/contest/:post_id/project/:project_id",
     name: "공모전 프로젝트",
     component: () => import("./../pages/ContestPages/ContestProjectPage.vue"),
   },

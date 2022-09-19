@@ -57,7 +57,7 @@
         <div class="flex justify-between mt-10">
           <button
             class="p-2 border-4 border-red-400 rounded-md box-content"
-            @click="pushGraduationProjectLike(postId, projectId)"
+            @click="pushProjectLike('graduations', postId, projectId)"
           >
             <span class="text-red-400"><i class="fa-solid fa-heart"></i></span>
             <span class="font-bold ml-2">좋아요</span>
@@ -110,7 +110,7 @@
         <button
           class="bg-indigo-500 py-2 px-3 rounded-md text-white text-lg float-right"
           @click="
-            [deleteMyGraduationProjectReview(postId, projectId), (isReview = false)]
+            [deleteMyProjectReview('graduations', postId, projectId), (isReview = false)]
           "
         >
           <span><i class="fa-solid fa-trash-can"></i></span>
@@ -125,7 +125,8 @@
             <form
               @submit.prevent="
                 [
-                  createGraduationProjectReview(
+                  createProjectReview(
+                    'graduations',
                     postId,
                     projectId,
                     perfection,
@@ -163,7 +164,7 @@
     </Teleport>
 
     <h2 class="mt-16 mb-5 text-2xl font-bold pb-2 border-b border-gray-400">댓글</h2>
-    <AddComment v-if="!isComment"></AddComment>
+    <AddComment v-if="!isComment" :menu="menu"></AddComment>
     <Comment
       v-if="commentsData"
       v-for="commentData in commentsData"
@@ -172,6 +173,7 @@
       :name="commentData?.name"
       :comment-uid="commentData?.uid"
       :comment-id="commentData?.id"
+      :menu="menu"
       class="mb-4 pb-4 border-b border-gray-300"
     ></Comment>
   </div>
@@ -184,15 +186,15 @@ import { useRouteParams } from "@vueuse/router";
 import {
   getTitle,
   onSnapshotProject,
-  pushGraduationProjectLike,
+  pushProjectLike,
   updateViewsProjectCount,
-  createGraduationProjectReview,
-  checkGraduationProjectReview,
-  getMyGraduationProjectReview,
-  deleteMyGraduationProjectReview,
-  onSnapshotGraduationProjectReviews,
-  checkGraduationProjectComments,
-  onSnapshotGraduationProjectComments,
+  createProjectReview,
+  checkProjectReview,
+  getMyProjectReview,
+  deleteMyProjectReview,
+  onSnapshotProjectReviews,
+  checkProjectComments,
+  onSnapshotProjectComments,
 } from "../../firebase/post";
 import { user } from "../../firebase/user";
 import TuiViewer from "../../components/editor/TuiViewer.vue";
@@ -205,6 +207,7 @@ const postId = useRouteParams("post_id").value;
 const projectId = useRouteParams("project_id").value;
 const graduationTitle = ref("");
 const projectData = onSnapshotProject("graduations", postId, projectId);
+const menu = ref("graduations");
 
 const props = defineProps({
   perfectionSum: Number,
@@ -217,6 +220,7 @@ const props = defineProps({
   name: String,
   commentUid: String,
   commentId: String,
+  menu: String,
 });
 
 const {
@@ -225,7 +229,7 @@ const {
   technicalitySum,
   businessSum,
   designSum,
-} = onSnapshotGraduationProjectReviews(postId, projectId);
+} = onSnapshotProjectReviews("graduations", postId, projectId);
 
 const isModalOpen = ref(false);
 const modal = ref(null);
@@ -260,17 +264,17 @@ const getDesign = (payload) => {
 const myReviewData = ref();
 
 const checkReview = async () => {
-  isReview.value = await checkGraduationProjectReview(postId, projectId);
+  isReview.value = await checkProjectReview("graduations", postId, projectId);
 };
 const getReview = async () => {
-  myReviewData.value = await getMyGraduationProjectReview(postId, projectId);
+  myReviewData.value = await getMyProjectReview("graduations", postId, projectId);
 };
 
 const checkComment = async () => {
-  isComment.value = await checkGraduationProjectComments(postId, projectId);
+  isComment.value = await checkProjectComments("graduations", postId, projectId);
 };
 
-const commentsData = onSnapshotGraduationProjectComments(postId, projectId);
+const commentsData = onSnapshotProjectComments("graduations", postId, projectId);
 
 onMounted(async () => {
   graduationTitle.value = await getTitle("graduations", postId);

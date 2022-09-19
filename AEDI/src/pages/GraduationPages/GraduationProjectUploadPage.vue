@@ -44,7 +44,7 @@
 import { ref, inject } from "vue";
 
 import TuiEditor from "../../components/editor/TuiEditor.vue";
-import { createGraduationProject } from "../../firebase/post";
+import { createProject } from "../../firebase/post";
 import { uploadFile, getUrl } from "../../firebase/firestore";
 import { useRouter } from "vue-router";
 import { useRouteParams } from "@vueuse/router";
@@ -79,7 +79,7 @@ const upload = async () => {
     await uploadFile(formFilePath, formFile);
     imgSrc.value = await getUrl(formFilePath);
   }
-  createGraduationProject(title, userProfile?.value?.name, content, imgSrc, postId);
+  createProject("graduations", postId, title, userProfile?.value?.name, content, imgSrc);
 };
 
 const movePost = () => {

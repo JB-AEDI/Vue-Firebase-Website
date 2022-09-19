@@ -107,12 +107,12 @@
         업로드
       </button>
     </div>
-    <ProjectList :projects="projects"></ProjectList>
+    <ProjectList :projects="projects" :menu="menu"></ProjectList>
   </div>
 </template>
 
 <script setup>
-import { inject, onMounted } from "vue";
+import { inject, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useRouteParams } from "@vueuse/router";
 import { user } from "../../firebase/user";
@@ -130,7 +130,12 @@ const router = useRouter();
 const userProfile = inject("userProfile");
 const postId = useRouteParams("post_id").value;
 const postData = onSnapshotPost("graduations", postId);
-const projects = onSnapshotProjects("grduations", postId);
+const projects = onSnapshotProjects("graduations", postId);
+const menu = ref("graduation");
+
+const props = defineProps({
+  menu: String,
+});
 
 onMounted(() => {
   updateViewsCount("graduations", postId);

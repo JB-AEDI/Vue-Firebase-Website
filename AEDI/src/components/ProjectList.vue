@@ -13,7 +13,7 @@
         <div class="px-2">
           <span
             class="font-bold text-lg mt-1 cursor-pointer"
-            @click="moveProject(project.id)"
+            @click="moveProject(menu, project.id)"
             >{{ project.title }}</span
           >
           <div class="truncate h-20 text-xs">
@@ -42,14 +42,15 @@ import { useRouteParams } from "@vueuse/router";
 
 defineProps({
   projects: Array,
+  menu: String,
 });
 
 const router = useRouter();
 const postId = useRouteParams("post_id").value;
 
-const moveProject = (project_id) => {
+const moveProject = (menu, project_id) => {
   router.push({
-    path: `/graduation/${postId}/project/${project_id}`,
+    path: `/${menu}/${postId}/project/${project_id}`,
   });
 };
 </script>

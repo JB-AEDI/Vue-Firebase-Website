@@ -143,14 +143,15 @@ export const createContest = async (
 };
 
 // Graduation Project
-export const createGraduationProject = async (
+export const createProject = async (
+  menu,
+  post_id,
   title,
   name,
   description,
-  img,
-  post_id
+  img
 ) => {
-  await addDoc(collection(db, "graduations", post_id, "projects"), {
+  await addDoc(collection(db, menu, post_id, "projects"), {
     title: title?.value,
     name: name,
     description: description?.value,
@@ -161,7 +162,7 @@ export const createGraduationProject = async (
     projects: 0,
     timestamp: serverTimestamp(),
   });
-  await updateDoc(doc(db, "graduations", post_id), {
+  await updateDoc(doc(db, menu, post_id), {
     projects: increment(1),
   });
 };
@@ -203,45 +204,44 @@ export const pushLike = async (menu, post_id) => {
 };
 
 // 졸업작품 프로젝트 좋아요
-const createGraduationProjectLike = async (post_id, project_id) => {
-  await addDoc(
-    collection(db, "graduations", post_id, "projects", project_id, "likes"),
-    {
-      uid: user?.value?.uid,
-    }
-  );
-};
 
-const deleteGraduationProjectLike = async (post_id, project_id, like_id) => {
-  await deleteDoc(
-    doc(db, `graduations/${post_id}/projects/${project_id}/likes/${like_id}`)
-  );
-};
-
-export const pushGraduationProjectLike = async (post_id, project_id) => {
+export const pushProjectLike = async (menu, post_id, project_id) => {
   if (!user || !user?.value?.uid) {
     return;
   }
   const likesRef = collection(
     db,
-    "graduations",
+    menu,
     post_id,
     "projects",
     project_id,
     "likes"
   );
+
+  const createProjectLike = async () => {
+    await addDoc(likesRef, {
+      uid: user?.value?.uid,
+    });
+  };
+
+  const deleteProjectLike = async (like_id) => {
+    await deleteDoc(
+      doc(db, `${menu}/${post_id}/projects/${project_id}/likes/${like_id}`)
+    );
+  };
+
   const q = query(likesRef, where("uid", "==", user?.value?.uid));
   const querySnapshot = await getDocs(q);
   if (querySnapshot.docs.length === 0) {
-    createGraduationProjectLike(post_id, project_id);
-    await updateDoc(doc(db, "graduations", post_id, "projects", project_id), {
+    createProjectLike();
+    await updateDoc(doc(db, menu, post_id, "projects", project_id), {
       likes: increment(1),
     });
     return;
   }
   if (querySnapshot.docs[0].data().uid === user?.value?.uid) {
-    deleteGraduationProjectLike(post_id, project_id, querySnapshot.docs[0].id);
-    await updateDoc(doc(db, "graduations", post_id, "projects", project_id), {
+    deleteProjectLike(querySnapshot.docs[0].id);
+    await updateDoc(doc(db, menu, post_id, "projects", project_id), {
       likes: increment(-1),
     });
     return;
@@ -249,7 +249,8 @@ export const pushGraduationProjectLike = async (post_id, project_id) => {
 };
 
 // 졸업작품 프로젝트 평가 추가
-export const createGraduationProjectReview = async (
+export const createProjectReview = async (
+  menu,
   post_id,
   project_id,
   perfection,
@@ -259,7 +260,7 @@ export const createGraduationProjectReview = async (
   design
 ) => {
   await addDoc(
-    collection(db, "graduations", post_id, "projects", project_id, "reviews"),
+    collection(db, menu, post_id, "projects", project_id, "reviews"),
     {
       uid: user?.value?.uid,
       perfection: perfection,
@@ -272,10 +273,10 @@ export const createGraduationProjectReview = async (
 };
 
 // 졸업작품 프로젝트 평가 - 유무확인
-export const checkGraduationProjectReview = async (post_id, project_id) => {
+export const checkProjectReview = async (menu, post_id, project_id) => {
   const reviewRef = collection(
     db,
-    "graduations",
+    menu,
     post_id,
     "projects",
     project_id,
@@ -291,10 +292,10 @@ export const checkGraduationProjectReview = async (post_id, project_id) => {
 };
 
 // 내가 작성한 졸업작품 프로젝트 평가 - 가져오기
-export const getMyGraduationProjectReview = async (post_id, project_id) => {
+export const getMyProjectReview = async (menu, post_id, project_id) => {
   const reviewRef = collection(
     db,
-    "graduations",
+    menu,
     post_id,
     "projects",
     project_id,
@@ -308,10 +309,10 @@ export const getMyGraduationProjectReview = async (post_id, project_id) => {
 };
 
 // 내가 작성한 졸업작품 프로젝트 평가 - 삭제
-export const deleteMyGraduationProjectReview = async (post_id, project_id) => {
+export const deleteMyProjectReview = async (menu, post_id, project_id) => {
   const reviewRef = collection(
     db,
-    "graduations",
+    menu,
     post_id,
     "projects",
     project_id,
@@ -323,7 +324,7 @@ export const deleteMyGraduationProjectReview = async (post_id, project_id) => {
     await deleteDoc(
       doc(
         db,
-        "graduations",
+        menu,
         post_id,
         "projects",
         project_id,
@@ -335,7 +336,7 @@ export const deleteMyGraduationProjectReview = async (post_id, project_id) => {
 };
 
 // 졸업작품 프로젝트 평가 - 실시간 가져오기
-export const onSnapshotGraduationProjectReviews = (post_id, project_id) => {
+export const onSnapshotProjectReviews = (menu, post_id, project_id) => {
   const perfectionSum = ref(0);
   const creativitySum = ref(0);
   const technicalitySum = ref(0);
@@ -345,7 +346,7 @@ export const onSnapshotGraduationProjectReviews = (post_id, project_id) => {
   let unsub = () => {};
   unsub();
   unsub = onSnapshot(
-    collection(db, "graduations", post_id, "projects", project_id, "reviews"),
+    collection(db, menu, post_id, "projects", project_id, "reviews"),
     (snapshot) => {
       // perfection
       const perfectionArray = [];
@@ -401,7 +402,8 @@ export const onSnapshotGraduationProjectReviews = (post_id, project_id) => {
 };
 
 // 졸업작품 프로젝트 댓글 - 추가
-export const createGraduationProjectComment = async (
+export const createProjectComment = async (
+  menu,
   post_id,
   project_id,
   rating,
@@ -409,7 +411,7 @@ export const createGraduationProjectComment = async (
   name
 ) => {
   await addDoc(
-    collection(db, "graduations", post_id, "projects", project_id, "comments"),
+    collection(db, menu, post_id, "projects", project_id, "comments"),
     {
       uid: user?.value?.uid,
       rating: rating.value,
@@ -421,10 +423,10 @@ export const createGraduationProjectComment = async (
 };
 
 // 졸업작품 프로젝트 댓글 - 유무확인
-export const checkGraduationProjectComments = async (post_id, project_id) => {
+export const checkProjectComments = async (menu, post_id, project_id) => {
   const commentsRef = collection(
     db,
-    "graduations",
+    menu,
     post_id,
     "projects",
     project_id,
@@ -440,13 +442,13 @@ export const checkGraduationProjectComments = async (post_id, project_id) => {
 };
 
 // 졸업작품 프로젝트 댓글 - 가져오기
-export const onSnapshotGraduationProjectComments = (post_id, project_id) => {
+export const onSnapshotProjectComments = (menu, post_id, project_id) => {
   const comments = ref([]);
   let unsub = () => {};
   unsub();
   const commentsRef = collection(
     db,
-    "graduations",
+    menu,
     post_id,
     "projects",
     project_id,
@@ -465,16 +467,18 @@ export const onSnapshotGraduationProjectComments = (post_id, project_id) => {
 };
 
 // 졸업작품 프로젝트 댓글 - 삭제
-export const deleteGraduationProjectComments = async (
+export const deleteProjectComment = async (
+  menu,
   post_id,
   project_id,
   comment_uid,
   comment_id
 ) => {
-  if (comment_uid !== user?.value?.uid) return;
+  // if (comment_uid !== user?.value?.uid) return;
+  console.log(menu);
   const commentsRef = collection(
     db,
-    "graduations",
+    menu,
     post_id,
     "projects",
     project_id,
@@ -484,15 +488,7 @@ export const deleteGraduationProjectComments = async (
   const querySnapshot = await getDocs(q);
   if (querySnapshot.docs[0]?.data().uid === comment_uid) {
     deleteDoc(
-      doc(
-        db,
-        "graduations",
-        post_id,
-        "projects",
-        project_id,
-        "comments",
-        comment_id
-      )
+      doc(db, menu, post_id, "projects", project_id, "comments", comment_id)
     );
   }
 };

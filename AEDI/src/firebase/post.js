@@ -5,11 +5,8 @@ import {
   doc,
   query,
   orderBy,
-  limit,
-  startAfter,
   getDoc,
   getDocs,
-  endBefore,
   updateDoc,
   increment,
   deleteDoc,
@@ -145,6 +142,7 @@ export const createContest = async (
   });
 };
 
+// Graduation Project
 export const createGraduationProject = async (
   title,
   name,

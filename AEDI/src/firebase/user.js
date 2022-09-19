@@ -8,7 +8,6 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { createGlobalState } from "@vueuse/core";
 
 export const user = ref(null);
 

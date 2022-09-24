@@ -15,19 +15,7 @@
         v-model="title"
       />
     </div>
-    <div class="mb-3">
-      <label
-        for="formFile"
-        class="form-label inline-block mb-1 text-lg font-bold text-gray-900 dark:text-gray-300"
-        >첨부파일</label
-      >
-      <input
-        class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-        type="file"
-        id="formFile"
-        @change="handleFileChange"
-      />
-    </div>
+
     <div class="flex gap-12 mb-5">
       <div>
         <label
@@ -69,11 +57,22 @@
     >
       <font-awesome-icon icon="fa-solid fa-upload" class="mr-2" />업로드
     </button>
+
+    <Teleport to="#modal">
+      <div class="modal-bg" v-if="loading">
+        <font-awesome-icon
+          icon="fa-solid fa-spinner"
+          size="5x"
+          spin-pulse
+          class="text-white"
+        />
+      </div>
+    </Teleport>
   </form>
 </template>
 
 <script setup>
-import { ref, inject, onMounted } from "vue";
+import { ref, inject, onBeforeMount } from "vue";
 import {
   updateEvent,
   getTitle,
@@ -95,23 +94,19 @@ const startDate = ref();
 const endDate = ref();
 const content = ref();
 
-onMounted(async () => {
+const loading = ref(false);
+
+onBeforeMount(async () => {
   title.value = await getTitle("events", postId);
   content.value = await getContent("events", postId);
   startDate.value = await getStartDate("events", postId);
   endDate.value = await getEndDate("events", postId);
 });
 
-let formFile = null;
-let formFilePath = null;
+const upload = async () => {
+  loading.value = true;
 
-const handleFileChange = (e) => {
-  formFile = e.target.files[0];
-  formFilePath = "file/" + formFile.name;
-};
-
-const upload = () => {
-  updateEvent(
+  await updateEvent(
     title,
     startDate,
     endDate,
@@ -120,9 +115,7 @@ const upload = () => {
     userProfile?.value?.admin,
     postId
   );
-  if (formFile !== null && formFilePath !== null) {
-    uploadFile(formFilePath, formFile);
-  }
+  loading.value = false;
   router.go(-1);
 };
 
@@ -134,3 +127,21 @@ const addImage = async (file, callback) => {
   callback(image);
 };
 </script>
+<style>
+.modal-bg {
+  /* always fix our modal to the viewport */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  /* Darken the Screen */
+  background-color: rgba(0, 0, 0, 0.5);
+
+  /* Center the modal itself */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>

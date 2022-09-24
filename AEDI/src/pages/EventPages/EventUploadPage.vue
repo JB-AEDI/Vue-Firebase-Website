@@ -1,5 +1,5 @@
 <template>
-  <form class="px-5" @submit.prevent="[upload(), movePost()]">
+  <form class="px-5" @submit.prevent="upload">
     <div>
       <label
         for="title"
@@ -15,19 +15,7 @@
         v-model="title"
       />
     </div>
-    <div class="mb-3">
-      <label
-        for="formFile"
-        class="form-label inline-block mb-1 text-lg font-bold text-gray-900 dark:text-gray-300"
-        >첨부파일</label
-      >
-      <input
-        class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-        type="file"
-        id="formFile"
-        @change="handleFileChange"
-      />
-    </div>
+
     <div class="flex gap-12 mb-5">
       <div>
         <label
@@ -69,6 +57,17 @@
     >
       <font-awesome-icon icon="fa-solid fa-upload" class="mr-2" />업로드
     </button>
+
+    <Teleport to="#modal">
+      <div class="modal-bg" v-if="loading">
+        <font-awesome-icon
+          icon="fa-solid fa-spinner"
+          size="5x"
+          spin-pulse
+          class="text-white"
+        />
+      </div>
+    </Teleport>
   </form>
 </template>
 
@@ -86,18 +85,15 @@ const startDate = ref();
 const endDate = ref();
 const title = ref();
 const content = ref();
-let formFile = null;
-let formFilePath = null;
+
+const loading = ref(false);
 
 const userProfile = inject("userProfile");
 
-const handleFileChange = (e) => {
-  formFile = e.target.files[0];
-  formFilePath = "file/" + formFile.name;
-};
+const upload = async () => {
+  loading.value = true;
 
-const upload = () => {
-  createEvent(
+  await createEvent(
     title,
     startDate,
     endDate,
@@ -105,9 +101,10 @@ const upload = () => {
     userProfile?.value?.name,
     userProfile?.value?.admin
   );
-  if (formFile !== null && formFilePath !== null) {
-    uploadFile(formFilePath, formFile);
-  }
+  loading.value = false;
+  router.push({
+    path: `/event/page`,
+  });
 };
 
 const addImage = async (file, callback) => {
@@ -117,10 +114,22 @@ const addImage = async (file, callback) => {
 
   callback(image);
 };
-
-const movePost = () => {
-  router.push({
-    path: `/event/page`,
-  });
-};
 </script>
+<style>
+.modal-bg {
+  /* always fix our modal to the viewport */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  /* Darken the Screen */
+  background-color: rgba(0, 0, 0, 0.5);
+
+  /* Center the modal itself */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>

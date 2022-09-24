@@ -167,11 +167,21 @@
     >
       <font-awesome-icon icon="fa-solid fa-upload" class="mr-2" />업로드
     </button>
+    <Teleport to="#modal">
+      <div class="modal-bg" v-if="loading">
+        <font-awesome-icon
+          icon="fa-solid fa-spinner"
+          size="5x"
+          spin-pulse
+          class="text-white"
+        />
+      </div>
+    </Teleport>
   </form>
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import {
   updateContest,
   getEndDate,
@@ -201,10 +211,14 @@ const endDate = ref("");
 const target = ref("");
 const field = ref("");
 const url = ref("");
-const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
+const previewImgSrc = ref(
+  "https://via.placeholder.com/384x500?text=Upload+Image"
+);
 const imgSrc = ref("");
 
-onMounted(async () => {
+const loading = ref(false);
+
+onBeforeMount(async () => {
   title.value = await getTitle("contests", postId);
   host.value = await getHost("contests", postId);
   supervision.value = await getSupervision("contests", postId);
@@ -234,11 +248,12 @@ const handleFileChange = (input) => {
 };
 
 const upload = async () => {
+  loading.value = true;
   if (formFile !== null && formFilePath !== null) {
     await uploadFile(formFilePath, formFile);
     imgSrc.value = await getUrl(formFilePath);
   }
-  updateContest(
+  await updateContest(
     title,
     host,
     supervision,
@@ -251,6 +266,25 @@ const upload = async () => {
     url,
     postId
   );
+  loading.value = false;
   router.go(-1);
 };
 </script>
+<style>
+.modal-bg {
+  /* always fix our modal to the viewport */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  /* Darken the Screen */
+  background-color: rgba(0, 0, 0, 0.5);
+
+  /* Center the modal itself */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>

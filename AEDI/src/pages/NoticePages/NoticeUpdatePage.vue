@@ -15,19 +15,6 @@
         v-model="title"
       />
     </div>
-    <div class="mb-3">
-      <label
-        for="formFile"
-        class="form-label inline-block mb-2 text-lg font-bold text-gray-900 dark:text-gray-300"
-        >첨부파일</label
-      >
-      <input
-        class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-        type="file"
-        id="formFile"
-        @change="handleFileChange"
-      />
-    </div>
 
     <TuiEditor v-if="content" v-model="content" @add-image="addImage"></TuiEditor>
 
@@ -37,12 +24,23 @@
     >
       <font-awesome-icon icon="fa-solid fa-upload" class="mr-2" />업로드
     </button>
+
+    <Teleport to="#modal">
+      <div class="modal-bg" v-if="loading">
+        <font-awesome-icon
+          icon="fa-solid fa-spinner"
+          size="5x"
+          spin-pulse
+          class="text-white"
+        />
+      </div>
+    </Teleport>
   </form>
 </template>
 
 <script setup>
 import { useRouteParams } from "@vueuse/router";
-import { ref, inject, onMounted } from "vue";
+import { ref, inject, onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
 
 import TuiEditor from "../../components/editor/TuiEditor.vue";
@@ -56,30 +54,23 @@ const userProfile = inject("userProfile");
 const content = ref("");
 const title = ref("");
 
-onMounted(async () => {
+const loading = ref(false);
+
+onBeforeMount(async () => {
   title.value = await getTitle("notices", postId);
   content.value = await getContent("notices", postId);
 });
 
-let formFile = null;
-let formFilePath = null;
-
-const handleFileChange = (e) => {
-  formFile = e.target.files[0];
-  formFilePath = "file/" + formFile.name;
-};
-
-const upload = () => {
-  updateNotice(
+const upload = async () => {
+  loading.value = true;
+  await updateNotice(
     title,
     content,
     userProfile?.value?.name,
     userProfile?.value?.admin,
     postId
   );
-  if (formFile !== null && formFilePath !== null) {
-    uploadFile(formFilePath, formFile);
-  }
+  loading.value = false;
   router.go(-1);
 };
 

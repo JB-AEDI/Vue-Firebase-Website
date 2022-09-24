@@ -54,6 +54,21 @@
           <div class="col-span-2 font-bold">조회수</div>
           <div class="col-span-10">{{ projectData?.views }}</div>
         </div>
+
+        <div class="grid grid-cols-12">
+          <div class="col-span-2 font-bold">첨부파일</div>
+          <div class="col-span-10">
+            <a
+              v-for="(name, i) in projectData?.filesName"
+              :key="i"
+              :href="projectData?.filesUrl[i]"
+              target="_blank"
+              class="mr-4 text-blue-600 underline"
+              >{{ name }}</a
+            >
+          </div>
+        </div>
+
         <div class="flex justify-between mt-10">
           <button
             class="p-2 border-4 border-red-400 rounded-md box-content"
@@ -66,12 +81,23 @@
             <span class="ml-2 mr-1">{{ projectData?.likes }}</span>
           </button>
 
-          <button
-            v-if="projectData?.uid === user?.uid"
-            class="bg-indigo-500 py-2 px-3 rounded-md text-white"
-          >
-            <font-awesome-icon icon="fa-solid fa-upload" class="mr-2" />수정
-          </button>
+          <div>
+            <button
+              v-if="projectData?.uid === user?.uid"
+              class="bg-indigo-500 py-2 px-3 rounded-md text-white"
+              @click="updateProject"
+            >
+              <font-awesome-icon icon="fa-solid fa-upload" class="mr-2" />수정
+            </button>
+
+            <button
+              v-if="projectData?.uid === user?.uid"
+              class="bg-indigo-500 py-2 px-3 rounded-md text-white ml-4"
+              @click="deleteBtn"
+            >
+              <font-awesome-icon icon="fa-solid fa-trash" class="mr-2" />삭제
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -182,7 +208,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { useRouteParams } from "@vueuse/router";
 import {
@@ -197,6 +223,7 @@ import {
   onSnapshotProjectReviews,
   checkProjectComments,
   onSnapshotProjectComments,
+  deleteProject,
 } from "../../firebase/post";
 import { user } from "../../firebase/user";
 import TuiViewer from "../../components/editor/TuiViewer.vue";
@@ -204,6 +231,9 @@ import Chart from "../../components/Chart.vue";
 import AddComment from "../../components/AddComment.vue";
 import Comment from "../../components/Comment.vue";
 import Review from "../../components/Review.vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const postId = useRouteParams("post_id").value;
 const projectId = useRouteParams("project_id").value;
@@ -278,13 +308,26 @@ const checkComment = async () => {
 
 const commentsData = onSnapshotProjectComments("contests", postId, projectId);
 
-onMounted(async () => {
+onBeforeMount(async () => {
   contestTitle.value = await getTitle("contests", postId);
   checkReview();
   getReview();
   checkComment();
   updateViewsProjectCount("contests", postId, projectId);
 });
+
+const updateProject = () => {
+  router.push({
+    path: `/contest/${postId}/project/${projectId}/update`,
+  });
+};
+
+const deleteBtn = async () => {
+  await deleteProject("contests", postId, projectId);
+  router.push({
+    path: `/contest/info/${postId}`,
+  });
+};
 </script>
 <style>
 .modal-bg {

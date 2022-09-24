@@ -75,10 +75,10 @@ const imgSrc = ref("");
 const loading = ref(false);
 
 onBeforeMount(async () => {
-  title.value = await getProjectTitle("graduations", postId, projectId);
-  content.value = await getProjectContent("graduations", postId, projectId);
-  previewImgSrc.value = await getProjectImg("graduations", postId, projectId);
-  imgSrc.value = await getProjectImg("graduations", postId, projectId);
+  title.value = await getProjectTitle("contests", postId, projectId);
+  content.value = await getProjectContent("contests", postId, projectId);
+  previewImgSrc.value = await getProjectImg("contests", postId, projectId);
+  imgSrc.value = await getProjectImg("contests", postId, projectId);
 });
 
 let formFile = null;
@@ -102,7 +102,7 @@ const upload = async () => {
     await uploadFile(formFilePath, formFile);
     imgSrc.value = await getUrl(formFilePath);
   }
-  await updateProject("graduations", postId, projectId, title, content, imgSrc);
+  await updateProject("contests", postId, projectId, title, content, imgSrc);
 
   loading.value = false;
   router.go(-1);

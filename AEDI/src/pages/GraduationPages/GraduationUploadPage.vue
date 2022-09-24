@@ -97,6 +97,17 @@
     >
       <font-awesome-icon icon="fa-solid fa-upload" class="mr-2" />업로드
     </button>
+
+    <Teleport to="#modal">
+      <div class="modal-bg" v-if="loading">
+        <font-awesome-icon
+          icon="fa-solid fa-spinner"
+          size="5x"
+          spin-pulse
+          class="text-white"
+        />
+      </div>
+    </Teleport>
   </form>
 </template>
 
@@ -117,6 +128,8 @@ const url = ref("");
 const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
 const imgSrc = ref("");
 
+const loading = ref(false);
+
 let formFile = null;
 let formFilePath = null;
 
@@ -133,13 +146,33 @@ const handleFileChange = (input) => {
 };
 
 const upload = async () => {
+  loading.value = true;
   if (formFile !== null && formFilePath !== null) {
     await uploadFile(formFilePath, formFile);
     imgSrc.value = await getUrl(formFilePath);
   }
-  createGraduation(title, year, university, department, imgSrc, url);
+  await createGraduation(title, year, university, department, imgSrc, url);
+  loading.value = false;
   router.push({
     path: `/graduation/page`,
   });
 };
 </script>
+<style>
+.modal-bg {
+  /* always fix our modal to the viewport */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  /* Darken the Screen */
+  background-color: rgba(0, 0, 0, 0.5);
+
+  /* Center the modal itself */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>

@@ -163,13 +163,17 @@ export const createProject = async (
   title,
   name,
   description,
-  img
+  img,
+  filesUrl,
+  filesName
 ) => {
   await addDoc(collection(db, menu, post_id, "projects"), {
     title: title?.value,
     name: name,
     description: description?.value,
     img: img?.value,
+    filesUrl: filesUrl?.value,
+    filesName: filesName?.value,
     uid: user?.value?.uid,
     views: 0,
     likes: 0,
@@ -179,6 +183,10 @@ export const createProject = async (
   await updateDoc(doc(db, menu, post_id), {
     projects: increment(1),
   });
+};
+
+export const updateProjectFileArray = async () => {
+  await updateDoc(doc);
 };
 
 // 졸업작품, 공모전 좋아요

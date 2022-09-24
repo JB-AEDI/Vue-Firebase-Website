@@ -62,7 +62,7 @@
         <div class="w-full flex justify-between">
           <div>
             <button
-              class="ml-3 p-3 bg-yellow-300 rounded-md"
+              class="ml-2 p-3 bg-yellow-300 rounded-md"
               @click="openUrl(postData?.url)"
             >
               <span class="font-bold">졸업작품 발표회 바로가기</span>

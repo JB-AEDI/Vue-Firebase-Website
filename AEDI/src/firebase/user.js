@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   getAuth,
   onAuthStateChanged,
+  sendEmailVerification,
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
@@ -20,16 +21,21 @@ onAuthStateChanged(auth, (data) => {
   }
 });
 
-export const checkEmailOverlap = () => {
-  console.log(user?.value);
-};
-
 export const createUser = async (email, password, name) => {
   const result = await createUserWithEmailAndPassword(auth, email, password);
   await setDoc(doc(db, "profiles", result.user.uid), {
     name: name,
     admin: false,
   });
+  sendEmailVerification(auth.currentUser)
+    .then(() => {
+      // Verification email sent.
+      console.log("이메일 전송");
+    })
+    .catch((error) => {
+      // Error occurred. Inspect error.code.
+      console.log(error);
+    });
 };
 
 export const login = async (email, password) => {

@@ -22,6 +22,8 @@ import {
   faTrash,
   faChevronRight,
   faClipboardCheck,
+  faX,
+  faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faLightbulb } from "@fortawesome/free-regular-svg-icons";
@@ -41,7 +43,9 @@ library.add(
   faHeart,
   faTrash,
   faChevronRight,
-  faClipboardCheck
+  faClipboardCheck,
+  faX,
+  faCheck
 );
 
 const app = createApp(App);

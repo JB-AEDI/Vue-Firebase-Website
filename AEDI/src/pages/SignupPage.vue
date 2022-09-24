@@ -7,7 +7,7 @@
       >
         {{ error }}
       </div>
-      <div class="w-4/5 md:w-1/2 flex">
+      <div class="w-4/5 md:w-1/2">
         <div class="w-full">
           <label for="email-address" class="sr-only">Email address</label>
           <input
@@ -21,11 +21,6 @@
             v-model="credentials.email"
           />
         </div>
-        <button
-          class="w-15 mx-4 inline-block px-3 py-2 box-border text-white bg-indigo-500"
-        >
-          인증
-        </button>
       </div>
       <div class="w-4/5 md:w-1/2 mt-4">
         <label for="password" class="sr-only">Password</label>
@@ -84,6 +79,6 @@ const router = useRouter();
 
 const signup = perform(async () => {
   await createUser(credentials.email, credentials.password, credentials.name);
-  router.push({ name: "main" });
+  router.push({ path: "/emial" });
 });
 </script>

@@ -17,6 +17,11 @@ const routes = [
     component: () => import("./../pages/SignupPage.vue"),
   },
   {
+    path: "/email",
+    name: "이메일인증",
+    component: () => import("./../pages/EmailVerifyPage.vue"),
+  },
+  {
     path: "/contest/page",
     name: "공모전",
     component: () => import("./../pages/ContestPages/ContestListPage.vue"),

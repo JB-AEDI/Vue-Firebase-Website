@@ -12,6 +12,9 @@
       <span>{{ userProfile.name }}</span>
       <span v-if="userProfile.admin">(관리자)</span>
       <span>님</span>
+      <span v-if="!user?.emailVerified" class="font-bold text-red-600 ml-2"
+        >[이메일 인증안됨]</span
+      >
       <span @click="doLogout" class="cursor-pointer ml-2">로그아웃</span>
     </div>
   </div>
@@ -20,27 +23,15 @@
     <RouterLink :to="{ name: 'main' }">
       <a href="@">
         <div class="flex items-center">
-          <font-awesome-icon
-            icon="fa-regular fa-lightbulb"
-            size="2xl"
-            rotation="180"
-          />
+          <font-awesome-icon icon="fa-regular fa-lightbulb" size="2xl" rotation="180" />
           <h1 class="text-3xl font-bold ml-2">AEDI</h1>
         </div>
       </a>
     </RouterLink>
-    <RouterLink to="/graduation/page" class="text-lg font-semibold"
-      >졸업작품</RouterLink
-    >
-    <RouterLink to="/contest/page" class="text-lg font-semibold"
-      >공모전</RouterLink
-    >
-    <RouterLink to="/notice/page" class="text-lg font-semibold"
-      >공지사항</RouterLink
-    >
-    <RouterLink to="/event/page" class="text-lg font-semibold"
-      >이벤트</RouterLink
-    >
+    <RouterLink to="/graduation/page" class="text-lg font-semibold">졸업작품</RouterLink>
+    <RouterLink to="/contest/page" class="text-lg font-semibold">공모전</RouterLink>
+    <RouterLink to="/notice/page" class="text-lg font-semibold">공지사항</RouterLink>
+    <RouterLink to="/event/page" class="text-lg font-semibold">이벤트</RouterLink>
     <label class="relative block">
       <span class="sr-only">Search</span>
       <span class="absolute inset-y-0 left-0 flex items-center pl-2">

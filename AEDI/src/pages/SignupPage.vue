@@ -79,6 +79,6 @@ const router = useRouter();
 
 const signup = perform(async () => {
   await createUser(credentials.email, credentials.password, credentials.name);
-  router.push({ path: "/emial" });
+  router.push({ path: "/email" });
 });
 </script>

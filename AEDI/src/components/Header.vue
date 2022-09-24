@@ -12,7 +12,10 @@
       <span>{{ userProfile.name }}</span>
       <span v-if="userProfile.admin">(관리자)</span>
       <span>님</span>
-      <span v-if="!user?.emailVerified" class="font-bold text-red-600 ml-2"
+      <span
+        v-if="!user?.emailVerified"
+        class="font-bold text-red-600 ml-2 cursor-pointer"
+        @click="router.push({ path: '/email' })"
         >[이메일 인증안됨]</span
       >
       <span @click="doLogout" class="cursor-pointer ml-2">로그아웃</span>
@@ -63,10 +66,11 @@
 </template>
 
 <script setup>
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
 import { user, logout } from "../firebase/user";
 import { inject } from "vue";
 
+const router = useRouter();
 const userProfile = inject("userProfile");
 
 const doLogout = async () => {

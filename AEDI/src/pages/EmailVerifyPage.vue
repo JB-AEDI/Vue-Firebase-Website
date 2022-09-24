@@ -52,8 +52,15 @@
 <script setup>
 import { user } from "../firebase/user";
 import { useRouter } from "vue-router";
+import { watch, ref } from "vue";
 
 const router = useRouter();
+const verify = ref(false);
+
+watch(user?.value, () => {
+  verify.value = true;
+  console.log(verify.value);
+});
 
 const openUrl = (url) => {
   window.open(url, "_blank");

@@ -84,6 +84,12 @@ const routes = [
       import("./../pages/GraduationPages/GraduationProjectPage.vue"),
   },
   {
+    path: "/graduation/:post_id/project/:project_id/update",
+    name: "졸업작품 프로젝트 수정",
+    component: () =>
+      import("./../pages/GraduationPages/GraduationProjectUpdatePage.vue"),
+  },
+  {
     path: "/notice/page",
     name: "공지사항",
     component: () => import("./../pages/NoticePages/NocticeListPage.vue"),

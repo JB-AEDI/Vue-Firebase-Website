@@ -95,14 +95,14 @@
       class="mr-5 mt-4 float-right bg-indigo-500 py-2 px-3 rounded-md text-white"
       type="submit"
     >
-      <i class="fa-solid fa-upload mr-2"></i>업로드
+      <font-awesome-icon icon="fa-solid fa-upload" class="mr-2" />업로드
     </button>
   </form>
 </template>
 
 <script setup>
 import { useRouteParams } from "@vueuse/router";
-import { ref, onMounted } from "vue";
+import { ref, onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
 import {
   getTitle,
@@ -128,7 +128,7 @@ const previewImgSrc = ref(
 const imgSrc = ref("");
 const url = ref("");
 
-onMounted(async () => {
+onBeforeMount(async () => {
   title.value = await getTitle("graduations", postId);
   year.value = await getYear("graduations", postId);
   university.value = await getUniversity("graduations", postId);

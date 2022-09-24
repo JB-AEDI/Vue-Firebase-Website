@@ -6,7 +6,7 @@
       v-if="userProfile.admin"
       class="mr-5 bg-indigo-500 py-2 px-3 rounded-md text-white"
     >
-      <i class="fa-solid fa-upload mr-2"></i>업로드
+      <font-awesome-icon icon="fa-solid fa-upload" class="mr-2" />업로드
     </button>
   </div>
 

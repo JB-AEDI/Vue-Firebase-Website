@@ -15,11 +15,11 @@
         v-model="title"
       />
     </div>
-    <div class="mb-3">
+    <div class="mb-5">
       <label
         for="formFile"
         class="form-label inline-block mb-2 text-lg font-bold text-gray-900 dark:text-gray-300"
-        >첨부파일</label
+        >이미지</label
       >
       <input
         class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
@@ -28,9 +28,9 @@
         @change="handleFileChange"
       />
     </div>
+    <img :src="previewImgSrc" alt="preview-image" class="max-w-sm mb-10" />
 
     <TuiEditor v-if="content" v-model="content" @add-image="addImage"></TuiEditor>
-
     <button
       class="mr-5 mt-4 float-right bg-indigo-500 py-2 px-3 rounded-md text-white"
       type="submit"
@@ -41,53 +41,55 @@
 </template>
 
 <script setup>
-import { useRouteParams } from "@vueuse/router";
-import { ref, inject, onMounted } from "vue";
-import { useRouter } from "vue-router";
-
+import { ref, onBeforeMount } from "vue";
 import TuiEditor from "../../components/editor/TuiEditor.vue";
-import { updateNotice, getContent, getTitle } from "../../firebase/post";
+import {
+  updateProject,
+  getProjectTitle,
+  getProjectContent,
+  getProjectImg,
+} from "../../firebase/post";
 import { uploadFile, getUrl } from "../../firebase/firestore";
+import { useRouter } from "vue-router";
+import { useRouteParams } from "@vueuse/router";
 
 const router = useRouter();
 const postId = useRouteParams("post_id").value;
+const projectId = useRouteParams("project_id").value;
 
-const userProfile = inject("userProfile");
-const content = ref("");
 const title = ref("");
+const content = ref("");
+const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
+const imgSrc = ref("");
 
-onMounted(async () => {
-  title.value = await getTitle("notices", postId);
-  content.value = await getContent("notices", postId);
+onBeforeMount(async () => {
+  title.value = await getProjectTitle("graduations", postId, projectId);
+  content.value = await getProjectContent("graduations", postId, projectId);
+  previewImgSrc.value = await getProjectImg("graduations", postId, projectId);
+  imgSrc.value = await getProjectImg("graduations", postId, projectId);
 });
 
 let formFile = null;
 let formFilePath = null;
 
-const handleFileChange = (e) => {
-  formFile = e.target.files[0];
-  formFilePath = "file/" + formFile.name;
+const handleFileChange = (input) => {
+  const reader = new FileReader();
+
+  reader.onload = (e) => {
+    previewImgSrc.value = e.target.result;
+  };
+  reader.readAsDataURL(input.target.files[0]);
+
+  formFile = input.target.files[0];
+  formFilePath = "images/graduation/" + formFile.name;
 };
 
-const upload = () => {
-  updateNotice(
-    title,
-    content,
-    userProfile?.value?.name,
-    userProfile?.value?.admin,
-    postId
-  );
+const upload = async () => {
   if (formFile !== null && formFilePath !== null) {
-    uploadFile(formFilePath, formFile);
+    await uploadFile(formFilePath, formFile);
+    imgSrc.value = await getUrl(formFilePath);
   }
+  updateProject("graduations", postId, projectId, title, content, imgSrc);
   router.go(-1);
-};
-
-const addImage = async (file, callback) => {
-  const imagePath = `images/${file.name}`;
-  uploadFile(imagePath, file);
-  const image = await getUrl(imagePath);
-
-  callback(image);
 };
 </script>

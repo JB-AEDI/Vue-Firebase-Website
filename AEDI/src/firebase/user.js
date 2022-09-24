@@ -20,6 +20,10 @@ onAuthStateChanged(auth, (data) => {
   }
 });
 
+export const checkEmailOverlap = () => {
+  console.log(user?.value);
+};
+
 export const createUser = async (email, password, name) => {
   const result = await createUserWithEmailAndPassword(auth, email, password);
   await setDoc(doc(db, "profiles", result.user.uid), {

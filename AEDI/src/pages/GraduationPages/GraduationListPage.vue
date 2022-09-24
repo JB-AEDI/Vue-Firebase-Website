@@ -43,7 +43,7 @@
       @click="pushUpload"
       class="mr-5 bg-indigo-500 py-2 px-3 rounded-md text-white"
     >
-      <i class="fa-solid fa-upload mr-2"></i>업로드
+      <font-awesome-icon icon="fa-solid fa-upload" class="mr-2" />업로드
     </button>
   </div>
 
@@ -75,7 +75,9 @@
           <div
             class="inline-block border-2 border-red-400 py-0.5 px-1.5 rounded-lg text-sm"
           >
-            <span class="text-red-400"><i class="fa-solid fa-heart"></i></span>
+            <span class="text-red-400"
+              ><font-awesome-icon icon="fa-solid fa-heart"
+            /></span>
             <span class="ml-1">{{ graduation?.likes }}</span>
           </div>
           <span class="font-semibold text-gray-800 text-sm mx-2">[학과]</span>

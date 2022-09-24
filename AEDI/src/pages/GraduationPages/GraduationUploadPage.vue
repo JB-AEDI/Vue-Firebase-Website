@@ -95,7 +95,7 @@
       class="mr-5 mt-4 float-right bg-indigo-500 py-2 px-3 rounded-md text-white"
       type="submit"
     >
-      <i class="fa-solid fa-upload mr-2"></i>업로드
+      <font-awesome-icon icon="fa-solid fa-upload" class="mr-2" />업로드
     </button>
   </form>
 </template>
@@ -114,9 +114,7 @@ const year = ref("2022");
 const university = ref("");
 const department = ref("");
 const url = ref("");
-const previewImgSrc = ref(
-  "https://via.placeholder.com/384x500?text=Upload+Image"
-);
+const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
 const imgSrc = ref("");
 
 let formFile = null;

@@ -25,7 +25,7 @@
         @click="updatePost(postId)"
         class="mr-3 bg-indigo-500 py-2 px-3 rounded-md text-white"
       >
-        <i class="fa-solid fa-upload mr-2"></i>수정
+        <font-awesome-icon icon="fa-solid fa-upload" class="mr-2" />수정
       </button>
 
       <button
@@ -33,7 +33,7 @@
         @click="[deletePost('notices', postId), backList()]"
         class="bg-indigo-500 py-2 px-3 rounded-md text-white"
       >
-        <i class="fa-solid fa-trash mr-2"></i>삭제
+        <font-awesome-icon icon="fa-solid fa-trash" class="mr-2" />삭제
       </button>
     </div>
     

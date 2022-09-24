@@ -20,8 +20,12 @@
     <RouterLink :to="{ name: 'main' }">
       <a href="@">
         <div class="flex items-center">
-          <i class="fa-regular fa-lightbulb fa-2xl"></i>
-          <h1 class="text-3xl font-bold">AEDI</h1>
+          <font-awesome-icon
+            icon="fa-regular fa-lightbulb"
+            size="2xl"
+            rotation="180"
+          />
+          <h1 class="text-3xl font-bold ml-2">AEDI</h1>
         </div>
       </a>
     </RouterLink>
@@ -40,7 +44,7 @@
     <label class="relative block">
       <span class="sr-only">Search</span>
       <span class="absolute inset-y-0 left-0 flex items-center pl-2">
-        <i class="fa-solid fa-magnifying-glass"></i>
+        <font-awesome-icon icon="fa-solid fa-magnifying-glass" />
       </span>
       <input
         class="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm"

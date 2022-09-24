@@ -59,7 +59,9 @@
             class="p-2 border-4 border-red-400 rounded-md box-content"
             @click="pushProjectLike('contests', postId, projectId)"
           >
-            <span class="text-red-400"><i class="fa-solid fa-heart"></i></span>
+            <span class="text-red-400"
+              ><font-awesome-icon icon="fa-solid fa-heart"
+            /></span>
             <span class="font-bold ml-2">좋아요</span>
             <span class="ml-2 mr-1">{{ projectData?.likes }}</span>
           </button>
@@ -68,7 +70,7 @@
             v-if="projectData?.uid === user?.uid"
             class="bg-indigo-500 py-2 px-3 rounded-md text-white"
           >
-            <i class="fa-solid fa-upload mr-2"></i>수정
+            <font-awesome-icon icon="fa-solid fa-upload" class="mr-2" />수정
           </button>
         </div>
       </div>
@@ -94,7 +96,7 @@
         class="bg-indigo-500 py-3 px-4 rounded-md text-white text-lg close-btn"
         @click="isModalOpen = true"
       >
-        <span><i class="fa-solid fa-clipboard-check"></i></span>
+        <span><font-awesome-icon icon="fa-solid fa-clipboard-check" /></span>
         <span class="ml-2">평가하기</span>
       </button>
     </div>
@@ -113,7 +115,7 @@
             [deleteMyProjectReview('contests', postId, projectId), (isReview = false)]
           "
         >
-          <span><i class="fa-solid fa-trash-can"></i></span>
+          <span><font-awesome-icon icon="fa-solid fa-trash" /></span>
           <span class="ml-2">삭제</span>
         </button>
       </div>

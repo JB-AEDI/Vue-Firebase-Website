@@ -7,27 +7,21 @@
     </div>
     <div class="flex justify-center gap-10 mt-7 mb-5">
       <div class="bg-gray-200 py-3 px-4 flex items-center gap-3">
-        <div>
-          <i class="fa-solid fa-clock-rotate-left fa-2xl"></i>
-        </div>
+        <font-awesome-icon icon="fa-solid fa-clock-rotate-left" size="2xl" />
         <div class="flex flex-col items-center">
           <div>150</div>
           <div>마감임박</div>
         </div>
       </div>
       <div class="bg-gray-200 py-3 px-4 flex items-center gap-3">
-        <div>
-          <i class="fa-solid fa-cloud-arrow-up fa-2xl"></i>
-        </div>
+        <font-awesome-icon icon="fa-solid fa-cloud-arrow-up" size="2xl" />
         <div class="flex flex-col items-center">
           <div>239</div>
           <div>최근등록</div>
         </div>
       </div>
       <div class="bg-gray-200 py-3 px-4 flex items-center gap-3">
-        <div>
-          <i class="fa-solid fa-bullhorn fa-2xl"></i>
-        </div>
+        <font-awesome-icon icon="fa-solid fa-bullhorn" size="2xl" />
         <div class="flex flex-col items-center">
           <div>342</div>
           <div>진행중</div>
@@ -38,7 +32,7 @@
       <div class="w-[1000px]">
         <RouterLink to="/graduation/page">
           <a href="@" class="text-xl">
-            <span><i class="fa-solid fa-graduation-cap fa-1x"></i></span>
+            <span><font-awesome-icon icon="fa-solid fa-graduation-cap" size="1x" /></span>
             <span class="font-semibold ml-1">졸업작품</span>
           </a>
         </RouterLink>
@@ -57,7 +51,7 @@
       <div class="mt-10 w-[1000px]">
         <RouterLink to="/contest/page">
           <a href="@" class="text-xl">
-            <span><i class="fa-solid fa-book fa-1x"></i></span>
+            <span><font-awesome-icon icon="fa-solid fa-book" size="1x" /></span>
             <span class="font-semibold ml-1">공모전</span>
           </a>
         </RouterLink>

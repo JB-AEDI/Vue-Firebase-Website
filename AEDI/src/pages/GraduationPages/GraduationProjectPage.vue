@@ -59,17 +59,29 @@
             class="p-2 border-4 border-red-400 rounded-md box-content"
             @click="pushProjectLike('graduations', postId, projectId)"
           >
-            <span class="text-red-400"><i class="fa-solid fa-heart"></i></span>
+            <span class="text-red-400"
+              ><font-awesome-icon icon="fa-solid fa-heart"
+            /></span>
             <span class="font-bold ml-2">좋아요</span>
             <span class="ml-2 mr-1">{{ projectData?.likes }}</span>
           </button>
+          <div>
+            <button
+              v-if="projectData?.uid === user?.uid"
+              class="bg-indigo-500 py-2 px-3 rounded-md text-white"
+              @click="updateProject"
+            >
+              <font-awesome-icon icon="fa-solid fa-upload" class="mr-2" />수정
+            </button>
 
-          <button
-            v-if="projectData?.uid === user?.uid"
-            class="bg-indigo-500 py-2 px-3 rounded-md text-white"
-          >
-            <i class="fa-solid fa-upload mr-2"></i>수정
-          </button>
+            <button
+              v-if="projectData?.uid === user?.uid"
+              class="bg-indigo-500 py-2 px-3 rounded-md text-white ml-4"
+              @click="deleteBtn"
+            >
+              <font-awesome-icon icon="fa-solid fa-trash" class="mr-2" />삭제
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -94,7 +106,7 @@
         class="bg-indigo-500 py-3 px-4 rounded-md text-white text-lg close-btn"
         @click="isModalOpen = true"
       >
-        <span><i class="fa-solid fa-clipboard-check"></i></span>
+        <span><font-awesome-icon icon="fa-solid fa-clipboard-check" /></span>
         <span class="ml-2">평가하기</span>
       </button>
     </div>
@@ -113,7 +125,7 @@
             [deleteMyProjectReview('graduations', postId, projectId), (isReview = false)]
           "
         >
-          <span><i class="fa-solid fa-trash-can"></i></span>
+          <span><font-awesome-icon icon="fa-solid fa-trash" /></span>
           <span class="ml-2">삭제</span>
         </button>
       </div>
@@ -180,7 +192,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { useRouteParams } from "@vueuse/router";
 import {
@@ -195,6 +207,7 @@ import {
   onSnapshotProjectReviews,
   checkProjectComments,
   onSnapshotProjectComments,
+  deleteProject,
 } from "../../firebase/post";
 import { user } from "../../firebase/user";
 import TuiViewer from "../../components/editor/TuiViewer.vue";
@@ -202,6 +215,9 @@ import Chart from "../../components/Chart.vue";
 import AddComment from "../../components/AddComment.vue";
 import Comment from "../../components/Comment.vue";
 import Review from "../../components/Review.vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const postId = useRouteParams("post_id").value;
 const projectId = useRouteParams("project_id").value;
@@ -276,13 +292,26 @@ const checkComment = async () => {
 
 const commentsData = onSnapshotProjectComments("graduations", postId, projectId);
 
-onMounted(async () => {
+onBeforeMount(async () => {
   graduationTitle.value = await getTitle("graduations", postId);
   checkReview();
   getReview();
   checkComment();
   updateViewsProjectCount("graduations", postId, projectId);
 });
+
+const updateProject = () => {
+  router.push({
+    path: `/graduation/${postId}/project/${projectId}/update`,
+  });
+};
+
+const deleteBtn = async () => {
+  await deleteProject("graduations", postId, projectId);
+  router.push({
+    path: `/graduation/info/${postId}`,
+  });
+};
 </script>
 <style>
 .modal-bg {

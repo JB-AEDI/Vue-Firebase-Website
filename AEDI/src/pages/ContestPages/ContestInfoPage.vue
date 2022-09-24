@@ -6,7 +6,9 @@
     <div class="pl-6 w-4/5">
       <div class="h-5/6">
         <div class="border-b border-gray-300 pb-2">
-          <span class="text-red-400 mr-1.5"><i class="fa-solid fa-heart"></i></span>
+          <span class="text-red-400 mr-1.5"
+            ><font-awesome-icon icon="fa-solid fa-heart"
+          /></span>
           <span class="mr-4">{{ postData?.likes }}</span>
           <span>프로젝트 수 - </span>
           <span>{{ postData?.projects }}</span>
@@ -81,13 +83,17 @@
               @click="openUrl(postData?.url)"
             >
               <span class="font-bold">졸업작품 발표회 바로가기</span>
-              <span class="ml-3"><i class="fa-solid fa-chevron-right"></i></span>
+              <span class="ml-3"
+                ><font-awesome-icon icon="fa-solid fa-chevron-right"
+              /></span>
             </button>
             <button
               class="ml-12 p-2 border-4 border-red-400 rounded-md box-content"
               @click="pushLike('contests', postId)"
             >
-              <span class="text-red-400"><i class="fa-solid fa-heart"></i></span>
+              <span class="text-red-400"
+                ><font-awesome-icon icon="fa-solid fa-heart"
+              /></span>
               <span class="font-bold ml-2">좋아요</span>
             </button>
           </div>
@@ -97,15 +103,15 @@
               @click="updatePost(postId)"
               class="mr-3 bg-indigo-500 py-2 px-3 rounded-md text-white"
             >
-              <i class="fa-solid fa-upload mr-2"></i>수정
+              <font-awesome-icon icon="fa-solid fa-upload" class="mr-2" />수정
             </button>
 
             <button
               v-if="userProfile.admin"
-              @click="[deletePost('contests', postId), backList()]"
+              @click="[deleteProjectPost('contests', postId), backList()]"
               class="bg-indigo-500 py-2 px-3 rounded-md text-white"
             >
-              <i class="fa-solid fa-trash mr-2"></i>삭제
+              <font-awesome-icon icon="fa-solid fa-trash" class="mr-2" />삭제
             </button>
           </div>
         </div>
@@ -137,8 +143,8 @@ import { user } from "../../firebase/user";
 import {
   pushLike,
   updateViewsCount,
-  deletePost,
   onSnapshotProjects,
+  deleteProjectPost,
 } from "../../firebase/post";
 
 import ProjectList from "../../components/ProjectList.vue";

@@ -20,12 +20,14 @@ import { user } from "./user";
 // Create Post
 
 // Notice
-/*
-  title,        제목
-  description,  설명
-  name,         이름
-  admin         관리자 bool
-*/
+
+/**
+ *  공지사항 생성
+ * @param {Promise<string>} title 제목
+ * @param {Promise<string>} description 내용
+ * @param {Promise<string>} name 이름
+ * @param {boolean} admin 사용자권한
+ */
 export const createNotice = async (title, description, name, admin) => {
   await addDoc(collection(db, "notices"), {
     title: title?.value,
@@ -39,14 +41,15 @@ export const createNotice = async (title, description, name, admin) => {
 };
 
 // Event
-/*
-  title,        제목
-  startDate,    시작날짜
-  endDate,      종료날짜
-  description,  설명
-  name,         이름
-  admin         관리자 bool
-*/
+/**
+ * 이벤트 생성
+ * @param {Promise<string>} title 제목
+ * @param {Promise<string>} startDate 시작날짜
+ * @param {Promise<string>} endDate 종료날짜
+ * @param {Promise<string>} description 내용
+ * @param {string} name 이름
+ * @param {boolean} admin 사용자권한
+ */
 export const createEvent = async (
   title,
   startDate,
@@ -69,14 +72,15 @@ export const createEvent = async (
 };
 
 // Graduation
-/*
-  title,        제목
-  year,         연도
-  university,   학교
-  department,   학과
-  img,          이미지
-  url           URL 사이트링크
-*/
+/**
+ * 졸업작품 생성
+ * @param {Promise<string>} title 제목
+ * @param {Promise<number>} year 연도
+ * @param {Promise<string>} university 학교
+ * @param {Promise<string>} department 학과
+ * @param {Promise<string>} img 이미지링크
+ * @param {Promise<string>} url 사이트링크
+ */
 export const createGraduation = async (
   title,
   year,
@@ -100,18 +104,19 @@ export const createGraduation = async (
 };
 
 // Contest
-/*
-  title,        제목
-  host,         주최
-  supervision,  주관
-  sponsor,      후원
-  startDate,    시작날짜
-  endDate,      종료날짜
-  target,       대상
-  field,        분야
-  img,          이미지
-  url           URL 사이트링크
-*/
+/**
+ * 공모전 생성
+ * @param {Promise<string>} title 제목
+ * @param {Promise<string>} host 주최
+ * @param {Promise<string>} supervision 주관
+ * @param {Promise<string>} sponsor 후원
+ * @param {Promise<string>} startDate 시작날짜
+ * @param {Promise<string>} endDate 종료날짜
+ * @param {Promise<string>} target 대상
+ * @param {Promise<string>} field 분야
+ * @param {Promise<string>} img 이미지링크
+ * @param {Promise<string>} url 사이트링크
+ */
 export const createContest = async (
   title,
   host,
@@ -142,7 +147,16 @@ export const createContest = async (
   });
 };
 
-// Graduation Project
+// Project
+/**
+ * 프로젝트 생성
+ * @param {string} menu 카테고리 ("graduations", "contests")
+ * @param {string} post_id 포스트 아이디
+ * @param {Promise<string>} title 제목
+ * @param {string} name 이름
+ * @param {Promise<string>} description 설명
+ * @param {Promise<string>} img 이미지링크
+ */
 export const createProject = async (
   menu,
   post_id,
@@ -168,25 +182,33 @@ export const createProject = async (
 };
 
 // 졸업작품, 공모전 좋아요
+/**
+ * 좋아요 눌렀을 때 함수 (포스트)
+ * @param {string} menu 카테고리 ("graduations", "contests")
+ * @param {string} post_id 포스트 아이디
+ * @returns
+ */
 export const pushLike = async (menu, post_id) => {
   if (!user || !user?.value?.uid) {
     return;
   }
   const likesRef = collection(db, menu, post_id, "likes");
-
+  // 좋아요 생성
   const createLike = async () => {
     await addDoc(likesRef, {
       uid: user?.value?.uid,
     });
   };
-
+  // 좋아요 삭제
   const deleteLike = async (like_id) => {
     await deleteDoc(doc(db, `${menu}/${post_id}/likes/${like_id}`));
   };
 
+  // 유저 아이디가 있는 좋아요를 검색한 쿼리
   const q = query(likesRef, where("uid", "==", user?.value?.uid));
   const querySnapshot = await getDocs(q);
 
+  // 좋아요가 없을 때 누름(생성, 메뉴 좋아요 수 1증가)
   if (querySnapshot.docs.length === 0) {
     createLike();
     await updateDoc(doc(db, menu, post_id), {
@@ -194,6 +216,7 @@ export const pushLike = async (menu, post_id) => {
     });
     return;
   }
+  // 좋아요가 있을 때 누름(삭제, 메뉴 좋아요 수 1감소)
   if (querySnapshot.docs[0].data().uid === user?.value?.uid) {
     deleteLike(querySnapshot.docs[0].id);
     await updateDoc(doc(db, menu, post_id), {
@@ -203,9 +226,16 @@ export const pushLike = async (menu, post_id) => {
   }
 };
 
-// 졸업작품 프로젝트 좋아요
-
+// 프로젝트 좋아요
+/**
+ * 좋아요 눌렀을 때 함수 (포스트)
+ * @param {string} menu 카테고리 ("graduations", "contests")
+ * @param {string} post_id 포스트 아이디
+ * @param {string} project_id 프로젝트 아이디
+ * @returns
+ */
 export const pushProjectLike = async (menu, post_id, project_id) => {
+  // 유저 없거나, 유저아이디가 없을때 종료
   if (!user || !user?.value?.uid) {
     return;
   }
@@ -218,20 +248,25 @@ export const pushProjectLike = async (menu, post_id, project_id) => {
     "likes"
   );
 
+  // 좋아요 생성
+
   const createProjectLike = async () => {
     await addDoc(likesRef, {
       uid: user?.value?.uid,
     });
   };
-
+  // 좋아요 삭제
   const deleteProjectLike = async (like_id) => {
     await deleteDoc(
       doc(db, `${menu}/${post_id}/projects/${project_id}/likes/${like_id}`)
     );
   };
 
+  // 유저 아이디가 있는 좋아요를 검색한 쿼리
   const q = query(likesRef, where("uid", "==", user?.value?.uid));
   const querySnapshot = await getDocs(q);
+
+  // 좋아요가 없을 때 누름(생성, 메뉴 좋아요 수 1증가)
   if (querySnapshot.docs.length === 0) {
     createProjectLike();
     await updateDoc(doc(db, menu, post_id, "projects", project_id), {
@@ -239,6 +274,8 @@ export const pushProjectLike = async (menu, post_id, project_id) => {
     });
     return;
   }
+
+  // 좋아요가 있을 때 누름(삭제, 메뉴 좋아요 수 1감소)
   if (querySnapshot.docs[0].data().uid === user?.value?.uid) {
     deleteProjectLike(querySnapshot.docs[0].id);
     await updateDoc(doc(db, menu, post_id, "projects", project_id), {
@@ -248,7 +285,18 @@ export const pushProjectLike = async (menu, post_id, project_id) => {
   }
 };
 
-// 졸업작품 프로젝트 평가 추가
+// 프로젝트 평가 추가
+/**
+ * 프로젝트 평가 추가
+ * @param {string} menu 카테고리 ("graduations", "contests")
+ * @param {string} post_id 포스트 아이디
+ * @param {string} project_id 프로젝트 아이디
+ * @param {string} perfection 완성도
+ * @param {string} creativity 창의성
+ * @param {string} technicality 기술성
+ * @param {string} business 사업성
+ * @param {string} design 예술성
+ */
 export const createProjectReview = async (
   menu,
   post_id,
@@ -272,7 +320,14 @@ export const createProjectReview = async (
   );
 };
 
-// 졸업작품 프로젝트 평가 - 유무확인
+// 프로젝트 평가 - 유무확인
+/**
+ * 프로젝트 평가 - 유무확인
+ * @param {string} menu 카테고리 ("graduations", "contests")
+ * @param {string} post_id 포스트 아이디
+ * @param {string} project_id 프로젝트 아이디
+ * @returns true, false
+ */
 export const checkProjectReview = async (menu, post_id, project_id) => {
   const reviewRef = collection(
     db,
@@ -282,8 +337,10 @@ export const checkProjectReview = async (menu, post_id, project_id) => {
     project_id,
     "reviews"
   );
+  // 유저아이디가 같은 프로젝트 평가를 찾는 쿼리
   const q = query(reviewRef, where("uid", "==", user?.value?.uid));
   const querySnapshot = await getDocs(q);
+  // 유저아이디가 같다면 (true 반환), 아니면 (false 반환)
   if (querySnapshot.docs[0]?.data().uid === user?.value?.uid) {
     return true;
   } else {
@@ -291,7 +348,14 @@ export const checkProjectReview = async (menu, post_id, project_id) => {
   }
 };
 
-// 내가 작성한 졸업작품 프로젝트 평가 - 가져오기
+// 내가 작성한 프로젝트 평가 - 가져오기
+/**
+ *  내가 작성한 프로젝트 평가 - 가져오기
+ * @param {string} menu 카테고리 ("graduations", "contests")
+ * @param {string} post_id 포스트 아이디
+ * @param {string} project_id 프로젝트 아이디
+ * @returns 유저아이디가 같은 평가
+ */
 export const getMyProjectReview = async (menu, post_id, project_id) => {
   const reviewRef = collection(
     db,
@@ -301,14 +365,22 @@ export const getMyProjectReview = async (menu, post_id, project_id) => {
     project_id,
     "reviews"
   );
+  // 유저아이디가 같은 프로젝트 평가를 찾는 쿼리
   const q = query(reviewRef, where("uid", "==", user?.value?.uid));
   const querySnapshot = await getDocs(q);
+  // 유저아이디가 같은 평가가 있다면 평가데이터를 반환
   if (querySnapshot.docs[0]?.data().uid === user?.value?.uid) {
     return querySnapshot.docs[0].data();
   }
 };
 
-// 내가 작성한 졸업작품 프로젝트 평가 - 삭제
+// 내가 작성한 프로젝트 평가 - 삭제
+/**
+ * 내가 작성한 프로젝트 평가 - 삭제
+ * @param {string} menu 카테고리 ("graduations", "contests")
+ * @param {string} post_id 포스트 아이디
+ * @param {string} project_id 프로젝트 아이디
+ */
 export const deleteMyProjectReview = async (menu, post_id, project_id) => {
   const reviewRef = collection(
     db,
@@ -318,8 +390,10 @@ export const deleteMyProjectReview = async (menu, post_id, project_id) => {
     project_id,
     "reviews"
   );
+  // 유저아이디가 같은 프로젝트 평가를 찾는 쿼리
   const q = query(reviewRef, where("uid", "==", user?.value?.uid));
   const querySnapshot = await getDocs(q);
+  // 유저아이디가 같다면 평가 삭제
   if (querySnapshot.docs[0]?.data().uid === user?.value?.uid) {
     await deleteDoc(
       doc(
@@ -335,8 +409,16 @@ export const deleteMyProjectReview = async (menu, post_id, project_id) => {
   }
 };
 
-// 졸업작품 프로젝트 평가 - 실시간 가져오기
+// 프로젝트 평가 - 실시간 가져오기
+/**
+ * 프로젝트 평가 값 합산 - 실시간 가져오기
+ * @param {string} menu 카테고리 ("graduations", "contests")
+ * @param {string} post_id 포스트 아이디
+ * @param {string} project_id 프로젝트 아이디
+ * @returns
+ */
 export const onSnapshotProjectReviews = (menu, post_id, project_id) => {
+  // 평가 데이터 ref 선언
   const perfectionSum = ref(0);
   const creativitySum = ref(0);
   const technicalitySum = ref(0);
@@ -344,10 +426,12 @@ export const onSnapshotProjectReviews = (menu, post_id, project_id) => {
   const designSum = ref(0);
 
   let unsub = () => {};
+  // 실시간 데이터 가져오기
   unsub();
   unsub = onSnapshot(
     collection(db, menu, post_id, "projects", project_id, "reviews"),
     (snapshot) => {
+      // 평가데이터를 Array에 넣고 합한 값을 ref 변수에 넣음
       // perfection
       const perfectionArray = [];
       snapshot.forEach((doc) => {
@@ -390,6 +474,7 @@ export const onSnapshotProjectReviews = (menu, post_id, project_id) => {
       });
     }
   );
+  // 마운트가 종료됬을 때 실시간 데이터 가져오기 종료
   onUnmounted(() => unsub());
 
   return {
@@ -401,7 +486,16 @@ export const onSnapshotProjectReviews = (menu, post_id, project_id) => {
   };
 };
 
-// 졸업작품 프로젝트 댓글 - 추가
+// 프로젝트 댓글 - 추가
+/**
+ * 프로젝트 댓글 - 추가
+ * @param {string} menu 카테고리 ("graduations", "contests")
+ * @param {string} post_id 포스트 아이디
+ * @param {string} project_id 프로젝트 아이디
+ * @param {Promise<number>} rating 평점
+ * @param {Promise<string>} comment 댓글내용
+ * @param {string} name 이름
+ */
 export const createProjectComment = async (
   menu,
   post_id,
@@ -422,7 +516,14 @@ export const createProjectComment = async (
   );
 };
 
-// 졸업작품 프로젝트 댓글 - 유무확인
+// 프로젝트 댓글 - 유무확인
+/**
+ * // 프로젝트 댓글을 작성했는 지 유무를 확인
+ * @param {string} menu 카테고리 ("graduations", "contests")
+ * @param {string} post_id 포스트 아이디
+ * @param {string} project_id 프로젝트 아이디
+ * @returns true, false
+ */
 export const checkProjectComments = async (menu, post_id, project_id) => {
   const commentsRef = collection(
     db,
@@ -432,8 +533,10 @@ export const checkProjectComments = async (menu, post_id, project_id) => {
     project_id,
     "comments"
   );
+  // 유저 아이디가 같은 프로젝트 댓글을 찾는 쿼리
   const q = query(commentsRef, where("uid", "==", user?.value?.uid));
   const querySnapshot = await getDocs(q);
+  // 유저 아이디가 같은 댓글이 있다면, (true 반환), 없다면 (false 반환)
   if (querySnapshot.docs[0]?.data().uid === user?.value?.uid) {
     return true;
   } else {
@@ -441,10 +544,18 @@ export const checkProjectComments = async (menu, post_id, project_id) => {
   }
 };
 
-// 졸업작품 프로젝트 댓글 - 가져오기
+// 프로젝트 댓글 - 실시간 가져오기
+/**
+ * 프로젝트 댓글들 실시간으로 가져오기
+ * @param {string} menu 카테고리 ("graduations", "contests")
+ * @param {string} post_id 포스트 아이디
+ * @param {string} project_id 프로젝트 아이디
+ * @returns
+ */
 export const onSnapshotProjectComments = (menu, post_id, project_id) => {
   const comments = ref([]);
   let unsub = () => {};
+  // 프로젝트 댓글 실시간으로 가져오기
   unsub();
   const commentsRef = collection(
     db,
@@ -454,6 +565,7 @@ export const onSnapshotProjectComments = (menu, post_id, project_id) => {
     project_id,
     "comments"
   );
+  // 프로젝트 댓글들 시간순으로 정렬하는 쿼리
   const q = query(commentsRef, orderBy("timestamp"));
   unsub = onSnapshot(q, (snapshot) => {
     comments.value = snapshot.docs.map((doc) => ({
@@ -461,12 +573,21 @@ export const onSnapshotProjectComments = (menu, post_id, project_id) => {
       ...doc.data(),
     }));
   });
+  // 마운트가 종료됬을 때 실시간 댓글 가져오기 종료
   onUnmounted(() => unsub());
 
   return comments;
 };
 
-// 졸업작품 프로젝트 댓글 - 삭제
+// 프로젝트 댓글 - 삭제
+/**
+ * 프로젝트 댓글 - 삭제
+ * @param {string} menu 카테고리 ("graduations", "contests")
+ * @param {string} post_id 포스트 아이디
+ * @param {string} project_id 프로젝트 아이디
+ * @param {string} comment_uid 댓글 - 유저아이디
+ * @param {string} comment_id 댓글 - 아이디
+ */
 export const deleteProjectComment = async (
   menu,
   post_id,
@@ -475,7 +596,6 @@ export const deleteProjectComment = async (
   comment_id
 ) => {
   // if (comment_uid !== user?.value?.uid) return;
-  console.log(menu);
   const commentsRef = collection(
     db,
     menu,
@@ -484,8 +604,10 @@ export const deleteProjectComment = async (
     project_id,
     "comments"
   );
+  // 유저 아이디가 같은 댓글 찾는 쿼리
   const q = query(commentsRef, where("uid", "==", comment_uid));
   const querySnapshot = await getDocs(q);
+  // 유저 아이디가 같다면 댓글 삭제
   if (querySnapshot.docs[0]?.data().uid === comment_uid) {
     deleteDoc(
       doc(db, menu, post_id, "projects", project_id, "comments", comment_id)
@@ -496,6 +618,14 @@ export const deleteProjectComment = async (
 // Update Post
 
 // Notices
+/**
+ * 공지사항 포스트 수정
+ * @param {Promise<string>} title 제목
+ * @param {Promise<string>} description 내용
+ * @param {string} name 이름
+ * @param {boolean} admin 사용자권한
+ * @param {string} post_id 포스트 아이디
+ */
 export const updateNotice = async (
   title,
   description,
@@ -513,6 +643,16 @@ export const updateNotice = async (
 };
 
 // Events
+/**
+ * 이벤트 포스트 수정
+ * @param {Promise<string>} title 제목
+ * @param {Promise<string>} startDate 시작날짜
+ * @param {Promise<string>} endDate 종료날짜
+ * @param {Promise<string>} description 내용
+ * @param {string} name 이름
+ * @param {boolean} admin 사용자권한
+ * @param {string} post_id 포스트 아이디
+ */
 export const updateEvent = async (
   title,
   startDate,
@@ -534,6 +674,16 @@ export const updateEvent = async (
 };
 
 // Graduations
+/**
+ * 졸업작품 포스트 수정
+ * @param {Promise<string>} title 제목
+ * @param {Promise<string>} year 연도
+ * @param {Promise<string>} university 학교
+ * @param {Promise<string>} department 학과
+ * @param {Promise<string>} img 이미지링크
+ * @param {Promise<string>} url 사이트링크
+ * @param {string} post_id 포스트 아이디
+ */
 export const updateGraduation = async (
   title,
   year,
@@ -554,6 +704,20 @@ export const updateGraduation = async (
 };
 
 // Contests
+/**
+ * 공모전 포스트 수정
+ * @param {Promise<string>} title 제목
+ * @param {Promise<string>} host 주관
+ * @param {Promise<string>} supervision 주최
+ * @param {Promise<string>} sponsor 후원
+ * @param {Promise<string>} startDate 시작날짜
+ * @param {Promise<string>} endDate 종료날짜
+ * @param {Promise<string>} target 대상
+ * @param {Promise<string>} field 분야
+ * @param {Promise<string>} img 이미지링크
+ * @param {Promise<string>} url 사이트링크
+ * @param {string} post_id 포스트 아이디
+ */
 export const updateContest = async (
   title,
   host,
@@ -581,13 +745,49 @@ export const updateContest = async (
   });
 };
 
+// Project Update
+/**
+ * 프로젝트 업데이트
+ * @param {string} menu 카테고리
+ * @param {string} post_id 포스트 아이디
+ * @param {string} project_id 프로젝트 아이디
+ * @param {Promise<string>} title 제목
+ * @param {Promise<string>} description 내용
+ * @param {Promise<string>} img 이미지링크
+ */
+export const updateProject = async (
+  menu,
+  post_id,
+  project_id,
+  title,
+  description,
+  img
+) => {
+  await updateDoc(doc(db, menu, post_id, "projects", project_id), {
+    title: title?.value,
+    description: description?.value,
+    img: img?.value,
+  });
+};
+
 // Views Count
+/**
+ * 포스트 views 카운트 증가
+ * @param {string} menu 카테고리 ("graduations", "contests", "notices", "events")
+ * @param {string} post_id 포스트 아이디
+ */
 export const updateViewsCount = async (menu, post_id) => {
   await updateDoc(doc(db, menu, post_id), {
     views: increment(1),
   });
 };
 
+/**
+ * 프로젝트 views 카운트 증가
+ * @param {string} menu 카테고리 ("graduations", "contests")
+ * @param {string} post_id 포스트 아이디
+ * @param {string} project_id 프로젝트 아이디
+ */
 export const updateViewsProjectCount = async (menu, post_id, project_id) => {
   await updateDoc(doc(db, menu, post_id, "projects", project_id), {
     views: increment(1),
@@ -595,27 +795,81 @@ export const updateViewsProjectCount = async (menu, post_id, project_id) => {
 };
 
 // Delete Post
+/**
+ * 포스트(공지사항, 이벤트) 삭제
+ * @param {string} menu 카테고리 ("notices", "events")
+ * @param {string} post_id 포스트 아이디
+ */
 export const deletePost = async (menu, post_id) => {
   await deleteDoc(doc(db, menu, post_id));
 };
 
-// Loading PostList
-export const onSnapshotProjects = (menu, post_id) => {
-  const projects = ref([]);
-  let unsub = () => {};
-  unsub();
-  unsub = onSnapshot(collection(db, menu, post_id, "projects"), (snapshot) => {
-    projects.value = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+/**
+ * 포스트(졸업작품, 공모전) 삭제
+ * @param {string} menu 카테고리 ("graduations", "contests")
+ * @param {string} post_id 포스트 아이디
+ */
+export const deleteProjectPost = async (menu, post_id) => {
+  // 포스트 좋아요 삭제
+  const likes = await getDocs(collection(db, menu, post_id, "likes"));
+  likes.docs.forEach(async (like) => {
+    await deleteDoc(doc(db, menu, post_id, "likes", like.id));
   });
-  onUnmounted(() => unsub());
-
-  return projects;
+  // 포스트 프로젝트 삭제
+  const projects = await getDocs(collection(db, menu, post_id, "projects"));
+  projects.docs.forEach(async (project) => {
+    await deleteProject(menu, post_id, project.id);
+  });
+  // 포스트 삭제
+  await deleteDoc(doc(db, menu, post_id));
 };
 
+/**
+ * 프로젝트 삭제
+ * @param {string} menu 카테고리 ("graduations", "contests")
+ * @param {string} post_id 포스트 아이디
+ * @param {string} project_id 프로젝트 아이디
+ */
+export const deleteProject = async (menu, post_id, project_id) => {
+  // 프로젝트 좋아요 삭제
+  const likes = await getDocs(
+    collection(db, menu, post_id, "projects", project_id, "likes")
+  );
+  likes.docs.forEach(async (like) => {
+    await deleteDoc(
+      doc(db, menu, post_id, "projects", project_id, "likes", like.id)
+    );
+  });
+  // 프로젝트 평가 삭제
+  const reviews = await getDocs(
+    collection(db, menu, post_id, "projects", project_id, "reviews")
+  );
+  reviews.docs.forEach(async (review) => {
+    await deleteDoc(
+      doc(db, menu, post_id, "projects", project_id, "reviews", review.id)
+    );
+  });
+  // 프로젝트 댓글 삭제
+  const comments = await getDocs(
+    collection(db, menu, post_id, "projects", project_id, "comments")
+  );
+  comments.docs.forEach(async (comment) => {
+    await deleteDoc(
+      doc(db, menu, post_id, "projects", project_id, "comments", comment.id)
+    );
+  });
+  // 프로젝트 삭제
+  await deleteDoc(doc(db, menu, post_id, "projects", project_id));
+};
+
+// Loading Post
+
 // 리스트 페이지 - 스냅샷
+/**
+ * 포스트 리스트 실시간 가져오기
+ * @param {string} menu 카테고리 ("graduations", "contests", "notices", "events")
+ * @returns
+ */
 export const onSnapshotPostsPage = (menu) => {
   let posts = [];
   const postsPage = ref([]);
@@ -632,9 +886,12 @@ export const onSnapshotPostsPage = (menu) => {
 
     return newArray;
   };
+
   const postRef = collection(db, menu);
   const q = query(postRef, orderBy("timestamp"));
+
   let unsub = () => {};
+  // 포스트 리스트 실시간 가져오기
   unsub();
   unsub = onSnapshot(q, (snapshot) => {
     posts = snapshot.docs.map((doc) => ({
@@ -643,12 +900,43 @@ export const onSnapshotPostsPage = (menu) => {
     }));
     postsPage.value = division(posts, 10);
   });
+  // 마운트 종료됬을 때 실시간 가져오기 종료
   onUnmounted(() => unsub());
 
   return postsPage;
 };
 
+// 프로젝트 리스트 - 스냅샷
+/**
+ * 프로젝트 리스트 실시간 가져오기
+ * @param {string} menu 카데고리 ("graduations", "contests")
+ * @param {string} post_id 포스트 아이디
+ * @returns
+ */
+export const onSnapshotProjects = (menu, post_id) => {
+  const projects = ref([]);
+  let unsub = () => {};
+  // 프로젝트 리스트 실시간 가져오기
+  unsub();
+  unsub = onSnapshot(collection(db, menu, post_id, "projects"), (snapshot) => {
+    projects.value = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  });
+  // 마운트가 종료됬을 때 실시간 가져오기 종료
+  onUnmounted(() => unsub());
+
+  return projects;
+};
+
 // 일반 게시물 데이터(공지사항, 이벤트, 졸업작품소개, 공모전소개) - 스냅샷
+/**
+ *
+ * @param {string} menu 카테고리 ("graduations", "contests", "notices", "events")
+ * @param {string} post_id 포스트 아이디
+ * @returns
+ */
 export const onSnapshotPost = (menu, post_id) => {
   const post = ref();
   let unsub = () => {};
@@ -663,19 +951,34 @@ export const onSnapshotPost = (menu, post_id) => {
 };
 
 // 프로젝트 게시물 데이터(졸업작품, 공모전 - 프로젝트) - 스냅샷
+/**
+ *
+ * @param {string} menu 카데고리 ("graduations", "contests")
+ * @param {string} post_id 포스트 아이디
+ * @param {string} project_id 프로젝트 아이디
+ * @returns
+ */
 export const onSnapshotProject = (menu, post_id, project_id) => {
   const project = ref();
   let unsub = () => {};
+  // 프로젝트 포스트 데이터 실시간 가져오기
   unsub();
   unsub = onSnapshot(
     doc(db, menu, post_id, "projects", project_id),
     (doc) => (project.value = doc.data())
   );
+  // 마운트 종료됬을 때 실시간 가져오기 종료
   onUnmounted(() => unsub());
 
   return project;
 };
 
+/**
+ * 포스트 (내용) 실시간 가져오기
+ * @param {string} menu 카테고리 ("graduations", "contests", "notices", "events")
+ * @param {string} post_id 포스트 아이디
+ * @returns
+ */
 export const onSnapshotPostContent = (menu, post_id) => {
   const post = ref();
   let unsub = () => {};
@@ -691,6 +994,12 @@ export const onSnapshotPostContent = (menu, post_id) => {
 
 // 업데이트(수정) 페이지 V-model 바인딩용 getDoc
 
+/**
+ *
+ * @param {string} menu 카테고리
+ * @param {string} id 포스트 아이디
+ * @returns
+ */
 export const getPost = async (menu, id) => {
   const docRef = doc(db, menu, id);
   const docSnap = await getDoc(docRef);
@@ -698,6 +1007,12 @@ export const getPost = async (menu, id) => {
   return docSnap;
 };
 
+/**
+ *
+ * @param {string} menu 카테고리
+ * @param {string} id 포스트 아이디
+ * @returns
+ */
 export const getContent = async (menu, id) => {
   const docRef = doc(db, menu, id);
   const docSnap = await getDoc(docRef);
@@ -705,6 +1020,12 @@ export const getContent = async (menu, id) => {
   return docSnap.data().description;
 };
 
+/**
+ *
+ * @param {string} menu 카테고리
+ * @param {string} id 포스트 아이디
+ * @returns
+ */
 export const getTitle = async (menu, id) => {
   const docRef = doc(db, menu, id);
   const docSnap = await getDoc(docRef);
@@ -712,6 +1033,12 @@ export const getTitle = async (menu, id) => {
   return docSnap.data().title;
 };
 
+/**
+ *
+ * @param {string} menu 카테고리
+ * @param {string} id 포스트 아이디
+ * @returns
+ */
 export const getStartDate = async (menu, id) => {
   const docRef = doc(db, menu, id);
   const docSnap = await getDoc(docRef);
@@ -719,6 +1046,12 @@ export const getStartDate = async (menu, id) => {
   return docSnap.data().startDate;
 };
 
+/**
+ *
+ * @param {string} menu 카테고리
+ * @param {string} id 포스트 아이디
+ * @returns
+ */
 export const getEndDate = async (menu, id) => {
   const docRef = doc(db, menu, id);
   const docSnap = await getDoc(docRef);
@@ -726,6 +1059,12 @@ export const getEndDate = async (menu, id) => {
   return docSnap.data().endDate;
 };
 
+/**
+ *
+ * @param {string} menu 카테고리
+ * @param {string} id 포스트 아이디
+ * @returns
+ */
 export const getYear = async (menu, id) => {
   const docRef = doc(db, menu, id);
   const docSnap = await getDoc(docRef);
@@ -733,6 +1072,12 @@ export const getYear = async (menu, id) => {
   return docSnap.data().year;
 };
 
+/**
+ *
+ * @param {string} menu 카테고리
+ * @param {string} id 포스트 아이디
+ * @returns
+ */
 export const getUniversity = async (menu, id) => {
   const docRef = doc(db, menu, id);
   const docSnap = await getDoc(docRef);
@@ -740,6 +1085,12 @@ export const getUniversity = async (menu, id) => {
   return docSnap.data().university;
 };
 
+/**
+ *
+ * @param {string} menu 카테고리
+ * @param {string} id 포스트 아이디
+ * @returns
+ */
 export const getDepartment = async (menu, id) => {
   const docRef = doc(db, menu, id);
   const docSnap = await getDoc(docRef);
@@ -747,6 +1098,12 @@ export const getDepartment = async (menu, id) => {
   return docSnap.data().department;
 };
 
+/**
+ *
+ * @param {string} menu 카테고리
+ * @param {string} id 포스트 아이디
+ * @returns
+ */
 export const getImg = async (menu, id) => {
   const docRef = doc(db, menu, id);
   const docSnap = await getDoc(docRef);
@@ -754,6 +1111,12 @@ export const getImg = async (menu, id) => {
   return docSnap.data().img;
 };
 
+/**
+ *
+ * @param {string} menu 카테고리
+ * @param {string} id 포스트 아이디
+ * @returns
+ */
 export const getPostUrl = async (menu, id) => {
   const docRef = doc(db, menu, id);
   const docSnap = await getDoc(docRef);
@@ -761,6 +1124,12 @@ export const getPostUrl = async (menu, id) => {
   return docSnap.data().url;
 };
 
+/**
+ *
+ * @param {string} menu 카테고리
+ * @param {string} id 포스트 아이디
+ * @returns
+ */
 export const getHost = async (menu, id) => {
   const docRef = doc(db, menu, id);
   const docSnap = await getDoc(docRef);
@@ -768,6 +1137,12 @@ export const getHost = async (menu, id) => {
   return docSnap.data().host;
 };
 
+/**
+ *
+ * @param {string} menu 카테고리
+ * @param {string} id 포스트 아이디
+ * @returns
+ */
 export const getSupervision = async (menu, id) => {
   const docRef = doc(db, menu, id);
   const docSnap = await getDoc(docRef);
@@ -775,6 +1150,12 @@ export const getSupervision = async (menu, id) => {
   return docSnap.data().supervision;
 };
 
+/**
+ *
+ * @param {string} menu 카테고리
+ * @param {string} id 포스트 아이디
+ * @returns
+ */
 export const getSponsor = async (menu, id) => {
   const docRef = doc(db, menu, id);
   const docSnap = await getDoc(docRef);
@@ -782,6 +1163,12 @@ export const getSponsor = async (menu, id) => {
   return docSnap.data().sponsor;
 };
 
+/**
+ *
+ * @param {string} menu 카테고리
+ * @param {string} id 포스트 아이디
+ * @returns
+ */
 export const getTarget = async (menu, id) => {
   const docRef = doc(db, menu, id);
   const docSnap = await getDoc(docRef);
@@ -789,9 +1176,60 @@ export const getTarget = async (menu, id) => {
   return docSnap.data().target;
 };
 
+/**
+ *
+ * @param {string} menu 카테고리
+ * @param {string} id 포스트 아이디
+ * @returns
+ */
 export const getField = async (menu, id) => {
   const docRef = doc(db, menu, id);
   const docSnap = await getDoc(docRef);
 
   return docSnap.data().field;
+};
+
+// Project getDoc
+
+/**
+ *
+ * @param {string} menu 카테고리
+ * @param {string} post_id 포스트 아이디
+ * @param {string} project_id 프로젝트 아이디
+ * @returns
+ */
+export const getProjectTitle = async (menu, post_id, project_id) => {
+  const docRef = doc(db, menu, post_id, "projects", project_id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().title;
+};
+
+/**
+ *
+ * @param {string} menu 카테고리
+ * @param {string} post_id 포스트 아이디
+ * @param {string} project_id 프로젝트 아이디
+ * @returns
+ */
+export const getProjectContent = async (menu, post_id, project_id) => {
+  const docRef = doc(db, menu, post_id, "projects", project_id);
+  const docSnap = await getDoc(docRef);
+  console.log(docSnap.data().description);
+
+  return docSnap.data().description;
+};
+
+/**
+ *
+ * @param {string} menu 카테고리
+ * @param {string} post_id 포스트 아이디
+ * @param {string} project_id 프로젝트 아이디
+ * @returns
+ */
+export const getProjectImg = async (menu, post_id, project_id) => {
+  const docRef = doc(db, menu, post_id, "projects", project_id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().img;
 };

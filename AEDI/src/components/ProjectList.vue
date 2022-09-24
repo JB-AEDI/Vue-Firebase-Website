@@ -8,7 +8,7 @@
         <div
           class="w-full h-56 rounded-t-md cursor-pointer"
           :style="{ backgroundImage: `url(${project.img})` }"
-          @click="moveProject(project.id)"
+          @click="moveProject(menu, project.id)"
         ></div>
         <div class="px-2">
           <span

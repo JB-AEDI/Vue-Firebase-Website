@@ -60,7 +60,8 @@ const routes = [
   {
     path: "/contest/:post_id/project/:project_id/update",
     name: "공모전 프로젝트 수정",
-    component: () => import("./../pages/ContestPages/ContestProjectUpdate.vue"),
+    component: () =>
+      import("./../pages/ContestPages/ContestProjectUpdatePage.vue"),
   },
   {
     path: "/graduation/page",

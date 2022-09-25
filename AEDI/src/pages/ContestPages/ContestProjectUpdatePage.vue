@@ -1,5 +1,5 @@
 <template>
-  <form class="px-5" @submit.prevent="upload">
+  <form v-if="user?.emailVerified" class="px-5" @submit.prevent="upload">
     <div>
       <label
         for="title"
@@ -26,11 +26,16 @@
         type="file"
         id="formFile"
         @change="handleFileChange"
+        required
       />
     </div>
     <img :src="previewImgSrc" alt="preview-image" class="max-w-sm mb-10" />
 
-    <TuiEditor v-if="content" v-model="content" @add-image="addImage"></TuiEditor>
+    <TuiEditor
+      v-if="content"
+      v-model="content"
+      @add-image="addImage"
+    ></TuiEditor>
     <button
       class="mr-5 mt-4 float-right bg-indigo-500 py-2 px-3 rounded-md text-white"
       type="submit"
@@ -48,6 +53,7 @@
       </div>
     </Teleport>
   </form>
+  <div v-else>잘못된 접근입니다.</div>
 </template>
 
 <script setup>
@@ -62,6 +68,7 @@ import {
 import { uploadFile, getUrl } from "../../firebase/firestore";
 import { useRouter } from "vue-router";
 import { useRouteParams } from "@vueuse/router";
+import { user } from "../../firebase/user";
 
 const router = useRouter();
 const postId = useRouteParams("post_id").value;
@@ -69,7 +76,9 @@ const projectId = useRouteParams("project_id").value;
 
 const title = ref("");
 const content = ref("");
-const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
+const previewImgSrc = ref(
+  "https://via.placeholder.com/384x500?text=Upload+Image"
+);
 const imgSrc = ref("");
 
 const loading = ref(false);

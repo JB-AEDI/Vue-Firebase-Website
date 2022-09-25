@@ -1,9 +1,7 @@
 <template>
   <div v-if="projectData" class="px-10">
     <div class="flex">
-      <div
-        class="w-full max-w-[260px] h-72 bg-gray-200 flex justify-center items-center"
-      >
+      <div class="w-full max-w-[260px] h-72 bg-gray-200 flex justify-center items-center">
         <img :src="projectData?.img" alt="project-img" class="w-full" />
       </div>
       <div class="w-full pl-6 flex flex-col gap-2 mt-2">
@@ -27,18 +25,14 @@
             <span v-if="projectData?.timestamp.toDate().getMonth() < 9"
               >0{{ projectData?.timestamp.toDate().getMonth() + 1 }}</span
             >
-            <span v-else>{{
-              projectData?.timestamp.toDate().getMonth() + 1
-            }}</span>
+            <span v-else>{{ projectData?.timestamp.toDate().getMonth() + 1 }}</span>
             <span class="mx-0.5">-</span>
             <span v-if="projectData?.timestamp.toDate().getDate() < 10"
               >0{{ projectData?.timestamp.toDate().getDate() }}</span
             >
             <span v-else>{{ projectData?.timestamp.toDate().getDate() }}</span>
 
-            <span
-              v-if="projectData?.timestamp.toDate().getHours() < 10"
-              class="ml-2"
+            <span v-if="projectData?.timestamp.toDate().getHours() < 10" class="ml-2"
               >0{{ projectData?.timestamp.toDate().getHours() }}</span
             >
             <span v-else class="ml-3">{{
@@ -48,16 +42,12 @@
             <span v-if="projectData?.timestamp.toDate().getMinutes() < 10"
               >0{{ projectData?.timestamp.toDate().getMinutes() }}</span
             >
-            <span v-else>{{
-              projectData?.timestamp.toDate().getMinutes()
-            }}</span>
+            <span v-else>{{ projectData?.timestamp.toDate().getMinutes() }}</span>
             <span class="mx-0.5">:</span>
             <span v-if="projectData?.timestamp.toDate().getSeconds() < 10"
               >0{{ projectData?.timestamp.toDate().getSeconds() }}</span
             >
-            <span v-else>{{
-              projectData?.timestamp.toDate().getSeconds()
-            }}</span>
+            <span v-else>{{ projectData?.timestamp.toDate().getSeconds() }}</span>
           </div>
         </div>
         <div class="grid grid-cols-12">
@@ -108,24 +98,14 @@
         </div>
       </div>
     </div>
-    <h3 class="text-2xl font-bold my-5 pb-2 border-b border-gray-400">
-      상세설명
-    </h3>
+    <h3 class="text-2xl font-bold my-5 pb-2 border-b border-gray-400">상세설명</h3>
     <TuiViewer
       v-if="projectData?.description"
       :content="projectData?.description"
     ></TuiViewer>
-    <h2 class="mt-16 mb-5 text-2xl font-bold pb-2 border-b border-gray-400">
-      평가
-    </h2>
+    <h2 class="mt-16 mb-5 text-2xl font-bold pb-2 border-b border-gray-400">평가</h2>
     <Chart
-      v-if="
-        perfectionSum &&
-        creativitySum &&
-        technicalitySum &&
-        businessSum &&
-        designSum
-      "
+      v-if="perfectionSum && creativitySum && technicalitySum && businessSum && designSum"
       :perfectionSum="perfectionSum"
       :creativitySum="creativitySum"
       :technicalitySum="technicalitySum"
@@ -155,10 +135,7 @@
         <button
           class="bg-indigo-500 py-2 px-3 rounded-md text-white text-lg float-right"
           @click="
-            [
-              deleteMyProjectReview('graduations', postId, projectId),
-              (isReview = false),
-            ]
+            [deleteMyProjectReview('graduations', postId, projectId), (isReview = false)]
           "
         >
           <span><font-awesome-icon icon="fa-solid fa-trash" /></span>
@@ -197,7 +174,7 @@
                 @send-business="getBusiness"
                 @send-design="getDesign"
               ></Review>
-              <div class="flex justify-center mt-5">
+              <div v-if="user" class="flex justify-center mt-5">
                 <button
                   class="bg-indigo-500 py-2 px-3 rounded-md text-white"
                   type="submit"
@@ -211,9 +188,7 @@
       </Transition>
     </Teleport>
 
-    <h2 class="mt-16 mb-5 text-2xl font-bold pb-2 border-b border-gray-400">
-      댓글
-    </h2>
+    <h2 class="mt-16 mb-5 text-2xl font-bold pb-2 border-b border-gray-400">댓글</h2>
     <AddComment v-if="!isComment" :menu="menu"></AddComment>
     <Comment
       v-if="commentsData"
@@ -321,26 +296,14 @@ const checkReview = async () => {
   isReview.value = await checkProjectReview("graduations", postId, projectId);
 };
 const getReview = async () => {
-  myReviewData.value = await getMyProjectReview(
-    "graduations",
-    postId,
-    projectId
-  );
+  myReviewData.value = await getMyProjectReview("graduations", postId, projectId);
 };
 
 const checkComment = async () => {
-  isComment.value = await checkProjectComments(
-    "graduations",
-    postId,
-    projectId
-  );
+  isComment.value = await checkProjectComments("graduations", postId, projectId);
 };
 
-const commentsData = onSnapshotProjectComments(
-  "graduations",
-  postId,
-  projectId
-);
+const commentsData = onSnapshotProjectComments("graduations", postId, projectId);
 
 onBeforeMount(async () => {
   graduationTitle.value = await getTitle("graduations", postId);

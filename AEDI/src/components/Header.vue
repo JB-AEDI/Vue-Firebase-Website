@@ -6,7 +6,11 @@
       <RouterLink :to="{ name: 'main' }">
         <a href="@">
           <div class="flex items-center">
-            <font-awesome-icon icon="fa-regular fa-lightbulb" size="2xl" rotation="180" />
+            <font-awesome-icon
+              icon="fa-regular fa-lightbulb"
+              size="2xl"
+              rotation="180"
+            />
             <h1 class="text-3xl font-bold ml-2">AEDI</h1>
           </div>
         </a>
@@ -14,9 +18,15 @@
       <RouterLink to="/graduation/page" class="text-lg font-semibold"
         >졸업작품</RouterLink
       >
-      <RouterLink to="/contest/page" class="text-lg font-semibold">공모전</RouterLink>
-      <RouterLink to="/notice/page" class="text-lg font-semibold">공지사항</RouterLink>
-      <RouterLink to="/event/page" class="text-lg font-semibold">이벤트</RouterLink>
+      <RouterLink to="/contest/page" class="text-lg font-semibold"
+        >공모전</RouterLink
+      >
+      <RouterLink to="/notice/page" class="text-lg font-semibold"
+        >공지사항</RouterLink
+      >
+      <RouterLink to="/event/page" class="text-lg font-semibold"
+        >이벤트</RouterLink
+      >
     </div>
     <div class="w-2/12 flex justify-end pr-3">
       <div v-if="user === null">
@@ -65,7 +75,12 @@
               <div class="flex justify-center border-b border-gray-300 py-3">
                 <button
                   class="py-1 px-3 border-2 rounded-3xl hover:bg-gray-100"
-                  @click="[router.push({ name: '마이페이지' }), (isClickedPhoto = false)]"
+                  @click="
+                    [
+                      router.push({ name: '마이페이지' }),
+                      (isClickedPhoto = false),
+                    ]
+                  "
                 >
                   사용자정보 변경
                 </button>

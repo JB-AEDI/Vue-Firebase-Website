@@ -26,6 +26,7 @@
         type="file"
         id="formFile"
         @change="handleFileChange"
+        required
       />
     </div>
     <img :src="previewImgSrc" alt="preview-image" class="max-w-sm mb-10" />

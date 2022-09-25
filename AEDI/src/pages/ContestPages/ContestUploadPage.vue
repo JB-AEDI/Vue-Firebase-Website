@@ -1,5 +1,5 @@
 <template>
-  <form class="px-5" @submit.prevent="upload">
+  <form v-if="userProfile?.admin" class="px-5" @submit.prevent="upload">
     <div>
       <label
         for="title"
@@ -157,6 +157,7 @@
         type="file"
         id="formFile"
         @change="handleFileChange"
+        required
       />
     </div>
     <img :src="previewImgSrc" alt="preview-image" class="max-w-sm" />
@@ -178,6 +179,7 @@
       </div>
     </Teleport>
   </form>
+  <div v-else>잘못된 접근입니다.</div>
 </template>
 
 <script setup>
@@ -188,6 +190,7 @@ import { uploadFile, getUrl } from "../../firebase/firestore";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
+const userProfile = inject("userProfile");
 
 const title = ref("");
 const host = ref("");

@@ -14,8 +14,8 @@ import {
 } from "firebase/auth";
 
 export const user = ref(null);
+export const auth = getAuth();
 
-const auth = getAuth();
 onAuthStateChanged(auth, (data) => {
   if (data) {
     user.value = data;

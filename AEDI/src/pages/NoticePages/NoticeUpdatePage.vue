@@ -1,5 +1,5 @@
 <template>
-  <form class="px-5" @submit.prevent="upload">
+  <form v-if="userProfile?.admin" class="px-5" @submit.prevent="upload">
     <div>
       <label
         for="title"
@@ -36,6 +36,7 @@
       </div>
     </Teleport>
   </form>
+  <div v-else>잘못된 접근입니다.</div>
 </template>
 
 <script setup>

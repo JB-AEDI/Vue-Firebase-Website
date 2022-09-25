@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-4">
+  <div v-if="user" class="flex flex-col gap-4">
     <!-- 완성도 (perfection) -->
     <div class="grid grid-cols-6">
       <div class="col-span-1 flex items-center font-bold text-lg">완성도</div>
@@ -446,10 +446,12 @@
       </div>
     </div>
   </div>
+  <div v-else>평가를 할려면 로그인을 하세요.</div>
 </template>
 
 <script setup>
 import { ref, watch } from "vue";
+import { user } from "../firebase/user";
 
 const perfectionValue = ref("");
 const creativityValue = ref("");

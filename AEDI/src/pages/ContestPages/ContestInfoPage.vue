@@ -123,7 +123,7 @@
     <div class="flex justify-between items-center pb-3 border-b border-gray-400">
       <span class="font-bold text-xl">프로젝트</span>
       <button
-        v-if="user"
+        v-if="user?.emailVerified"
         @click="uploadProject"
         class="px-3 py-2 bg-yellow-300 rounded-md"
       >

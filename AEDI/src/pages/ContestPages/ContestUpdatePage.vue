@@ -1,5 +1,5 @@
 <template>
-  <form class="px-5" @submit.prevent="upload">
+  <form v-if="userProfile?.admin" class="px-5" @submit.prevent="upload">
     <div>
       <label
         for="title"
@@ -157,6 +157,7 @@
         type="file"
         id="formFile"
         @change="handleFileChange"
+        required
       />
     </div>
     <img :src="previewImgSrc" alt="preview-image" class="max-w-sm" />
@@ -178,6 +179,7 @@
       </div>
     </Teleport>
   </form>
+  <div v-eles>잘못된 접근입니다.</div>
 </template>
 
 <script setup>
@@ -201,6 +203,7 @@ import { useRouteParams } from "@vueuse/router";
 
 const router = useRouter();
 const postId = useRouteParams("post_id").value;
+const userProfile = inject("userProfile");
 
 const title = ref("");
 const host = ref("");
@@ -211,9 +214,7 @@ const endDate = ref("");
 const target = ref("");
 const field = ref("");
 const url = ref("");
-const previewImgSrc = ref(
-  "https://via.placeholder.com/384x500?text=Upload+Image"
-);
+const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
 const imgSrc = ref("");
 
 const loading = ref(false);

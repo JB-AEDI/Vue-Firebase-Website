@@ -1,5 +1,5 @@
 <template>
-  <form class="px-5" @submit.prevent="upload">
+  <form v-if="userProfile?.admin" class="px-5" @submit.prevent="upload">
     <div>
       <label
         for="title"
@@ -87,6 +87,7 @@
         type="file"
         id="formFile"
         @change="handleFileChange"
+        required
       />
     </div>
     <img :src="previewImgSrc" alt="preview-image" class="max-w-sm" />
@@ -109,6 +110,7 @@
       </div>
     </Teleport>
   </form>
+  <div v-else>잘못된 접근입니다.</div>
 </template>
 
 <script setup>
@@ -128,14 +130,13 @@ import { uploadFile, getUrl } from "../../firebase/firestore";
 
 const router = useRouter();
 const postId = useRouteParams("post_id").value;
+const userProfile = inject("userProfile");
 
 const title = ref("");
 const year = ref("");
 const university = ref("");
 const department = ref("");
-const previewImgSrc = ref(
-  "https://via.placeholder.com/384x500?text=Upload+Image"
-);
+const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
 const imgSrc = ref("");
 const url = ref("");
 
@@ -172,15 +173,7 @@ const upload = async () => {
     await uploadFile(formFilePath, formFile);
     imgSrc.value = await getUrl(formFilePath);
   }
-  await updateGraduation(
-    title,
-    year,
-    university,
-    department,
-    imgSrc,
-    url,
-    postId
-  );
+  await updateGraduation(title, year, university, department, imgSrc, url, postId);
 
   loading.value = false;
   router.go(-1);

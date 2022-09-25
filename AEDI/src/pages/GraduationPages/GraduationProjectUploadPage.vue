@@ -1,5 +1,5 @@
 <template>
-  <form class="px-5" @submit.prevent="upload">
+  <form v-if="user?.emailVerified" class="px-5" @submit.prevent="upload">
     <div>
       <label
         for="title"
@@ -26,6 +26,7 @@
         type="file"
         id="formFile"
         @change="handleImgFileChange"
+        required
       />
     </div>
     <img :src="previewImgSrc" alt="preview-image" class="max-w-sm mb-10" />
@@ -49,6 +50,7 @@
           placeholder="파일명을 입력하세요."
           :id="'fileName-' + file"
           v-model="fileObjectName[file - 1]"
+          required
         />
       </div>
       <div>
@@ -57,6 +59,7 @@
           :name="'file-' + file"
           :id="'file-' + file"
           @change="handleFileChange(file)"
+          required
         />
       </div>
     </div>
@@ -80,6 +83,7 @@
       </div>
     </Teleport>
   </form>
+  <div v-else>잘못된 접근입니다.</div>
 </template>
 
 <script setup>
@@ -90,6 +94,7 @@ import { createProject } from "../../firebase/post";
 import { uploadFile, getUrl } from "../../firebase/firestore";
 import { useRouter } from "vue-router";
 import { useRouteParams } from "@vueuse/router";
+import { user } from "../../firebase/user";
 
 const router = useRouter();
 const postId = useRouteParams("post_id").value;

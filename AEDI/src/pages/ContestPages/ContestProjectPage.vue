@@ -177,7 +177,7 @@
                 @send-business="getBusiness"
                 @send-design="getDesign"
               ></Review>
-              <div class="flex justify-center mt-5">
+              <div v-if="user" class="flex justify-center mt-5">
                 <button
                   class="bg-indigo-500 py-2 px-3 rounded-md text-white"
                   type="submit"

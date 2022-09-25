@@ -45,6 +45,7 @@ import TuiEditor from "../../components/editor/TuiEditor.vue";
 import { createNotice } from "../../firebase/post";
 import { uploadFile, getUrl } from "../../firebase/firestore";
 import { useRouter } from "vue-router";
+import { user } from "../../firebase/user";
 
 const router = useRouter();
 
@@ -58,7 +59,7 @@ const userProfile = inject("userProfile");
 const upload = async () => {
   loading.value = true;
 
-  await createNotice(title, content, userProfile?.value?.name, userProfile?.value?.admin);
+  await createNotice(title, content, user?.value?.displayName, userProfile?.value?.admin);
   loading.value = false;
   router.push({
     path: `/notice/page`,

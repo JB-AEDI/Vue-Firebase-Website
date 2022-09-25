@@ -1,32 +1,36 @@
 <template>
   <div>
-    <div class="grid grid-cols-12 gap-2 mt-8">
-      <div
-        v-for="project in projects"
-        class="col-span-3 rounded-md h-96 border-2 border-black"
-      >
-        <div
-          class="w-full h-56 rounded-t-md cursor-pointer"
-          :style="{ backgroundImage: `url(${project.img})` }"
-          @click="moveProject(menu, project.id)"
-        ></div>
-        <div class="px-2">
-          <span
-            class="font-bold text-lg mt-1 cursor-pointer"
+    <div
+      class="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 mt-3 ml-8"
+    >
+      <div v-for="project in projects">
+        <div class="rounded-md w-5/6 h-96 border-2 border-black mt-5">
+          <div
+            class="w-full h-56 rounded-t-md cursor-pointer bg-cover"
+            :style="{ backgroundImage: `url(${project.img})` }"
             @click="moveProject(menu, project.id)"
-            >{{ project.title }}</span
-          >
-          <div class="truncate h-20 text-xs">
-            <NonCssViewer :content="project.description"></NonCssViewer>
-          </div>
-          <div class="flex justify-between text-sm mt-2">
-            <div>
-              <span>조회수</span>
-              <span class="ml-1">{{ project.views }}</span>
+          ></div>
+          <div class="px-3 mt-2 truncate">
+            <span
+              class="font-bold text- mt-1 cursor-pointer"
+              @click="moveProject(menu, project.id)"
+              >{{ project.title }}</span
+            >
+            <div class="truncate h-20 text-xs">
+              <div
+                v-html="md(project?.description)"
+                class="project-description text-sm"
+              ></div>
             </div>
-            <div>
-              <span class="text-yellow-300 mr-1">★</span>
-              <span>{{ project.likes }}</span>
+            <div class="flex justify-between text-sm mt-2">
+              <div>
+                <span>조회수</span>
+                <span class="ml-1">{{ project.views }}</span>
+              </div>
+              <div>
+                <span class="text-yellow-300 mr-1">★</span>
+                <span>{{ project.likes }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -36,7 +40,6 @@
 </template>
 
 <script setup>
-import NonCssViewer from "./editor/NonCssViewer.vue";
 import { useRouter } from "vue-router";
 import { useRouteParams } from "@vueuse/router";
 
@@ -54,3 +57,8 @@ const moveProject = (menu, project_id) => {
   });
 };
 </script>
+<style>
+.project-description img {
+  display: none;
+}
+</style>

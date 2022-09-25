@@ -1,9 +1,10 @@
 <template>
   <div v-if="projectData" class="px-10">
     <div class="flex">
-      <div class="w-full max-w-[260px] h-72 bg-gray-200 flex justify-center items-center">
-        <img :src="projectData?.img" alt="project-img" class="w-full" />
-      </div>
+      <div
+        class="w-full max-w-[260px] h-80 bg-cover shadow-lg"
+        :style="{ backgroundImage: `url(${projectData?.img})` }"
+      ></div>
       <div class="w-full pl-6 flex flex-col gap-2 mt-2">
         <div class="grid grid-cols-12">
           <div class="col-span-2 font-bold">졸업작품</div>

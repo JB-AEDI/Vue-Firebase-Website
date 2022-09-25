@@ -2,6 +2,7 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
+import { marked } from "marked";
 
 /* import the fontawesome core */
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -64,8 +65,17 @@ library.add(
   faUserSlash
 );
 
+const markedMixin = {
+  methods: {
+    md: function (input) {
+      return marked(input);
+    },
+  },
+};
+
 const app = createApp(App);
 app.config.unwrapInjectedRef = true;
 app.use(router);
 app.use(store);
+app.mixin(markedMixin);
 app.component("font-awesome-icon", FontAwesomeIcon).mount("#app");

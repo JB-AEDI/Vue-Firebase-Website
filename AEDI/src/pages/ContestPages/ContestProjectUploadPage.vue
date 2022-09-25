@@ -170,7 +170,7 @@ const upload = async () => {
     "contests",
     postId,
     title,
-    userProfile?.value?.name,
+    user?.value?.displayName,
     content,
     imgSrc,
     fileListUrl,

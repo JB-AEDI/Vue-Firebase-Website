@@ -79,6 +79,7 @@ import TuiEditor from "../../components/editor/TuiEditor.vue";
 import { createEvent } from "../../firebase/post";
 import { uploadFile, getUrl } from "../../firebase/firestore";
 import { useRouter } from "vue-router";
+import { user } from "../../firebase/user";
 
 const router = useRouter();
 
@@ -99,7 +100,7 @@ const upload = async () => {
     startDate,
     endDate,
     content,
-    userProfile?.value?.name,
+    user?.value?.displayName,
     userProfile?.value?.admin
   );
   loading.value = false;

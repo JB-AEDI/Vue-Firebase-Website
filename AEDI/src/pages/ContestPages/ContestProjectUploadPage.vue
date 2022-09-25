@@ -181,6 +181,14 @@ const upload = async () => {
 
   router.go(-1);
 };
+
+const addImage = async (file, callback) => {
+  const imagePath = `images/${file.name}`;
+  uploadFile(imagePath, file);
+  const image = await getUrl(imagePath);
+
+  callback(image);
+};
 </script>
 <style>
 .modal-bg {

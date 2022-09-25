@@ -22,6 +22,11 @@ const routes = [
     component: () => import("./../pages/EmailVerifyPage.vue"),
   },
   {
+    path: "/mypage",
+    name: "마이페이지",
+    component: () => import("./../pages/MyPage.vue"),
+  },
+  {
     path: "/contest/page",
     name: "공모전",
     component: () => import("./../pages/ContestPages/ContestListPage.vue"),

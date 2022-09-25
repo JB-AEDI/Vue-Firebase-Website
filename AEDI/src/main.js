@@ -26,6 +26,12 @@ import {
   faCheck,
   faPlus,
   faSpinner,
+  faCamera,
+  faUserPen,
+  faFloppyDisk,
+  faChevronLeft,
+  faPaperPlane,
+  faUserSlash,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faLightbulb } from "@fortawesome/free-regular-svg-icons";
@@ -49,7 +55,13 @@ library.add(
   faX,
   faCheck,
   faPlus,
-  faSpinner
+  faSpinner,
+  faCamera,
+  faUserPen,
+  faFloppyDisk,
+  faChevronLeft,
+  faPaperPlane,
+  faUserSlash
 );
 
 const app = createApp(App);

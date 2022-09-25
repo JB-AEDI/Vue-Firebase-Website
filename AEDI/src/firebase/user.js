@@ -8,6 +8,9 @@ import {
   sendEmailVerification,
   signInWithEmailAndPassword,
   signOut,
+  updateProfile,
+  sendPasswordResetEmail,
+  deleteUser,
 } from "firebase/auth";
 
 export const user = ref(null);
@@ -26,6 +29,10 @@ export const createUser = async (email, password, name) => {
   await setDoc(doc(db, "profiles", result.user.uid), {
     name: name,
     admin: false,
+  });
+  updateProfile(auth.currentUser, {
+    displayName: name,
+    photoURL: "https://picsum.photos/250/250",
   });
   sendEmailVerification(auth.currentUser)
     .then(() => {
@@ -74,4 +81,30 @@ export const getUserProfile = async () => {
     // doc.data() will be undefined in this case
     // console.log("No such document!");
   }
+};
+
+/**
+ * 사용자 프로필 업데이트
+ * @param {Promise<string>} photoURL user photo
+ * @param {Promise<string>} displayName user name
+ * @param {Promise<string>} email user email
+ */
+export const updateUserProfile = (photoURL, displayName, email) => {
+  updateProfile(auth.currentUser, {
+    photoURL: photoURL?.value,
+    displayName: displayName?.value,
+    email: email?.value,
+  });
+};
+
+export const sendEmailVerify = () => {
+  sendEmailVerification(auth.currentUser);
+};
+
+export const sendEmailPasswordReset = () => {
+  sendPasswordResetEmail(auth, user?.value?.email);
+};
+
+export const btnDeleteUser = () => {
+  deleteUser(auth.currentUser);
 };

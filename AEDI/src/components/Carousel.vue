@@ -31,7 +31,7 @@ export default defineComponent({
 <style scoped>
 .carousel__item {
   min-height: 300px;
-  width: 80%;
+  width: 200px;
   background-color: var(--vc-clr-primary);
   color: var(--vc-clr-white);
   font-size: 20px;

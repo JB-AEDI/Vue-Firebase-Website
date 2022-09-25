@@ -1,5 +1,5 @@
 <template>
-  <div class="flex">
+  <div class="flex items-center">
     <StarRating
       :star-size="12"
       :rounded-corners="true"
@@ -8,7 +8,8 @@
       :read-only="true"
       :rating="rating"
     ></StarRating>
-    <span class="font-bold ml-8">{{ name }}</span>
+    <img :src="user?.photoURL" alt="프로필사진" class="w-8 h-8 ml-5 rounded-lg shadow" />
+    <span class="font-bold ml-2">{{ name }}</span>
     <div class="ml-10">{{ comment }}</div>
     <button
       v-if="commentUid === user?.uid"
@@ -26,9 +27,6 @@ import StarRating from "vue-star-rating";
 import { user } from "../firebase/user";
 import { useRouteParams } from "@vueuse/router";
 import { deleteProjectComment } from "../firebase/post";
-import { useRouter } from "vue-router";
-
-const router = useRouter();
 
 const props = defineProps({
   comment: String,
@@ -49,6 +47,5 @@ const deleteComment = async () => {
     props.commentUid,
     props.commentId
   );
-  router.go(0);
 };
 </script>

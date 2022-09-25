@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center">
+  <form class="flex items-center" @submit.prevent="deleteComment">
     <StarRating
       :star-size="12"
       :rounded-corners="true"
@@ -13,13 +13,13 @@
     <div class="ml-10">{{ comment }}</div>
     <button
       v-if="commentUid === user?.uid"
-      @click="[deleteComment()]"
+      type="submit"
       class="ml-auto py-1 px-2 bg-indigo-500 text-white rounded-md"
     >
       <span><i class="fa-solid fa-trash-can"></i></span>
       <span class="ml-1.5">삭제</span>
     </button>
-  </div>
+  </form>
 </template>
 
 <script setup>

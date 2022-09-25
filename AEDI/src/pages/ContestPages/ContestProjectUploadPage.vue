@@ -1,5 +1,9 @@
 <template>
-  <form v-if="user?.emailVerified" class="px-5 relative" @submit.prevent="upload">
+  <form
+    v-if="user?.emailVerified"
+    class="px-5 relative"
+    @submit.prevent="upload"
+  >
     <div>
       <label
         for="title"
@@ -33,17 +37,30 @@
 
     <div class="mb-5">
       <span class="font-bold text-lg">파일추가</span>
-      <font-awesome-icon
-        icon="fa-solid fa-plus"
-        class="cursor-pointer float-right"
-        size="lg"
-        @click="addFileList"
-      />
+      <div class="float-right">
+        <font-awesome-icon
+          v-if="fileListCount > 0"
+          icon="fa-solid fa-minus"
+          size="lg"
+          class="cursor-pointer"
+          @click="deleteFileList"
+        />
+        <font-awesome-icon
+          icon="fa-solid fa-plus"
+          class="cursor-pointer ml-4"
+          size="lg"
+          @click="addFileList"
+        />
+      </div>
     </div>
 
     <div v-for="file in fileListCount" class="flex mb-3">
-      <div class="border flex">
-        <label :for="'fileName-' + file" class="font-bold mr-2">파일명</label>
+      <div class="border flex rounded border-gray-300">
+        <label
+          :for="'fileName-' + file"
+          class="font-bold px-2 flex justify-center items-center bg-gray-400 rounded-l-sm"
+          >파일명</label
+        >
         <input
           type="text"
           class="border-l py-1 px-2"
@@ -53,12 +70,13 @@
           required
         />
       </div>
-      <div>
+      <div class="ml-5">
         <input
           type="file"
           :name="'file-' + file"
           :id="'file-' + file"
           @change="handleFileChange(file)"
+          class="file:border-0 file:bg-sky-200 file:text-sky-600 file:py-1 file:px-2 file:rounded-full file:font-semibold file:mr-3 hover:file:bg-sky-300"
           required
         />
       </div>
@@ -87,7 +105,7 @@
 </template>
 
 <script setup>
-import { ref, inject } from "vue";
+import { ref } from "vue";
 
 import TuiEditor from "../../components/editor/TuiEditor.vue";
 import { createProject } from "../../firebase/post";
@@ -101,7 +119,9 @@ const postId = useRouteParams("post_id").value;
 
 const title = ref();
 const content = ref();
-const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
+const previewImgSrc = ref(
+  "https://via.placeholder.com/384x500?text=Upload+Image"
+);
 const imgSrc = ref("");
 
 const fileListCount = ref(0);
@@ -117,16 +137,17 @@ const addFileList = () => {
   fileListCount.value += 1;
 };
 
+const deleteFileList = () => {
+  delete fileObjectName.value[fileListCount.value];
+  fileListCount.value -= 1;
+};
+
 const handleFileChange = (count) => {
   fileList.value[count] = document.getElementById("file-" + count).files[0];
-  console.log(fileList.value);
-  console.log(fileObjectName.value);
 };
 
 let formFile = null;
 let formFilePath = null;
-
-const userProfile = inject("userProfile");
 
 const handleImgFileChange = (input) => {
   const reader = new FileReader();
@@ -152,9 +173,9 @@ const upload = async () => {
 
   if (
     Object.keys(fileList.value).length &&
-    Object.keys(fileList.value).length === Object.keys(fileObjectName.value).length
+    Object.keys(fileList.value).length ===
+      Object.keys(fileObjectName.value).length
   ) {
-    console.log("파일이 비어있지 않음");
     for (const key in fileList.value) {
       const file = fileList.value[key];
       const filePath = "file/contest/" + fileList.value[key].name;
@@ -184,7 +205,7 @@ const upload = async () => {
 
 const addImage = async (file, callback) => {
   const imagePath = `images/${file.name}`;
-  uploadFile(imagePath, file);
+  await uploadFile(imagePath, file);
   const image = await getUrl(imagePath);
 
   callback(image);

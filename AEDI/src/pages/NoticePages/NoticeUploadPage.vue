@@ -59,7 +59,12 @@ const userProfile = inject("userProfile");
 const upload = async () => {
   loading.value = true;
 
-  await createNotice(title, content, user?.value?.displayName, userProfile?.value?.admin);
+  await createNotice(
+    title,
+    content,
+    user?.value?.displayName,
+    userProfile?.value?.admin
+  );
   loading.value = false;
   router.push({
     path: `/notice/page`,
@@ -68,7 +73,7 @@ const upload = async () => {
 
 const addImage = async (file, callback) => {
   const imagePath = `images/${file.name}`;
-  uploadFile(imagePath, file);
+  await uploadFile(imagePath, file);
   const image = await getUrl(imagePath);
 
   callback(image);

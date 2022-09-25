@@ -1,9 +1,10 @@
 <template>
   <div v-if="projectData" class="px-10">
     <div class="flex">
-      <div class="w-full max-w-[260px] h-72 bg-gray-200 flex justify-center items-center">
-        <img :src="projectData?.img" alt="project-img" class="w-full" />
-      </div>
+      <div
+        class="w-full max-w-[260px] h-80 bg-cover shadow-lg"
+        :style="{ backgroundImage: `url(${projectData?.img})` }"
+      ></div>
       <div class="w-full pl-6 flex flex-col gap-2 mt-2">
         <div class="grid grid-cols-12">
           <div class="col-span-2 font-bold">졸업작품</div>
@@ -192,7 +193,7 @@
     </Teleport>
 
     <h2 class="mt-16 mb-5 text-2xl font-bold pb-2 border-b border-gray-400">댓글</h2>
-    <AddComment v-if="!isComment" :menu="menu"></AddComment>
+    <AddComment v-if="!isComment" :menu="menu" @submit="checkComment"></AddComment>
     <Comment
       v-if="commentsData"
       v-for="commentData in commentsData"
@@ -203,12 +204,13 @@
       :comment-id="commentData?.id"
       :menu="menu"
       class="mb-4 pb-4 border-b border-gray-300"
+      @submit="router.go(0)"
     ></Comment>
   </div>
 </template>
 
 <script setup>
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, ref, watch } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { useRouteParams } from "@vueuse/router";
 import {
@@ -262,6 +264,10 @@ const {
   businessSum,
   designSum,
 } = onSnapshotProjectReviews("contests", postId, projectId);
+
+watch(perfectionSum, () => {
+  console.log(perfectionSum?.value);
+});
 
 const isModalOpen = ref(false);
 const modal = ref(null);

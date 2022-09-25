@@ -183,7 +183,7 @@
 </template>
 
 <script setup>
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, ref, inject } from "vue";
 import {
   updateContest,
   getEndDate,
@@ -214,7 +214,9 @@ const endDate = ref("");
 const target = ref("");
 const field = ref("");
 const url = ref("");
-const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
+const previewImgSrc = ref(
+  "https://via.placeholder.com/384x500?text=Upload+Image"
+);
 const imgSrc = ref("");
 
 const loading = ref(false);

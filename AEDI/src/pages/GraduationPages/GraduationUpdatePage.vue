@@ -115,7 +115,7 @@
 
 <script setup>
 import { useRouteParams } from "@vueuse/router";
-import { ref, onBeforeMount } from "vue";
+import { ref, onBeforeMount, inject } from "vue";
 import { useRouter } from "vue-router";
 import {
   getTitle,
@@ -136,7 +136,9 @@ const title = ref("");
 const year = ref("");
 const university = ref("");
 const department = ref("");
-const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
+const previewImgSrc = ref(
+  "https://via.placeholder.com/384x500?text=Upload+Image"
+);
 const imgSrc = ref("");
 const url = ref("");
 
@@ -173,7 +175,15 @@ const upload = async () => {
     await uploadFile(formFilePath, formFile);
     imgSrc.value = await getUrl(formFilePath);
   }
-  await updateGraduation(title, year, university, department, imgSrc, url, postId);
+  await updateGraduation(
+    title,
+    year,
+    university,
+    department,
+    imgSrc,
+    url,
+    postId
+  );
 
   loading.value = false;
   router.go(-1);

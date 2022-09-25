@@ -33,6 +33,7 @@ import {
   faChevronLeft,
   faPaperPlane,
   faUserSlash,
+  faMinus,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faLightbulb } from "@fortawesome/free-regular-svg-icons";
@@ -62,7 +63,8 @@ library.add(
   faFloppyDisk,
   faChevronLeft,
   faPaperPlane,
-  faUserSlash
+  faUserSlash,
+  faMinus
 );
 
 const markedMixin = {

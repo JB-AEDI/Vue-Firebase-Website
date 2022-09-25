@@ -113,7 +113,7 @@ const upload = async () => {
 
 const addImage = async (file, callback) => {
   const imagePath = `images/${file.name}`;
-  uploadFile(imagePath, file);
+  await uploadFile(imagePath, file);
   const image = await getUrl(imagePath);
 
   callback(image);

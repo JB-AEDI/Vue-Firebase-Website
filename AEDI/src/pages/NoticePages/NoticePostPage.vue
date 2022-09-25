@@ -7,7 +7,7 @@
       <div v-if="postSnapshot?.value?.timestamp">
         <span>{{ postSnapshot?.value?.timestamp.toDate().getFullYear() }}</span>
         <span>-</span>
-        <span v-if="postSnapshot?.value?.timestamp.toDate().getMonth() < 11"
+        <span v-if="postSnapshot?.value?.timestamp.toDate().getMonth() < 9"
       >0{{ postSnapshot?.value?.timestamp.toDate().getMonth() + 1 }}</span
     >
         <span v-else>{{ postSnapshot?.value?.timestamp.toDate().getMonth() + 1 }}</span>

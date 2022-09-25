@@ -29,7 +29,7 @@
       <div class="col-span-3 border-r border-b border-white p-3 text-center">
         <span>{{ notice?.timestamp.toDate().getFullYear() }}</span>
         <span>-</span>
-        <span v-if="notice?.timestamp.toDate().getMonth() < 10"
+        <span v-if="notice?.timestamp.toDate().getMonth() < 9"
           >0{{ notice?.timestamp.toDate().getMonth() + 1 }}</span
         >
         <span v-else>{{ notice?.timestamp.toDate().getMonth() + 1 }}</span>
@@ -37,7 +37,7 @@
         <span v-if="notice?.timestamp.toDate().getDate() < 10"
           >0{{ notice?.timestamp.toDate().getDate() }}</span
         >
-        <span v-else>0{{ notice?.timestamp.toDate().getDate() }}</span>
+        <span v-else>{{ notice?.timestamp.toDate().getDate() }}</span>
       </div>
       <div class="col-span-2 border-r border-b border-white p-3 text-center">
         {{ notice?.views }}

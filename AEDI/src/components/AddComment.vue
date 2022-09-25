@@ -41,9 +41,6 @@ import StarRating from "vue-star-rating";
 import { ref, inject } from "vue";
 import { useRouteParams } from "@vueuse/router";
 import { createProjectComment } from "../firebase/post";
-import { useRouter } from "vue-router";
-
-const router = useRouter();
 
 const userProfile = inject("userProfile");
 
@@ -65,6 +62,5 @@ const submitComment = async () => {
     comment,
     userProfile?.value?.name
   );
-  router.go(0);
 };
 </script>

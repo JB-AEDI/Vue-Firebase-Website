@@ -31,11 +31,7 @@
     </div>
     <img :src="previewImgSrc" alt="preview-image" class="max-w-sm mb-10" />
 
-    <TuiEditor
-      v-if="content"
-      v-model="content"
-      @add-image="addImage"
-    ></TuiEditor>
+    <TuiEditor v-if="content" v-model="content" @add-image="addImage"></TuiEditor>
     <button
       class="mr-5 mt-4 float-right bg-indigo-500 py-2 px-3 rounded-md text-white"
       type="submit"
@@ -76,9 +72,7 @@ const projectId = useRouteParams("project_id").value;
 
 const title = ref("");
 const content = ref("");
-const previewImgSrc = ref(
-  "https://via.placeholder.com/384x500?text=Upload+Image"
-);
+const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
 const imgSrc = ref("");
 
 const loading = ref(false);
@@ -102,7 +96,7 @@ const handleFileChange = (input) => {
   reader.readAsDataURL(input.target.files[0]);
 
   formFile = input.target.files[0];
-  formFilePath = "images/graduation/" + formFile.name;
+  formFilePath = "images/contest/" + formFile.name;
 };
 
 const upload = async () => {

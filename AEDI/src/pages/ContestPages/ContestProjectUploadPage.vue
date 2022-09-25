@@ -1,9 +1,5 @@
 <template>
-  <form
-    v-if="user?.emailVerified"
-    class="px-5 relative"
-    @submit.prevent="upload"
-  >
+  <form v-if="user?.emailVerified" class="px-5 relative" @submit.prevent="upload">
     <div>
       <label
         for="title"
@@ -105,9 +101,7 @@ const postId = useRouteParams("post_id").value;
 
 const title = ref();
 const content = ref();
-const previewImgSrc = ref(
-  "https://via.placeholder.com/384x500?text=Upload+Image"
-);
+const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
 const imgSrc = ref("");
 
 const fileListCount = ref(0);
@@ -143,7 +137,7 @@ const handleImgFileChange = (input) => {
   reader.readAsDataURL(input.target.files[0]);
 
   formFile = input.target.files[0];
-  formFilePath = "images/contests/" + formFile.name;
+  formFilePath = "images/contest/" + formFile.name;
 };
 
 const upload = async () => {
@@ -158,13 +152,12 @@ const upload = async () => {
 
   if (
     Object.keys(fileList.value).length &&
-    Object.keys(fileList.value).length ===
-      Object.keys(fileObjectName.value).length
+    Object.keys(fileList.value).length === Object.keys(fileObjectName.value).length
   ) {
     console.log("파일이 비어있지 않음");
     for (const key in fileList.value) {
       const file = fileList.value[key];
-      const filePath = "file/graduation/" + fileList.value[key].name;
+      const filePath = "file/contest/" + fileList.value[key].name;
       fileListName.value.push(fileObjectName.value[key - 1]);
 
       await uploadFile(filePath, file);

@@ -866,6 +866,9 @@ export const deleteProject = async (menu, post_id, project_id) => {
       doc(db, menu, post_id, "projects", project_id, "comments", comment.id)
     );
   });
+  await updateDoc(doc(db, menu, post_id), {
+    projects: increment(-1),
+  });
   // 프로젝트 삭제
   await deleteDoc(doc(db, menu, post_id, "projects", project_id));
 };
@@ -897,6 +900,196 @@ export const onSnapshotPostsPage = (menu) => {
 
   const postRef = collection(db, menu);
   const q = query(postRef, orderBy("timestamp"));
+
+  let unsub = () => {};
+  // 포스트 리스트 실시간 가져오기
+  unsub();
+  unsub = onSnapshot(q, (snapshot) => {
+    posts = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    postsPage.value = division(posts, 10);
+  });
+  // 마운트 종료됬을 때 실시간 가져오기 종료
+  onUnmounted(() => unsub());
+
+  return postsPage;
+};
+
+// 포스트 sort 테스트 중
+
+// 졸업작품 연도별 카테고리 배열 가져오기
+export const onSnapshotGraduationsYear = () => {
+  let posts = [];
+  const year = ref([]);
+  const yearCategory = ref([]);
+  let unsub = () => {};
+
+  unsub();
+  unsub = onSnapshot(collection(db, "graduations"), (snapshot) => {
+    posts = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    year.value = posts.map((doc) => {
+      return doc.year;
+    });
+    yearCategory.value = year.value.filter(
+      (value, index) => year.value.indexOf(value) === index
+    );
+  });
+
+  onUnmounted(() => unsub());
+
+  return yearCategory;
+};
+
+// 졸업작품 대학별 카테고리 배열 가져오기
+export const onSnapshotGraduationsUniversity = () => {
+  let posts = [];
+  const university = ref([]);
+  const universityCategory = ref([]);
+  let unsub = () => {};
+
+  unsub();
+  unsub = onSnapshot(collection(db, "graduations"), (snapshot) => {
+    posts = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    university.value = posts.map((doc) => {
+      return doc.university;
+    });
+    universityCategory.value = university.value.filter(
+      (value, index) => university.value.indexOf(value) === index
+    );
+  });
+
+  onUnmounted(() => unsub());
+
+  return universityCategory;
+};
+
+// 졸업작품 학과별 카테고리 배열 가져오기
+export const onSnapshotGraduationsDepartment = () => {
+  let posts = [];
+  const department = ref([]);
+  const departmentCategory = ref([]);
+  let unsub = () => {};
+
+  unsub();
+  unsub = onSnapshot(collection(db, "graduations"), (snapshot) => {
+    posts = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    department.value = posts.map((doc) => {
+      return doc.department;
+    });
+    departmentCategory.value = department.value.filter(
+      (value, index) => department.value.indexOf(value) === index
+    );
+  });
+
+  onUnmounted(() => unsub());
+
+  return departmentCategory;
+};
+
+// 졸업작품 카테고리 리스트 가져오기
+export const graduationCategoryPage = (year, university, department) => {
+  let posts = [];
+  const postsPage = ref([]);
+  // 배열 n개씩 나누는 함수
+  const division = (array, n) => {
+    const length = array.length;
+    const divide =
+      Math.floor(length / n) + (Math.floor(length % n) > 0 ? 1 : 0);
+    const newArray = [];
+
+    for (let i = 0; i < divide; i++) {
+      newArray.push(array.splice(0, n));
+    }
+
+    return newArray;
+  };
+
+  const postRef = collection(db, "graduations");
+  let q;
+  if (
+    year.value === "연도별" &&
+    university.value === "학교별" &&
+    department.value === "학과별"
+  ) {
+    return;
+  }
+  if (
+    year.value !== "연도별" &&
+    university.value === "학교별" &&
+    department.value === "학과별"
+  ) {
+    q = query(postRef, where("year", "==", year.value));
+  }
+  if (
+    year.value === "연도별" &&
+    university.value !== "학교별" &&
+    department.value === "학과별"
+  ) {
+    q = query(postRef, where("university", "==", university.value));
+  }
+  if (
+    year.value === "연도별" &&
+    university.value === "학교별" &&
+    department.value !== "학과별"
+  ) {
+    q = query(postRef, where("department", "==", department.value));
+  }
+  if (
+    year.value !== "연도별" &&
+    university.value !== "학교별" &&
+    department.value === "학과별"
+  ) {
+    q = query(
+      postRef,
+      where("year", "==", year.value),
+      where("university", "==", university.value)
+    );
+  }
+  if (
+    year.value !== "연도별" &&
+    university.value === "학교별" &&
+    department.value !== "학과별"
+  ) {
+    q = query(
+      postRef,
+      where("year", "==", year.value),
+      where("university", "==", university.value)
+    );
+  }
+  if (
+    year.value === "연도별" &&
+    university.value !== "학교별" &&
+    department.value !== "학과별"
+  ) {
+    q = query(
+      postRef,
+      where("university", "==", university.value),
+      where("department", "==", department.value)
+    );
+  }
+  if (
+    year.value !== "연도별" &&
+    university.value !== "학교별" &&
+    department.value !== "학과별"
+  ) {
+    q = query(
+      postRef,
+      where("year", "==", year.value),
+      where("university", "==", university.value),
+      where("department", "==", department.value)
+    );
+  }
 
   let unsub = () => {};
   // 포스트 리스트 실시간 가져오기

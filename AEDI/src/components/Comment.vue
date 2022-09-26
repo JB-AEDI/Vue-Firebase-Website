@@ -8,7 +8,6 @@
       :read-only="true"
       :rating="rating"
     ></StarRating>
-    <img :src="user?.photoURL" alt="프로필사진" class="w-8 h-8 ml-5 rounded-lg shadow" />
     <span class="font-bold ml-2">{{ name }}</span>
     <div class="ml-10">{{ comment }}</div>
     <button

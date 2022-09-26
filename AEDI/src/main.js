@@ -34,6 +34,7 @@ import {
   faPaperPlane,
   faUserSlash,
   faMinus,
+  faArrowLeftRotate,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faLightbulb } from "@fortawesome/free-regular-svg-icons";
@@ -64,7 +65,8 @@ library.add(
   faChevronLeft,
   faPaperPlane,
   faUserSlash,
-  faMinus
+  faMinus,
+  faArrowLeftRotate
 );
 
 const markedMixin = {

@@ -191,6 +191,7 @@
 
     <h2 class="mt-16 mb-5 text-2xl font-bold pb-2 border-b border-gray-400">댓글</h2>
     <AddComment v-if="!isComment" :menu="menu" @submit="checkComment"></AddComment>
+
     <Comment
       v-if="commentsData"
       v-for="commentData in commentsData"
@@ -201,7 +202,7 @@
       :comment-id="commentData?.id"
       :menu="menu"
       class="mb-4 pb-4 border-b border-gray-300"
-      @submit="router.go(0)"
+      @vnode-unmounted="checkComment"
     ></Comment>
   </div>
 </template>

@@ -15,7 +15,7 @@
         v-model="title"
       />
     </div>
-    <div class="mb-5">
+    <div v-if="isChangeImg" class="mb-5">
       <label
         for="formFile"
         class="form-label inline-block mb-2 text-lg font-bold text-gray-900 dark:text-gray-300"
@@ -25,11 +25,81 @@
         class="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
         type="file"
         id="formFile"
-        @change="handleFileChange"
+        @change="handleImgFileChange"
         required
       />
     </div>
+
+    <div v-else class="flex justify-between mb-4">
+      <span class="font-bold text-lg">이미지를 변경하시겠습니까?</span>
+      <button
+        class="py-2 px-3 bg-indigo-500 text-white rounded-md"
+        @click="isChangeImg = true"
+      >
+        변경
+      </button>
+    </div>
+
     <img :src="previewImgSrc" alt="preview-image" class="max-w-sm mb-10" />
+
+    <div v-if="isChangeFile">
+      <div class="mb-5">
+        <span class="font-bold text-lg">파일추가</span>
+        <div class="float-right">
+          <font-awesome-icon
+            v-if="fileListCount > 0"
+            icon="fa-solid fa-minus"
+            size="lg"
+            class="cursor-pointer"
+            @click="deleteFileList"
+          />
+          <font-awesome-icon
+            icon="fa-solid fa-plus"
+            class="cursor-pointer ml-4"
+            size="lg"
+            @click="addFileList"
+          />
+        </div>
+      </div>
+
+      <div v-for="file in fileListCount" class="flex mb-3">
+        <div class="border flex">
+          <label
+            :for="'fileName-' + file"
+            class="font-bold px-2 flex justify-center items-center bg-gray-400 rounded-l-sm"
+            >파일명</label
+          >
+          <input
+            type="text"
+            class="border-l py-1 px-2"
+            placeholder="파일명을 입력하세요."
+            :id="'fileName-' + file"
+            v-model="fileObjectName[file - 1]"
+            required
+          />
+        </div>
+        <div class="ml-5">
+          <input
+            type="file"
+            :name="'file-' + file"
+            :id="'file-' + file"
+            @change="handleFileChange(file)"
+            class="file:border-0 file:bg-sky-200 file:text-sky-600 file:py-1 file:px-2 file:rounded-full file:font-semibold file:mr-3 hover:file:bg-sky-300"
+            required
+          />
+        </div>
+      </div>
+    </div>
+
+    <div v-else class="flex justify-between mb-4">
+      <span class="font-bold text-lg">파일을 변경하시겠습니까?</span>
+      <button
+        class="py-2 px-3 bg-indigo-500 text-white rounded-md"
+        @click="isChangeFile = true"
+      >
+        변경
+      </button>
+    </div>
 
     <TuiEditor v-if="content" v-model="content" @add-image="addImage"></TuiEditor>
     <button
@@ -75,7 +145,15 @@ const content = ref("");
 const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
 const imgSrc = ref("");
 
+const fileListCount = ref(0);
+const fileObjectName = ref({});
+const fileList = ref({});
+const fileListUrl = ref([]);
+const fileListName = ref([]);
+
 const loading = ref(false);
+const isChangeImg = ref(false);
+const isChangeFile = ref(false);
 
 onBeforeMount(async () => {
   title.value = await getProjectTitle("contests", postId, projectId);
@@ -87,7 +165,23 @@ onBeforeMount(async () => {
 let formFile = null;
 let formFilePath = null;
 
-const handleFileChange = (input) => {
+const addFileList = () => {
+  fileObjectName.value[fileListCount.value] = "";
+  fileListCount.value += 1;
+};
+
+const deleteFileList = () => {
+  delete fileObjectName.value[fileListCount.value];
+  fileListCount.value -= 1;
+};
+
+const handleFileChange = (count) => {
+  fileList.value[count] = document.getElementById("file-" + count).files[0];
+  console.log(fileList.value);
+  console.log(fileObjectName.value);
+};
+
+const handleImgFileChange = (input) => {
   const reader = new FileReader();
 
   reader.onload = (e) => {
@@ -105,6 +199,22 @@ const upload = async () => {
     await uploadFile(formFilePath, formFile);
     imgSrc.value = await getUrl(formFilePath);
   }
+
+  if (
+    Object.keys(fileList.value).length &&
+    Object.keys(fileList.value).length === Object.keys(fileObjectName.value).length
+  ) {
+    for (const key in fileList.value) {
+      const file = fileList.value[key];
+      const filePath = "file/graduation/" + fileList.value[key].name;
+      fileListName.value.push(fileObjectName.value[key - 1]);
+
+      await uploadFile(filePath, file);
+      const fileUrl = await getUrl(filePath);
+      fileListUrl.value.push(fileUrl);
+    }
+  }
+
   await updateProject("contests", postId, projectId, title, content, imgSrc);
 
   loading.value = false;

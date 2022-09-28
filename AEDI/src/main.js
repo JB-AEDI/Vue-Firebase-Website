@@ -3,6 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import { marked } from "marked";
+import { autoAnimatePlugin } from "@formkit/auto-animate/vue";
 
 /* import the fontawesome core */
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -82,4 +83,5 @@ app.config.unwrapInjectedRef = true;
 app.use(router);
 app.use(store);
 app.mixin(markedMixin);
-app.component("font-awesome-icon", FontAwesomeIcon).mount("#app");
+app.component("font-awesome-icon", FontAwesomeIcon);
+app.use(autoAnimatePlugin).mount("#app");

@@ -76,7 +76,7 @@
         v-model="url"
       />
     </div>
-    <div class="mb-3">
+    <div v-if="isChangeImg" class="mb-3">
       <label
         for="formFile"
         class="form-label inline-block mb-2 text-lg font-bold text-gray-900 dark:text-gray-300"
@@ -90,6 +90,17 @@
         required
       />
     </div>
+
+    <div v-else class="flex justify-between mb-4">
+      <span class="font-bold text-lg">이미지를 변경하시겠습니까?</span>
+      <button
+        class="py-2 px-3 bg-indigo-500 text-white rounded-md"
+        @click="isChangeImg = true"
+      >
+        변경
+      </button>
+    </div>
+
     <img :src="previewImgSrc" alt="preview-image" class="max-w-sm" />
 
     <button
@@ -143,6 +154,7 @@ const imgSrc = ref("");
 const url = ref("");
 
 const loading = ref(false);
+const isChangeImg = ref(false);
 
 onBeforeMount(async () => {
   title.value = await getTitle("graduations", postId);

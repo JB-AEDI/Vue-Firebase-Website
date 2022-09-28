@@ -101,7 +101,7 @@
 </template>
 
 <script setup>
-import { ref, inject } from "vue";
+import { ref } from "vue";
 
 import TuiEditor from "../../components/editor/TuiEditor.vue";
 import { createProject } from "../../firebase/post";
@@ -115,7 +115,9 @@ const postId = useRouteParams("post_id").value;
 
 const title = ref();
 const content = ref();
-const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
+const previewImgSrc = ref(
+  "https://via.placeholder.com/384x500?text=Upload+Image"
+);
 const imgSrc = ref("");
 
 const fileListCount = ref(0);
@@ -169,7 +171,8 @@ const upload = async () => {
 
   if (
     Object.keys(fileList.value).length &&
-    Object.keys(fileList.value).length === Object.keys(fileObjectName.value).length
+    Object.keys(fileList.value).length ===
+      Object.keys(fileObjectName.value).length
   ) {
     console.log("파일이 비어있지 않음");
     for (const key in fileList.value) {

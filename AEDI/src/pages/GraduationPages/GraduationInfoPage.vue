@@ -1,7 +1,7 @@
 <template>
   <div class="sm:flex px-5">
     <div
-      class="w-full px-8 mb-4 sm:mb-0 sm:p-0 sm:w-64 h-80 sm:h-96 bg-gray-200 flex justify-center items-center"
+      class="w-full px-8 mb-4 sm:mb-0 sm:p-0 sm:w-64 sm:h-96 bg-gray-200 flex justify-center items-center"
     >
       <img :src="postData?.img" alt="poster" class="w-full" />
     </div>

@@ -1,12 +1,12 @@
 <template>
   <div>
     <div
-      class="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 mt-3 ml-8"
+      class="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 mt-3"
     >
       <div v-for="project in projects">
-        <div class="rounded-md w-5/6 h-96 border-2 border-black mt-5">
+        <div class="rounded-md h-96 border-2 border-black">
           <div
-            class="w-full h-56 rounded-t-md cursor-pointer bg-cover"
+            class="w-full h-56 rounded-t cursor-pointer bg-cover border-b"
             :style="{ backgroundImage: `url(${project.img})` }"
             @click="moveProject(menu, project.id)"
           ></div>

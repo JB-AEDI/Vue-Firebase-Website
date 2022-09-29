@@ -8,23 +8,25 @@
           <div class="flex items-center">
             <font-awesome-icon
               icon="fa-regular fa-lightbulb"
-              size="2xl"
               rotation="180"
+              class="text-xl sm:text-2xl md:text-4xl"
             />
-            <h1 class="text-3xl font-bold ml-2">AEDI</h1>
+            <h1 class="text-xl sm:text-2xl md:text-3xl font-bold ml-2">AEDI</h1>
           </div>
         </a>
       </RouterLink>
-      <RouterLink to="/graduation/page" class="text-lg font-semibold"
+      <RouterLink
+        to="/graduation/page"
+        class="text-sm sm:text-base md:text-xl font-semibold"
         >졸업작품</RouterLink
       >
-      <RouterLink to="/contest/page" class="text-lg font-semibold"
+      <RouterLink to="/contest/page" class="text-sm sm:text-base md:text-lg font-semibold"
         >공모전</RouterLink
       >
-      <RouterLink to="/notice/page" class="text-lg font-semibold"
+      <RouterLink to="/notice/page" class="text-sm sm:text-base md:text-lg font-semibold"
         >공지사항</RouterLink
       >
-      <RouterLink to="/event/page" class="text-lg font-semibold"
+      <RouterLink to="/event/page" class="text-sm sm:text-base md:text-lg font-semibold"
         >이벤트</RouterLink
       >
     </div>
@@ -75,12 +77,7 @@
               <div class="flex justify-center border-b border-gray-300 py-3">
                 <button
                   class="py-1 px-3 border-2 rounded-3xl hover:bg-gray-100"
-                  @click="
-                    [
-                      router.push({ name: '마이페이지' }),
-                      (isClickedPhoto = false),
-                    ]
-                  "
+                  @click="[router.push({ name: '마이페이지' }), (isClickedPhoto = false)]"
                 >
                   사용자정보 변경
                 </button>
@@ -102,13 +99,13 @@
 
   <div v-if="$route.name == 'main'" class="border-b"></div>
   <div v-else class="flex justify-between p-5 bg-indigo-500 text-white mb-2">
-    <h2 class="text-xl ml-1">{{ $route.name }}</h2>
+    <h2 class="sm:text-xl ml-1">{{ $route.name }}</h2>
 
     <div class="flex">
-      <h3 class="ml-4">홈</h3>
+      <h3 class="ml-2 sm:ml-4">홈</h3>
       <div class="flex">
-        <h3 class="ml-4">></h3>
-        <h3 class="ml-4">{{ $route.name }}</h3>
+        <h3 class="ml-2 sm:ml-4">></h3>
+        <h3 class="ml-2 sm:ml-4">{{ $route.name }}</h3>
       </div>
     </div>
   </div>

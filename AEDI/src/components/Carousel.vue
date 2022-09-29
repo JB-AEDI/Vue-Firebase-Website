@@ -1,7 +1,11 @@
 <template>
   <Carousel :itemsToShow="3.95" :wrapAround="true">
-    <Slide v-for="slide in 10" :key="slide">
-      <div class="carousel__item">{{ slide }}</div>
+    <Slide v-for="slide in projects" :key="slide">
+      <div
+        class="carousel__item w-5/6 h-full pb-[133%] bg-white shadow-md bg-cover"
+        :style="{ backgroundImage: `url(${slide.img})` }"
+        @dblclick="goUrl(slide.url)"
+      ></div>
     </Slide>
 
     <template #addons>
@@ -25,16 +29,19 @@ export default defineComponent({
     Pagination,
     Navigation,
   },
+  props: {
+    projects: Array,
+  },
+  methods: {
+    goUrl(url) {
+      window.open(url, "_self");
+    },
+  },
 });
 </script>
 
-<style scoped>
+<style>
 .carousel__item {
-  min-height: 300px;
-  width: 200px;
-  background-color: var(--vc-clr-primary);
-  color: var(--vc-clr-white);
-  font-size: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -56,5 +63,16 @@ export default defineComponent({
 }
 .carousel__slide--active > .carousel__item {
   transform: scale(1.1);
+}
+.carousel__prev,
+.carousel__next {
+  background-color: rgb(59, 168, 204);
+}
+
+.carousel__pagination-button--active {
+  background-color: blue !important;
+}
+.carousel__pagination-button {
+  background-color: lightblue;
 }
 </style>

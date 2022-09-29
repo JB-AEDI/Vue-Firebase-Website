@@ -1,26 +1,26 @@
 <template>
   <div v-if="projectData" class="px-10">
-    <div class="flex">
+    <div class="sm:flex">
       <div
-        class="w-full max-w-[260px] h-80 bg-cover shadow-lg"
+        class="w-full sm:max-w-[260px] mb-6 sm:mb-0 h-80 bg-cover shadow-lg"
         :style="{ backgroundImage: `url(${projectData?.img})` }"
       ></div>
       <div class="w-full pl-6 flex flex-col gap-2 mt-2">
         <div class="grid grid-cols-12">
-          <div class="col-span-2 font-bold">졸업작품</div>
-          <div class="col-span-10">{{ graduationTitle }}</div>
+          <div class="col-span-4 sm:col-span-2 font-bold">졸업작품</div>
+          <div class="col-span-8 sm:col-span-10">{{ graduationTitle }}</div>
         </div>
         <div class="grid grid-cols-12">
-          <div class="col-span-2 font-bold">프로젝트명</div>
-          <div class="col-span-10">{{ projectData?.title }}</div>
+          <div class="col-span-4 sm:col-span-2 font-bold">프로젝트명</div>
+          <div class="col-span-8 sm:col-span-10">{{ projectData?.title }}</div>
         </div>
         <div class="grid grid-cols-12">
-          <div class="col-span-2 font-bold">작성자</div>
-          <div class="col-span-10">{{ projectData?.name }}</div>
+          <div class="col-span-4 sm:col-span-2 font-bold">작성자</div>
+          <div class="col-span-8 sm:col-span-10">{{ projectData?.name }}</div>
         </div>
         <div class="grid grid-cols-12">
-          <div class="col-span-2 font-bold">작성시간</div>
-          <div class="col-span-10">
+          <div class="col-span-4 sm:col-span-2 font-bold">작성시간</div>
+          <div class="col-span-8 sm:col-span-10">
             <span>{{ projectData?.timestamp.toDate().getFullYear() }}</span>
             <span class="mx-0.5">-</span>
             <span v-if="projectData?.timestamp.toDate().getMonth() < 9"
@@ -52,12 +52,12 @@
           </div>
         </div>
         <div class="grid grid-cols-12">
-          <div class="col-span-2 font-bold">조회수</div>
-          <div class="col-span-10">{{ projectData?.views }}</div>
+          <div class="col-span-4 sm:col-span-2 font-bold">조회수</div>
+          <div class="col-span-8 sm:col-span-10">{{ projectData?.views }}</div>
         </div>
         <div class="grid grid-cols-12">
-          <div class="col-span-2 font-bold">첨부파일</div>
-          <div class="col-span-10">
+          <div class="col-span-4 sm:col-span-2 font-bold">첨부파일</div>
+          <div class="col-span-8 sm:col-span-10">
             <a
               v-for="(name, i) in projectData?.filesName"
               :key="i"
@@ -128,20 +128,33 @@
     <div v-else class="mt-5">
       <h3 class="text-lg font-bold">나의 평가</h3>
       <div>
-        <span class="mr-4">완성도: {{ myReviewData?.perfection }}</span>
-        <span class="mr-4">창의성: {{ myReviewData?.creativity }}</span>
-        <span class="mr-4">기술성: {{ myReviewData?.technicality }}</span>
-        <span class="mr-4">사업성: {{ myReviewData?.business }}</span>
-        <span>예술성: {{ myReviewData?.design }}</span>
-        <button
-          class="bg-indigo-500 py-2 px-3 rounded-md text-white text-lg float-right"
-          @click="
-            [deleteMyProjectReview('graduations', postId, projectId), (isReview = false)]
-          "
+        <span class="mr-3 sm:mr-4 text-xs sm:text-base"
+          >완성도: {{ myReviewData?.perfection }}</span
         >
-          <span><font-awesome-icon icon="fa-solid fa-trash" /></span>
-          <span class="ml-2">삭제</span>
-        </button>
+        <span class="mr-3 sm:mr-4 text-xs sm:text-base"
+          >창의성: {{ myReviewData?.creativity }}</span
+        >
+        <span class="mr-3 sm:mr-4 text-xs sm:text-base"
+          >기술성: {{ myReviewData?.technicality }}</span
+        >
+        <span class="mr-3 sm:mr-4 text-xs sm:text-base"
+          >사업성: {{ myReviewData?.business }}</span
+        >
+        <span class="text-xs sm:text-base">예술성: {{ myReviewData?.design }}</span>
+        <div class="flex justify-end mt-2 sm:mt-0">
+          <button
+            class="bg-indigo-500 py-2 px-3 rounded-md text-white text-lg float-right"
+            @click="
+              [
+                deleteMyProjectReview('graduations', postId, projectId),
+                (isReview = false),
+              ]
+            "
+          >
+            <span><font-awesome-icon icon="fa-solid fa-trash" /></span>
+            <span class="ml-2">삭제</span>
+          </button>
+        </div>
       </div>
     </div>
     <Teleport to="#modal">

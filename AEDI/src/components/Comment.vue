@@ -1,15 +1,23 @@
 <template>
   <div class="flex items-center">
-    <StarRating
-      :star-size="12"
-      :rounded-corners="true"
-      :border-width="4"
-      :show-rating="false"
-      :read-only="true"
-      :rating="rating"
-    ></StarRating>
-    <span class="font-bold ml-2">{{ name }}</span>
-    <div class="ml-10">{{ comment }}</div>
+    <div class="hidden sm:flex">
+      <StarRating
+        :star-size="12"
+        :rounded-corners="true"
+        :border-width="4"
+        :show-rating="false"
+        :read-only="true"
+        :rating="rating"
+      ></StarRating>
+    </div>
+    <div class="sm:hidden mr-1">
+      <span class="text-yellow-300 text-lg">★</span>{{ rating }}
+    </div>
+
+    <div class="sm:flex">
+      <span class="font-bold ml-1 sm:ml-2">{{ name }}</span>
+      <div class="mx-1 sm:ml-10">{{ comment }}</div>
+    </div>
     <button
       v-if="commentUid === user?.uid"
       type="submit"
@@ -17,7 +25,7 @@
       @click="deleteProjectComment(menu, postId, projectId, commentUid, commentId)"
     >
       <font-awesome-icon icon="fa-solid fa-trash" />
-      <span class="ml-1.5">삭제</span>
+      <span class="hidden sm:inline sm:ml-1.5">삭제</span>
     </button>
   </div>
 </template>

@@ -212,7 +212,16 @@ const upload = async () => {
     }
   }
 
-  await updateProject("graduations", postId, projectId, title, content, imgSrc);
+  await updateProject(
+    "graduations",
+    postId,
+    projectId,
+    title,
+    content,
+    imgSrc,
+    fileListUrl,
+    fileListName
+  );
 
   loading.value = false;
   router.go(-1);

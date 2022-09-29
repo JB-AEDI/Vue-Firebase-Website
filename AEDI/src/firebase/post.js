@@ -769,12 +769,16 @@ export const updateProject = async (
   project_id,
   title,
   description,
-  img
+  img,
+  filesUrl,
+  filesName
 ) => {
   await updateDoc(doc(db, menu, post_id, "projects", project_id), {
     title: title?.value,
     description: description?.value,
     img: img?.value,
+    filesUrl: filesUrl?.value,
+    filesName: filesName?.value,
   });
 };
 

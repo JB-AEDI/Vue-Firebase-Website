@@ -6,7 +6,7 @@
     <button
       v-if="userProfile.admin"
       @click="pushUpload"
-      class="mr-5 bg-indigo-500 py-2 px-3 rounded-md text-white"
+      class="bg-indigo-500 py-2 px-3 rounded-md text-white"
     >
       <font-awesome-icon icon="fa-solid fa-upload" class="mr-2" />업로드
     </button>
@@ -14,19 +14,19 @@
 
   <div class="p-5">
     <div
-      class="grid grid-cols-6 bg-indigo-500 text-white text-center border-b border-white"
+      class="grid grid-cols-12 bg-indigo-500 text-white text-center border-b border-white"
     >
-      <div class="col-span-4 border p-3">공모전명</div>
-      <div class="col-span-1 border-y border-r p-3">주최</div>
-      <div class="col-span-1 border-y border-r p-3">접수기간</div>
+      <div class="col-span-7 text-sm sm:text-base border p-3">공모전명</div>
+      <div class="col-span-2 text-sm sm:text-base border-y border-r p-3">주최</div>
+      <div class="col-span-3 text-sm sm:text-base border-y border-r p-3">접수기간</div>
     </div>
 
     <div
       v-if="contestsPage"
       v-for="contest in contestsPage[currentPage]"
-      class="grid grid-cols-6 bg-gray-200"
+      class="grid grid-cols-12 bg-gray-200"
     >
-      <div class="col-span-4 border-x border-b border-white p-3 pl-12">
+      <div class="col-span-7 border-x border-b border-white p-3 sm:pl-12">
         <div>
           <span class="font-bold cursor-pointer" @click="movePost(contest)">{{
             contest?.title
@@ -46,12 +46,12 @@
         </div>
       </div>
       <div
-        class="flex justify-center items-center col-span-1 border-r border-b border-white p-3"
+        class="flex justify-center items-center col-span-2 border-r border-b border-white p-3"
       >
         {{ contest?.host }}
       </div>
       <div
-        class="flex items-center justify-center col-span-1 border-r border-b border-white p-3 text-sm"
+        class="flex items-center justify-center col-span-3 border-r border-b border-white p-2 sm:p-3 text-xs sm:text-sm"
       >
         <div>
           <div>{{ contest?.startDate }}</div>

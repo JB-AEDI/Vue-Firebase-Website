@@ -215,7 +215,16 @@ const upload = async () => {
     }
   }
 
-  await updateProject("contests", postId, projectId, title, content, imgSrc);
+  await updateProject(
+    "contests",
+    postId,
+    projectId,
+    title,
+    content,
+    imgSrc,
+    fileListUrl,
+    fileListName
+  );
 
   loading.value = false;
   router.go(-1);

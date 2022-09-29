@@ -1,6 +1,6 @@
 <template>
-  <div class="flex w-full px-8 gap-6">
-    <div class="mb-3 w-1/5">
+  <div class="flex w-full px-8 gap-4">
+    <div class="mb-3 w-1/4 sm:w-1/5">
       <select
         class="form-select block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
         aria-label="Default select example"
@@ -12,7 +12,7 @@
       </select>
     </div>
 
-    <div class="mb-3 w-1/5">
+    <div class="mb-3 w-1/4 sm:w-1/5">
       <select
         class="form-select block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
         aria-label="Default select example"
@@ -26,7 +26,7 @@
       </select>
     </div>
 
-    <div class="mb-3 w-1/5">
+    <div class="mb-3 w-1/4 sm:w-1/5">
       <select
         class="form-select block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
         aria-label="Default select example"
@@ -50,12 +50,11 @@
     </div>
   </div>
 
-  <div class="px-5 pt-4 pb-2 flex justify-between items-center">
-    <h3 class="ml-1 text-xl font-bold">정보보호학과</h3>
+  <div class="px-5 pt-4 pb-2 flex justify-end items-center">
     <button
       v-if="userProfile.admin"
       @click="pushUpload"
-      class="mr-5 bg-indigo-500 py-2 px-3 rounded-md text-white"
+      class="bg-indigo-500 py-2 px-3 rounded-md text-white"
     >
       <font-awesome-icon icon="fa-solid fa-upload" class="mr-2" />업로드
     </button>
@@ -66,23 +65,32 @@
       <div
         class="grid grid-cols-12 bg-indigo-500 text-white text-center border-b border-white"
       >
-        <div class="col-span-1 border p-3">연도</div>
-        <div class="col-span-7 border p-3">제목</div>
-        <div class="col-span-2 border-y p-3">학교</div>
-        <div class="col-span-2 border p-3">프로젝트 수</div>
+        <div class="col-span-2 sm:col-span-1 border p-2 sm:p-3 text-xs sm:text-base">
+          연도
+        </div>
+        <div class="col-span-5 sm:col-span-7 border p-2 sm:p-3 text-xs sm:text-base">
+          제목
+        </div>
+        <div class="col-span-3 sm:col-span-2 border-y p-2 sm:p-3 text-xs sm:text-base">
+          학교
+        </div>
+        <div class="col-span-2 border p-2 sm:p-3 text-xs sm:text-base">프로젝트 수</div>
       </div>
       <div
         v-for="graduation in graduationsPage[currentPage]"
         class="grid grid-cols-12 bg-gray-200"
       >
         <div
-          class="flex justify-center items-center col-span-1 border-x border-b border-white p-3"
+          class="flex justify-center items-center col-span-2 sm:col-span-1 border-x border-b border-white p-3"
         >
           {{ graduation?.year }}
         </div>
-        <div class="col-span-7 border-r border-b border-white p-3">
+        <div class="col-span-5 sm:col-span-7 border-r border-b border-white p-3">
           <div>
-            <span class="cursor-pointer font-bold" @click="movePost(graduation)">
+            <span
+              class="cursor-pointer font-bold text-sm sm:text-base"
+              @click="movePost(graduation)"
+            >
               {{ graduation?.title }}
             </span>
           </div>
@@ -95,12 +103,18 @@
               /></span>
               <span class="ml-1">{{ graduation?.likes }}</span>
             </div>
-            <span class="font-semibold text-gray-800 text-sm mx-2">[학과]</span>
-            <span class="text-gray-600">{{ graduation?.department }}</span>
+            <div class="inline-block sm:inline">
+              <span class="font-semibold text-gray-800 text-xs sm:text-sm mr-1 sm:mx-2"
+                >[학과]</span
+              >
+              <span class="text-gray-600 text-xs sm:text-base">{{
+                graduation?.department
+              }}</span>
+            </div>
           </div>
         </div>
         <div
-          class="flex justify-center items-center col-span-2 border-r border-b border-white p-3"
+          class="flex justify-center items-center col-span-3 sm:col-span-2 text-xs sm:text-base border-r border-b border-white p-3"
         >
           {{ graduation?.university }}
         </div>
@@ -137,21 +151,27 @@
       <div
         class="grid grid-cols-12 bg-indigo-500 text-white text-center border-b border-white"
       >
-        <div class="col-span-1 border p-3">연도</div>
-        <div class="col-span-7 border p-3">제목</div>
-        <div class="col-span-2 border-y p-3">학교</div>
-        <div class="col-span-2 border p-3">프로젝트 수</div>
+        <div class="col-span-2 sm:col-span-1 border p-2 sm:p-3 text-xs sm:text-base">
+          연도
+        </div>
+        <div class="col-span-5 sm:col-span-7 border p-2 sm:p-3 text-xs sm:text-base">
+          제목
+        </div>
+        <div class="col-span-2 border-y p-2 sm:p-3 text-xs sm:text-base">학교</div>
+        <div class="col-span-3 sm:col-span-2 border p-2 sm:p-3 text-xs sm:text-base">
+          프로젝트 수
+        </div>
       </div>
       <div
         v-for="graduation in categoryPage?.value[currentPage]"
         class="grid grid-cols-12 bg-gray-200"
       >
         <div
-          class="flex justify-center items-center col-span-1 border-x border-b border-white p-3"
+          class="flex justify-center items-center col-span-2 sm:col-span-1 border-x border-b border-white p-3"
         >
           {{ graduation?.year }}
         </div>
-        <div class="col-span-7 border-r border-b border-white p-3">
+        <div class="col-span-5 sm:col-span-7 border-r border-b border-white p-3">
           <div>
             <span class="cursor-pointer font-bold" @click="movePost(graduation)">
               {{ graduation?.title }}
@@ -166,8 +186,14 @@
               /></span>
               <span class="ml-1">{{ graduation?.likes }}</span>
             </div>
-            <span class="font-semibold text-gray-800 text-sm mx-2">[학과]</span>
-            <span class="text-gray-600">{{ graduation?.department }}</span>
+            <div class="inline-block sm:inline">
+              <span class="font-semibold text-gray-800 text-xs sm:text-sm mr-1 sm:mx-2"
+                >[학과]</span
+              >
+              <span class="text-gray-600 text-xs sm:text-base">{{
+                graduation?.department
+              }}</span>
+            </div>
           </div>
         </div>
         <div
@@ -176,7 +202,7 @@
           {{ graduation?.university }}
         </div>
         <div
-          class="flex justify-center items-center col-span-2 border-r border-b border-white p-3"
+          class="flex justify-center items-center col-span-3 sm:col-span-2 border-r border-b border-white p-3"
         >
           {{ graduation?.projects }}
         </div>

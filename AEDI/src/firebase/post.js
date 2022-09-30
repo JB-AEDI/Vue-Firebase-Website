@@ -12,10 +12,12 @@ import {
   deleteDoc,
   onSnapshot,
   where,
+  arrayUnion,
 } from "firebase/firestore";
 import { onUnmounted, ref } from "vue";
 import { db } from "./firebase";
 import { user } from "./user";
+import { deleteProjectAllFiles } from "./firestore";
 
 // Create Post
 
@@ -87,7 +89,8 @@ export const createGraduation = async (
   university,
   department,
   img,
-  url
+  url,
+  imgFilePath
 ) => {
   await addDoc(collection(db, "graduations"), {
     title: title?.value,
@@ -96,6 +99,7 @@ export const createGraduation = async (
     department: department?.value,
     img: img?.value,
     url: url?.value,
+    imgFilePath: imgFilePath,
     views: 0,
     likes: 0,
     projects: 0,
@@ -165,7 +169,10 @@ export const createProject = async (
   description,
   img,
   filesUrl,
-  filesName
+  filesName,
+  imgFilePath,
+  filePath,
+  editorImgPath
 ) => {
   await addDoc(collection(db, menu, post_id, "projects"), {
     title: title?.value,
@@ -174,6 +181,9 @@ export const createProject = async (
     img: img?.value,
     filesUrl: filesUrl?.value,
     filesName: filesName?.value,
+    imgFilePath: imgFilePath,
+    filePath: filePath?.value,
+    editorImgPath: editorImgPath?.value,
     uid: user?.value?.uid,
     views: 0,
     likes: 0,
@@ -699,7 +709,8 @@ export const updateGraduation = async (
   department,
   img,
   url,
-  post_id
+  post_id,
+  imgFilePath
 ) => {
   await updateDoc(doc(db, "graduations", post_id), {
     title: title?.value,
@@ -708,6 +719,7 @@ export const updateGraduation = async (
     department: department?.value,
     img: img?.value,
     url: url?.value,
+    imgFilePath: imgFilePath,
   });
 };
 
@@ -771,7 +783,10 @@ export const updateProject = async (
   description,
   img,
   filesUrl,
-  filesName
+  filesName,
+  imgFilePath,
+  filePath,
+  editorImgPath
 ) => {
   await updateDoc(doc(db, menu, post_id, "projects", project_id), {
     title: title?.value,
@@ -779,7 +794,14 @@ export const updateProject = async (
     img: img?.value,
     filesUrl: filesUrl?.value,
     filesName: filesName?.value,
+    imgFilePath: imgFilePath?.value,
+    filePath: filePath?.value,
   });
+  for (const imgPath in editorImgPath?.value) {
+    await updateDoc(doc(db, menu, post_id, "projects", project_id), {
+      editorImgPath: arrayUnion(editorImgPath.value[imgPath]),
+    });
+  }
 };
 
 // Views Count
@@ -870,9 +892,18 @@ export const deleteProject = async (menu, post_id, project_id) => {
       doc(db, menu, post_id, "projects", project_id, "comments", comment.id)
     );
   });
+  // 프로젝트 수 감소
   await updateDoc(doc(db, menu, post_id), {
     projects: increment(-1),
   });
+
+  // 프로젝트 파일 삭제
+  const project = await getDoc(doc(db, menu, post_id, "projects", project_id));
+  const imgPath = project.data().imgFilePath;
+  const editorImgPath = project.data().editorImgPath;
+  const filePath = project.data().filePath;
+  await deleteProjectAllFiles(imgPath, editorImgPath, filePath);
+
   // 프로젝트 삭제
   await deleteDoc(doc(db, menu, post_id, "projects", project_id));
 };
@@ -1420,7 +1451,6 @@ export const getProjectTitle = async (menu, post_id, project_id) => {
 export const getProjectContent = async (menu, post_id, project_id) => {
   const docRef = doc(db, menu, post_id, "projects", project_id);
   const docSnap = await getDoc(docRef);
-  console.log(docSnap.data().description);
 
   return docSnap.data().description;
 };
@@ -1437,4 +1467,32 @@ export const getProjectImg = async (menu, post_id, project_id) => {
   const docSnap = await getDoc(docRef);
 
   return docSnap.data().img;
+};
+
+export const getProjectImgPath = async (menu, post_id, project_id) => {
+  const docRef = doc(db, menu, post_id, "projects", project_id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().imgFilePath;
+};
+
+export const getProjectFileNameList = async (menu, post_id, project_id) => {
+  const docRef = doc(db, menu, post_id, "projects", project_id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().filesName;
+};
+
+export const getProjectFileUrlList = async (menu, post_id, project_id) => {
+  const docRef = doc(db, menu, post_id, "projects", project_id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().filesUrl;
+};
+
+export const getProjectFilePathList = async (menu, post_id, project_id) => {
+  const docRef = doc(db, menu, post_id, "projects", project_id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().filePath;
 };

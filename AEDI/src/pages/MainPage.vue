@@ -94,44 +94,37 @@ const props = defineProps({
 
 const projects = ref([
   {
-    img:
-      "https://firebasestorage.googleapis.com/v0/b/aedi--project.appspot.com/o/images%2F8d85bc74e6974be2d0471924178d59e18rBJ60buefJhONQx-1.png?alt=media&token=a810160e-6b68-497d-8c4c-f8e4e4058fb8",
+    img: "",
     url:
       "https://aedi--project.web.app/#/graduation/btO5HAYyqKKU1UrtMPsP/project/32980n77ld6VxjswTFY9",
   },
   {
-    img:
-      "https://firebasestorage.googleapis.com/v0/b/aedi--project.appspot.com/o/images%2F0b3f1c1f2fca404f99dc13be97c0ca5fzJEb5uy5plwIFZIF-1.png?alt=media&token=ff4c1f42-6cd9-4b07-89e0-7c2e73b72306",
+    img: "",
     url:
       "https://aedi--project.web.app/#/graduation/btO5HAYyqKKU1UrtMPsP/project/ZSQ9ZOu08rmuS7zJLE8D",
   },
   {
-    img:
-      "https://firebasestorage.googleapis.com/v0/b/aedi--project.appspot.com/o/images%2F85378b64d8df4e3a8b86998c9663c614UdO6qSNds2UHbY6D-0.png?alt=media&token=397a6dee-ffe4-44aa-9bc8-0dcd3d4bef2f",
+    img: "",
     url:
       "https://aedi--project.web.app/#/graduation/btO5HAYyqKKU1UrtMPsP/project/Mis6ROiCmum7v98vuL52",
   },
   {
-    img:
-      "https://firebasestorage.googleapis.com/v0/b/aedi--project.appspot.com/o/images%2F17-1.PNG?alt=media&token=232d62d9-3ef4-4f79-8c77-dd68ad1b7804",
+    img: "",
     url:
       "https://aedi--project.web.app/#/graduation/btO5HAYyqKKU1UrtMPsP/project/ZUJ5dJULjONvRV0ZnmJ3",
   },
   {
-    img:
-      "https://firebasestorage.googleapis.com/v0/b/aedi--project.appspot.com/o/images%2Fimg07.jpg?alt=media&token=7fe497a6-64fb-495d-b6d8-741419630c47",
+    img: "",
     url:
       "https://aedi--project.web.app/#/graduation/HpYXjdVOqGbJl6CVm2gx/project/QM9qRjfU64tCJjnEFNIT",
   },
   {
-    img:
-      "https://firebasestorage.googleapis.com/v0/b/aedi--project.appspot.com/o/images%2Fwellmade.png?alt=media&token=e1d81251-428e-48cc-91ac-02b102dbde15",
+    img: "",
     url:
       "https://aedi--project.web.app/#/graduation/XUlwn516Tjy3jpkgQVxZ/project/W4uotAkrKlBhsE8HJjWl",
   },
   {
-    img:
-      "https://firebasestorage.googleapis.com/v0/b/aedi--project.appspot.com/o/images%2Fcoconut.jpg?alt=media&token=c12bd07e-0cbd-4374-9b36-a9acff19dff6",
+    img: "",
     url:
       "https://aedi--project.web.app/#/graduation/XUlwn516Tjy3jpkgQVxZ/project/AqFhcJ1AsG5zOMP3QRcy",
   },

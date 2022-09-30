@@ -27,6 +27,7 @@
         id="formFile"
         @change="handleImgFileChange"
         required
+        accept="image/*"
       />
     </div>
     <img :src="previewImgSrc" alt="preview-image" class="max-w-sm mb-10" />
@@ -115,9 +116,7 @@ const postId = useRouteParams("post_id").value;
 
 const title = ref();
 const content = ref();
-const previewImgSrc = ref(
-  "https://via.placeholder.com/384x500?text=Upload+Image"
-);
+const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
 const imgSrc = ref("");
 
 const fileListCount = ref(0);
@@ -125,6 +124,9 @@ const fileObjectName = ref({});
 const fileList = ref({});
 const fileListUrl = ref([]);
 const fileListName = ref([]);
+const fileListPath = ref([]);
+
+const editorImgPath = ref([]);
 
 const loading = ref(false);
 
@@ -140,12 +142,11 @@ const deleteFileList = () => {
 
 const handleFileChange = (count) => {
   fileList.value[count] = document.getElementById("file-" + count).files[0];
-  console.log(fileList.value);
-  console.log(fileObjectName.value);
 };
 
 let formImgFile = null;
 let formImgFilePath = null;
+let formImgFixFilePath = null;
 
 const handleImgFileChange = (input) => {
   const reader = new FileReader();
@@ -156,14 +157,28 @@ const handleImgFileChange = (input) => {
   reader.readAsDataURL(input.target.files[0]);
 
   formImgFile = input.target.files[0];
-  formImgFilePath = "images/graduation/" + formImgFile.name;
+  const fileName = formImgFile.name;
+  formImgFilePath = `images/graduations/${postId}/projects/` + fileName;
+  const fileNameArray = fileName.split(".");
+  let fileNameSum = "";
+  for (let i = 0; i < fileNameArray.length - 1; i++) {
+    if (i == fileNameArray.length - 2) {
+      fileNameSum = fileNameSum + fileNameArray[i];
+    } else {
+      fileNameSum = fileNameSum + fileNameArray[i] + ".";
+    }
+  }
+  const fixFileName = fileNameSum + "_400x700.webp";
+  formImgFixFilePath = `images/graduations/${postId}/projects/` + fixFileName;
+  console.log(formImgFixFilePath);
 };
 
 const upload = async () => {
   loading.value = true;
   if (formImgFile !== null && formImgFilePath !== null) {
     await uploadFile(formImgFilePath, formImgFile);
-    imgSrc.value = await getUrl(formImgFilePath);
+    imgSrc.value =
+      `https://storage.googleapis.com/aedi--project.appspot.com/` + formImgFixFilePath;
   } else {
     alert("이미지를 업로드하세요!");
     return;
@@ -171,14 +186,13 @@ const upload = async () => {
 
   if (
     Object.keys(fileList.value).length &&
-    Object.keys(fileList.value).length ===
-      Object.keys(fileObjectName.value).length
+    Object.keys(fileList.value).length === Object.keys(fileObjectName.value).length
   ) {
-    console.log("파일이 비어있지 않음");
     for (const key in fileList.value) {
       const file = fileList.value[key];
-      const filePath = "file/graduation/" + fileList.value[key].name;
+      const filePath = `file/graduations/${postId}/projects/` + fileList.value[key].name;
       fileListName.value.push(fileObjectName.value[key - 1]);
+      fileListPath.value.push(filePath);
 
       await uploadFile(filePath, file);
       const fileUrl = await getUrl(filePath);
@@ -194,7 +208,10 @@ const upload = async () => {
     content,
     imgSrc,
     fileListUrl,
-    fileListName
+    fileListName,
+    formImgFixFilePath,
+    fileListPath,
+    editorImgPath
   );
 
   loading.value = false;
@@ -203,9 +220,21 @@ const upload = async () => {
 };
 
 const addImage = async (file, callback) => {
-  const imagePath = `images/${file.name}`;
+  const imagePath = `images/graduations/${postId}/projects/${file.name}`;
   await uploadFile(imagePath, file);
-  const image = await getUrl(imagePath);
+  const fileNameArray = file.name.split(".");
+  let fileNameSum = "";
+  for (let i = 0; i < fileNameArray.length - 1; i++) {
+    if (i == fileNameArray.length - 2) {
+      fileNameSum = fileNameSum + fileNameArray[i];
+    } else {
+      fileNameSum = fileNameSum + fileNameArray[i] + ".";
+    }
+  }
+  const fixFileName = fileNameSum + "_400x700.webp";
+  const imgFixPath = `images/graduations/${postId}/projects/` + fixFileName;
+  editorImgPath.value.push(imgFixPath);
+  const image = "https://storage.googleapis.com/aedi--project.appspot.com/" + imgFixPath;
 
   callback(image);
 };

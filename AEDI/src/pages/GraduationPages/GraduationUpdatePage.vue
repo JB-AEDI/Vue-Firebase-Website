@@ -95,7 +95,7 @@
       <span class="font-bold text-lg">이미지를 변경하시겠습니까?</span>
       <button
         class="py-2 px-3 bg-indigo-500 text-white rounded-md"
-        @click="isChangeImg = true"
+        @click="deleteBefore"
       >
         변경
       </button>
@@ -137,7 +137,11 @@ import {
   getPostUrl,
   updateGraduation,
 } from "../../firebase/post";
-import { uploadFile, getUrl } from "../../firebase/firestore";
+import {
+  uploadFile,
+  getUrl,
+  deleteBeforeImgFile,
+} from "../../firebase/firestore";
 
 const router = useRouter();
 const postId = useRouteParams("post_id").value;
@@ -168,6 +172,7 @@ onBeforeMount(async () => {
 
 let formFile = null;
 let formFilePath = null;
+let formFixFilePath = null;
 
 const handleFileChange = (input) => {
   const reader = new FileReader();
@@ -178,14 +183,33 @@ const handleFileChange = (input) => {
   reader.readAsDataURL(input.target.files[0]);
 
   formFile = input.target.files[0];
-  formFilePath = "images/graduation/" + formFile.name;
+  const fileName = formFile.name;
+  formFilePath = "images/graduations/" + fileName;
+  const fileNameArray = fileName.split(".");
+  let fileNameSum = "";
+  for (let i = 0; i < fileNameArray.length; i++) {
+    if (i == fileNameArray.length - 1) {
+      fileNameSum = fileNameSum + fileNameArray[i];
+    } else {
+      fileNameSum = fileNameSum + fileNameArray[i] + ".";
+    }
+  }
+  const fixFileName = fileNameSum + "_400x700.webp";
+  formFixFilePath = "images/graduations/" + fixFileName;
+};
+
+const deleteBefore = async () => {
+  isChangeImg.value = true;
+  await deleteBeforeImgFile("graduations", postId);
 };
 
 const upload = async () => {
   loading.value = true;
   if (formFile !== null && formFilePath !== null) {
     await uploadFile(formFilePath, formFile);
-    imgSrc.value = await getUrl(formFilePath);
+    imgSrc.value =
+      "https://storage.googleapis.com/aedi--project.appspot.com/" +
+      formFixFilePath;
   }
   await updateGraduation(
     title,
@@ -194,7 +218,8 @@ const upload = async () => {
     department,
     imgSrc,
     url,
-    postId
+    postId,
+    formFixFilePath
   );
 
   loading.value = false;

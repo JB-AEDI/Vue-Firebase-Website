@@ -128,15 +128,14 @@ const year = ref("2022");
 const university = ref("");
 const department = ref("");
 const url = ref("");
-const previewImgSrc = ref(
-  "https://via.placeholder.com/384x500?text=Upload+Image"
-);
+const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
 const imgSrc = ref("");
 
 const loading = ref(false);
 
 let formFile = null;
 let formFilePath = null;
+let formFixFilePath = null;
 
 const handleFileChange = (input) => {
   const reader = new FileReader();
@@ -147,16 +146,37 @@ const handleFileChange = (input) => {
   reader.readAsDataURL(input.target.files[0]);
 
   formFile = input.target.files[0];
-  formFilePath = "images/graduation/" + formFile.name;
+  const fileName = formFile.name;
+  formFilePath = "images/graduations/" + fileName;
+  const fileNameArray = fileName.split(".");
+  let fileNameSum = "";
+  for (let i = 0; i < fileNameArray.length; i++) {
+    if (i == fileNameArray.length - 1) {
+      fileNameSum = fileNameSum + fileNameArray[i];
+    } else {
+      fileNameSum = fileNameSum + fileNameArray[i] + ".";
+    }
+  }
+  const fixFileName = fileNameSum + "_400x700.webp";
+  formFixFilePath = "images/graduations/" + fixFileName;
 };
 
 const upload = async () => {
   loading.value = true;
   if (formFile !== null && formFilePath !== null) {
     await uploadFile(formFilePath, formFile);
-    imgSrc.value = await getUrl(formFilePath);
+    imgSrc.value =
+      "https://storage.googleapis.com/aedi--project.appspot.com/" + formFixFilePath;
   }
-  await createGraduation(title, year, university, department, imgSrc, url);
+  await createGraduation(
+    title,
+    year,
+    university,
+    department,
+    imgSrc,
+    url,
+    formFixFilePath
+  );
   loading.value = false;
   router.push({
     path: `/graduation/page`,

@@ -52,12 +52,12 @@
               :src="user?.photoURL"
               alt="프로필사진"
               class="rounded-lg w-10 box-content hover:shadow hover:border-2 hover:border-gray-300 cursor-pointer"
-              @click="clickPhoto"
+              @click.stop="isClickedPhoto = !isClickedPhoto"
             />
             <div
               v-if="isClickedPhoto"
               class="fixed top-24 right-4 bg-white rounded w-64 shadow-lg"
-              ref="userModal"
+              v-on-click-outside.bubble="closeModal"
             >
               <div class="flex justify-center my-5">
                 <img
@@ -100,14 +100,6 @@
   <div v-if="$route.name == 'main'" class="border-b"></div>
   <div v-else class="flex justify-between p-5 bg-indigo-500 text-white mb-2">
     <h2 class="sm:text-xl ml-1">{{ $route.name }}</h2>
-
-    <div class="flex">
-      <h3 class="ml-2 sm:ml-4">홈</h3>
-      <div class="flex">
-        <h3 class="ml-2 sm:ml-4">></h3>
-        <h3 class="ml-2 sm:ml-4">{{ $route.name }}</h3>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -115,23 +107,16 @@
 import { RouterLink, useRouter } from "vue-router";
 import { user, logout } from "../firebase/user";
 import { inject, ref } from "vue";
-import { onClickOutside } from "@vueuse/core";
+import { vOnClickOutside } from "@vueuse/components";
 
 const router = useRouter();
 const userProfile = inject("userProfile");
 
 const isClickedPhoto = ref(false);
-const userModal = ref(null);
 
-onClickOutside(userModal, () => (isClickedPhoto.value = false));
-
-const clickPhoto = () => {
-  if (isClickedPhoto.value) {
-    isClickedPhoto.value = false;
-  } else {
-    isClickedPhoto.value = true;
-  }
-};
+function closeModal() {
+  isClickedPhoto.value = false;
+}
 
 const doLogout = async () => {
   await logout();

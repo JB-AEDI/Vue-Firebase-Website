@@ -81,7 +81,7 @@
           </button>
           <div>
             <button
-              v-if="projectData?.uid === user?.uid"
+              v-if="projectData?.uid === user?.uid || userProfile?.admin"
               class="bg-indigo-500 py-2 px-3 rounded-md text-white"
               @click="updateProject"
             >
@@ -89,7 +89,7 @@
             </button>
 
             <button
-              v-if="projectData?.uid === user?.uid"
+              v-if="projectData?.uid === user?.uid || userProfile?.admin"
               class="bg-indigo-500 py-2 px-3 rounded-md text-white ml-4"
               @click="deleteBtn"
             >
@@ -221,7 +221,7 @@
 </template>
 
 <script setup>
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, ref, inject } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { useRouteParams } from "@vueuse/router";
 import {
@@ -247,6 +247,7 @@ import Review from "../../components/Review.vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
+const userProfile = inject("userProfile");
 
 const postId = useRouteParams("post_id").value;
 const projectId = useRouteParams("project_id").value;

@@ -1,4 +1,4 @@
-import { onSnapshot, doc, setDoc, getDoc } from "firebase/firestore";
+import { onSnapshot, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { ref, onUnmounted, watch } from "vue";
 import { db } from "./firebase";
 import {
@@ -29,6 +29,7 @@ export const createUser = async (email, password, name) => {
   await setDoc(doc(db, "profiles", result.user.uid), {
     name: name,
     admin: false,
+    photo: "https://picsum.photos/250/250",
   });
   updateProfile(auth.currentUser, {
     displayName: name,
@@ -89,11 +90,15 @@ export const getUserProfile = async () => {
  * @param {Promise<string>} displayName user name
  * @param {Promise<string>} email user email
  */
-export const updateUserProfile = (photoURL, displayName, email) => {
-  updateProfile(auth.currentUser, {
+export const updateUserProfile = async (photoURL, displayName, email) => {
+  await updateProfile(auth.currentUser, {
     photoURL: photoURL?.value,
     displayName: displayName?.value,
     email: email?.value,
+  });
+  await updateDoc(doc(db, "profiles", user?.value?.uid), {
+    photo: photoURL?.value,
+    name: displayName?.value,
   });
 };
 

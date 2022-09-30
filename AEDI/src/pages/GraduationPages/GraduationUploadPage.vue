@@ -88,6 +88,7 @@
         id="formFile"
         @change="handleFileChange"
         required
+        accept="image/*"
       />
     </div>
     <img :src="previewImgSrc" alt="preview-image" class="max-w-sm" />
@@ -117,7 +118,7 @@
 import { ref, inject } from "vue";
 
 import { createGraduation } from "../../firebase/post";
-import { uploadFile, getUrl } from "../../firebase/firestore";
+import { uploadFile } from "../../firebase/firestore";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -128,7 +129,9 @@ const year = ref("2022");
 const university = ref("");
 const department = ref("");
 const url = ref("");
-const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
+const previewImgSrc = ref(
+  "https://via.placeholder.com/384x500?text=Upload+Image"
+);
 const imgSrc = ref("");
 
 const loading = ref(false);
@@ -150,8 +153,8 @@ const handleFileChange = (input) => {
   formFilePath = "images/graduations/" + fileName;
   const fileNameArray = fileName.split(".");
   let fileNameSum = "";
-  for (let i = 0; i < fileNameArray.length; i++) {
-    if (i == fileNameArray.length - 1) {
+  for (let i = 0; i < fileNameArray.length - 1; i++) {
+    if (i == fileNameArray.length - 2) {
       fileNameSum = fileNameSum + fileNameArray[i];
     } else {
       fileNameSum = fileNameSum + fileNameArray[i] + ".";
@@ -166,7 +169,8 @@ const upload = async () => {
   if (formFile !== null && formFilePath !== null) {
     await uploadFile(formFilePath, formFile);
     imgSrc.value =
-      "https://storage.googleapis.com/aedi--project.appspot.com/" + formFixFilePath;
+      "https://storage.googleapis.com/aedi--project.appspot.com/" +
+      formFixFilePath;
   }
   await createGraduation(
     title,

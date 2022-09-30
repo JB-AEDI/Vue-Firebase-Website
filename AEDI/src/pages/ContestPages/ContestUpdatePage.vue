@@ -158,15 +158,13 @@
         id="formFile"
         @change="handleFileChange"
         required
+        accept="image/*"
       />
     </div>
 
     <div v-else class="flex justify-between mb-4">
       <span class="font-bold text-lg">이미지를 변경하시겠습니까?</span>
-      <button
-        class="py-2 px-3 bg-indigo-500 text-white rounded-md"
-        @click="isChangeImg = true"
-      >
+      <button class="py-2 px-3 bg-indigo-500 text-white rounded-md" @click="deleteBefore">
         변경
       </button>
     </div>
@@ -208,7 +206,7 @@ import {
   getTarget,
   getField,
 } from "../../firebase/post";
-import { uploadFile, getUrl } from "../../firebase/firestore";
+import { uploadFile, deleteBeforeImgFile } from "../../firebase/firestore";
 import { useRouter } from "vue-router";
 import { useRouteParams } from "@vueuse/router";
 
@@ -247,6 +245,7 @@ onBeforeMount(async () => {
 
 let formFile = null;
 let formFilePath = null;
+let formFixFilePath = null;
 
 const handleFileChange = (input) => {
   const reader = new FileReader();
@@ -257,14 +256,32 @@ const handleFileChange = (input) => {
   reader.readAsDataURL(input.target.files[0]);
 
   formFile = input.target.files[0];
-  formFilePath = "images/contest/" + formFile.name;
+  const fileName = formFile.name;
+  formFilePath = "images/contests/" + fileName;
+  const fileNameArray = fileName.split(".");
+  let fileNameSum = "";
+  for (let i = 0; i < fileNameArray.length - 1; i++) {
+    if (i == fileNameArray.length - 2) {
+      fileNameSum = fileNameSum + fileNameArray[i];
+    } else {
+      fileNameSum = fileNameSum + fileNameArray[i] + ".";
+    }
+  }
+  const fixFileName = fileNameSum + "_400x700.webp";
+  formFixFilePath = "images/contests/" + fixFileName;
+};
+
+const deleteBefore = async () => {
+  isChangeImg.value = true;
+  await deleteBeforeImgFile("contests", postId);
 };
 
 const upload = async () => {
   loading.value = true;
   if (formFile !== null && formFilePath !== null) {
     await uploadFile(formFilePath, formFile);
-    imgSrc.value = await getUrl(formFilePath);
+    imgSrc.value =
+      "https://storage.googleapis.com/aedi--project.appspot.com/" + formFixFilePath;
   }
   await updateContest(
     title,
@@ -277,7 +294,8 @@ const upload = async () => {
     field,
     imgSrc,
     url,
-    postId
+    postId,
+    formFixFilePath
   );
   loading.value = false;
   router.go(-1);

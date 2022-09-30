@@ -27,6 +27,7 @@
         id="formFile"
         @change="handleImgFileChange"
         required
+        accept="image/*"
       />
     </div>
 
@@ -91,14 +92,19 @@
       </div>
     </div>
 
-    <div v-else class="flex justify-between mb-4">
-      <span class="font-bold text-lg">파일을 변경하시겠습니까?</span>
-      <button
-        class="py-2 px-3 bg-indigo-500 text-white rounded-md"
-        @click="isChangeFile = true"
-      >
-        변경
-      </button>
+    <div v-else class="mb-4">
+      <div class="flex justify-between">
+        <span class="text-lg font-bold">기존 파일을 삭제하고 변경하시겠습니까?</span>
+        <button
+          class="py-2 px-3 bg-indigo-500 text-white rounded-md"
+          @click="onClickdeleteRegacyFile"
+        >
+          변경
+        </button>
+      </div>
+      <div v-for="fileName in fileListName" class="text-blue-600 underline">
+        {{ fileName }}
+      </div>
     </div>
 
     <TuiEditor v-if="content" v-model="content" @add-image="addImage"></TuiEditor>
@@ -130,8 +136,12 @@ import {
   getProjectTitle,
   getProjectContent,
   getProjectImg,
+  getProjectImgPath,
+  getProjectFileNameList,
+  getProjectFileUrlList,
+  getProjectFilePathList,
 } from "../../firebase/post";
-import { uploadFile, getUrl } from "../../firebase/firestore";
+import { uploadFile, getUrl, deleteRegacyFile } from "../../firebase/firestore";
 import { useRouter } from "vue-router";
 import { useRouteParams } from "@vueuse/router";
 import { user } from "../../firebase/user";
@@ -150,6 +160,9 @@ const fileObjectName = ref({});
 const fileList = ref({});
 const fileListUrl = ref([]);
 const fileListName = ref([]);
+const fileListPath = ref([]);
+
+const editorImgPath = ref([]);
 
 const loading = ref(false);
 const isChangeImg = ref(false);
@@ -160,10 +173,21 @@ onBeforeMount(async () => {
   content.value = await getProjectContent("contests", postId, projectId);
   previewImgSrc.value = await getProjectImg("contests", postId, projectId);
   imgSrc.value = await getProjectImg("contests", postId, projectId);
+  formImgFixFilePath.value = await getProjectImgPath("contests", postId, projectId);
+  fileListName.value = await getProjectFileNameList("contests", postId, projectId);
+  fileListUrl.value = await getProjectFileUrlList("contests", postId, projectId);
+  fileListPath.value = await getProjectFilePathList("contests", postId, projectId);
 });
 
-let formFile = null;
-let formFilePath = null;
+const onClickdeleteRegacyFile = () => {
+  isChangeFile.value = true;
+  for (const filePath in fileListPath.value) {
+    deleteRegacyFile(fileListPath.value[filePath]);
+  }
+  fileListName.value = [];
+  fileListUrl.value = [];
+  fileListPath.value = [];
+};
 
 const addFileList = () => {
   fileObjectName.value[fileListCount.value] = "";
@@ -177,9 +201,11 @@ const deleteFileList = () => {
 
 const handleFileChange = (count) => {
   fileList.value[count] = document.getElementById("file-" + count).files[0];
-  console.log(fileList.value);
-  console.log(fileObjectName.value);
 };
+
+let formImgFile = null;
+let formImgFilePath = null;
+const formImgFixFilePath = ref(null);
 
 const handleImgFileChange = (input) => {
   const reader = new FileReader();
@@ -189,15 +215,29 @@ const handleImgFileChange = (input) => {
   };
   reader.readAsDataURL(input.target.files[0]);
 
-  formFile = input.target.files[0];
-  formFilePath = "images/contest/" + formFile.name;
+  formImgFile = input.target.files[0];
+  const fileName = formImgFile.name;
+  formImgFilePath = `images/graduations/${postId}/projects/` + fileName;
+  const fileNameArray = fileName.split(".");
+  let fileNameSum = "";
+  for (let i = 0; i < fileNameArray.length - 1; i++) {
+    if (i == fileNameArray.length - 2) {
+      fileNameSum = fileNameSum + fileNameArray[i];
+    } else {
+      fileNameSum = fileNameSum + fileNameArray[i] + ".";
+    }
+  }
+  const fixFileName = fileNameSum + "_400x700.webp";
+  formImgFixFilePath.value = `images/graduations/${postId}/projects/` + fixFileName;
 };
 
 const upload = async () => {
   loading.value = true;
-  if (formFile !== null && formFilePath !== null) {
-    await uploadFile(formFilePath, formFile);
-    imgSrc.value = await getUrl(formFilePath);
+  if (formImgFile !== null && formImgFilePath !== null) {
+    await uploadFile(formImgFilePath, formImgFile);
+    imgSrc.value =
+      "https://storage.googleapis.com/aedi--project.appspot.com/" +
+      formImgFixFilePath.value;
   }
 
   if (
@@ -206,8 +246,9 @@ const upload = async () => {
   ) {
     for (const key in fileList.value) {
       const file = fileList.value[key];
-      const filePath = "file/graduation/" + fileList.value[key].name;
+      const filePath = `file/contests/${postId}/projects/` + fileList.value[key].name;
       fileListName.value.push(fileObjectName.value[key - 1]);
+      fileListPath.value.push(filePath);
 
       await uploadFile(filePath, file);
       const fileUrl = await getUrl(filePath);
@@ -223,7 +264,10 @@ const upload = async () => {
     content,
     imgSrc,
     fileListUrl,
-    fileListName
+    fileListName,
+    formImgFixFilePath,
+    fileListPath,
+    editorImgPath
   );
 
   loading.value = false;
@@ -231,9 +275,22 @@ const upload = async () => {
 };
 
 const addImage = async (file, callback) => {
-  const imagePath = `images/${file.name}`;
+  const imagePath = `images/contests/${postId}/projects/${file.name}`;
   await uploadFile(imagePath, file);
-  const image = await getUrl(imagePath);
+  const fileNameArray = file.name.split(".");
+  let fileNameSum = "";
+  for (let i = 0; i < fileNameArray.length - 1; i++) {
+    if (i == fileNameArray.length - 2) {
+      fileNameSum = fileNameSum + fileNameArray[i];
+    } else {
+      fileNameSum = fileNameSum + fileNameArray[i] + ".";
+    }
+  }
+  const fixFileName = fileNameSum + "_400x700.webp";
+  const imgFixPath = `images/contests/${postId}/projects/` + fixFileName;
+  editorImgPath.value.push(imgFixPath);
+  console.log(editorImgPath.value);
+  const image = "https://storage.googleapis.com/aedi--project.appspot.com/" + imgFixPath;
 
   callback(image);
 };

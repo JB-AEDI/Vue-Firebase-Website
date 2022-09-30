@@ -88,6 +88,7 @@
         id="formFile"
         @change="handleFileChange"
         required
+        accept="image/*"
       />
     </div>
 
@@ -137,11 +138,7 @@ import {
   getPostUrl,
   updateGraduation,
 } from "../../firebase/post";
-import {
-  uploadFile,
-  getUrl,
-  deleteBeforeImgFile,
-} from "../../firebase/firestore";
+import { uploadFile, deleteBeforeImgFile } from "../../firebase/firestore";
 
 const router = useRouter();
 const postId = useRouteParams("post_id").value;
@@ -187,8 +184,8 @@ const handleFileChange = (input) => {
   formFilePath = "images/graduations/" + fileName;
   const fileNameArray = fileName.split(".");
   let fileNameSum = "";
-  for (let i = 0; i < fileNameArray.length; i++) {
-    if (i == fileNameArray.length - 1) {
+  for (let i = 0; i < fileNameArray.length - 1; i++) {
+    if (i == fileNameArray.length - 2) {
       fileNameSum = fileNameSum + fileNameArray[i];
     } else {
       fileNameSum = fileNameSum + fileNameArray[i] + ".";

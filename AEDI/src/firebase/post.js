@@ -131,7 +131,8 @@ export const createContest = async (
   target,
   field,
   img,
-  url
+  url,
+  imgFilePath
 ) => {
   await addDoc(collection(db, "contests"), {
     title: title?.value,
@@ -144,6 +145,7 @@ export const createContest = async (
     field: field?.value,
     img: img?.value,
     url: url?.value,
+    imgFilePath: imgFilePath,
     views: 0,
     likes: 0,
     projects: 0,
@@ -749,7 +751,8 @@ export const updateContest = async (
   field,
   img,
   url,
-  post_id
+  post_id,
+  imgFilePath
 ) => {
   await updateDoc(doc(db, "contests", post_id), {
     title: title?.value,
@@ -762,6 +765,7 @@ export const updateContest = async (
     field: field?.value,
     img: img?.value,
     url: url?.value,
+    imgFilePath: imgFilePath,
   });
 };
 

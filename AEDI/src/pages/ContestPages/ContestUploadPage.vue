@@ -158,6 +158,7 @@
         id="formFile"
         @change="handleFileChange"
         required
+        accept="image/*"
       />
     </div>
     <img :src="previewImgSrc" alt="preview-image" class="max-w-sm" />
@@ -186,7 +187,7 @@
 import { ref, inject } from "vue";
 
 import { createContest } from "../../firebase/post";
-import { uploadFile, getUrl } from "../../firebase/firestore";
+import { uploadFile } from "../../firebase/firestore";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
@@ -201,15 +202,14 @@ const endDate = ref("");
 const target = ref("");
 const field = ref("");
 const url = ref("");
-const previewImgSrc = ref(
-  "https://via.placeholder.com/384x500?text=Upload+Image"
-);
+const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
 const imgSrc = ref("");
 
 const loading = ref(false);
 
 let formFile = null;
 let formFilePath = null;
+let formFixFilePath = null;
 
 const handleFileChange = (input) => {
   const reader = new FileReader();
@@ -220,14 +220,27 @@ const handleFileChange = (input) => {
   reader.readAsDataURL(input.target.files[0]);
 
   formFile = input.target.files[0];
-  formFilePath = "images/contest/" + formFile.name;
+  const fileName = formFile.name;
+  formFilePath = "images/contests/" + fileName;
+  const fileNameArray = fileName.split(".");
+  let fileNameSum = "";
+  for (let i = 0; i < fileNameArray.length - 1; i++) {
+    if (i == fileNameArray.length - 2) {
+      fileNameSum = fileNameSum + fileNameArray[i];
+    } else {
+      fileNameSum = fileNameSum + fileNameArray[i] + ".";
+    }
+  }
+  const fixFileName = fileNameSum + "_400x700.webp";
+  formFixFilePath = "images/contests/" + fixFileName;
 };
 
 const upload = async () => {
   loading.value = true;
   if (formFile !== null && formFilePath !== null) {
     await uploadFile(formFilePath, formFile);
-    imgSrc.value = await getUrl(formFilePath);
+    imgSrc.value =
+      "https://storage.googleapis.com/aedi--project.appspot.com/" + formFixFilePath;
   }
   await createContest(
     title,
@@ -239,7 +252,8 @@ const upload = async () => {
     target,
     field,
     imgSrc,
-    url
+    url,
+    formFixFilePath
   );
   loading.value = false;
   router.push({

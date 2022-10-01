@@ -37,11 +37,16 @@ import {
   faMinus,
   faArrowLeftRotate,
   faEnvelope,
+  faClock,
+  faArrowDown,
+  faArrowUp,
+  faEye,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faLightbulb } from "@fortawesome/free-regular-svg-icons";
 
 import "./index.css";
+import { faHotjar } from "@fortawesome/free-brands-svg-icons";
 
 /* add icons to the library */
 library.add(
@@ -69,7 +74,12 @@ library.add(
   faUserSlash,
   faMinus,
   faArrowLeftRotate,
-  faEnvelope
+  faEnvelope,
+  faHotjar,
+  faClock,
+  faArrowUp,
+  faArrowDown,
+  faEye
 );
 
 const markedMixin = {

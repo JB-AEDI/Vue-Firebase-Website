@@ -119,32 +119,95 @@
   </div>
 
   <div class="px-5 mt-24 mb-10">
-    <div class="flex justify-between items-center pb-3 border-b border-gray-400">
-      <span class="font-bold text-xl">프로젝트</span>
-      <button
-        v-if="user?.emailVerified"
-        @click="uploadProject"
-        class="px-3 py-2 bg-yellow-300 rounded-md"
-      >
-        업로드
-      </button>
+    <div class="pb-3 border-b border-gray-400">
+      <div class="flex justify-between items-center">
+        <span class="font-bold text-xl">프로젝트</span>
+        <button
+          v-if="user?.emailVerified"
+          @click="uploadProject"
+          class="px-3 py-2 bg-yellow-300 rounded-md"
+        >
+          업로드
+        </button>
+      </div>
+      <div>
+        <span v-if="selectedTime" class="cursor-pointer" @click="onClickTime">
+          <font-awesome-icon icon="fa-solid fa-clock" class="text-sky-400" />
+          <span class="text-sm ml-1 hidden sm:inline text-sky-400">시간순</span>
+          <font-awesome-icon
+            v-if="timeOrder == 'desc'"
+            icon="fa-solid fa-arrow-up"
+            class="ml-1"
+          />
+          <font-awesome-icon
+            v-if="timeOrder == 'asc'"
+            icon="fa-solid fa-arrow-down"
+            class="ml-1"
+          />
+        </span>
+        <span v-else class="cursor-pointer" @click="selectTime">
+          <font-awesome-icon icon="fa-solid fa-clock" class="text-slate-400" />
+          <span class="text-sm ml-1 hidden sm:inline text-slate-400">시간순</span>
+          <font-awesome-icon icon="fa-solid fa-arrow-up" class="ml-1 text-slate-400" />
+        </span>
+        <span v-if="selectedHot" class="ml-6 cursor-pointer" @click="onClickHot">
+          <font-awesome-icon icon="fa-brands fa-hotjar" class="text-red-600" />
+          <span class="text-sm ml-1 hidden sm:inline text-red-600">추천순</span>
+          <font-awesome-icon
+            v-if="hotOrder == 'desc'"
+            icon="fa-solid fa-arrow-up"
+            class="ml-1"
+          />
+          <font-awesome-icon
+            v-if="hotOrder == 'asc'"
+            icon="fa-solid fa-arrow-down"
+            class="ml-1"
+          />
+        </span>
+        <span v-else class="ml-6 cursor-pointer" @click="selectHot">
+          <font-awesome-icon icon="fa-brands fa-hotjar" class="text-slate-400" />
+          <span class="text-sm ml-1 hidden sm:inline text-slate-400">추천순</span>
+          <font-awesome-icon icon="fa-solid fa-arrow-up" class="ml-1 text-slate-400" />
+        </span>
+        <span v-if="selectedView" class="ml-6 cursor-pointer" @click="onClickView">
+          <font-awesome-icon icon="fa-solid fa-eye" class="text-emerald-600" />
+          <span class="text-sm ml-1 hidden sm:inline text-emerald-600">조회순</span>
+          <font-awesome-icon
+            v-if="viewOrder == 'desc'"
+            icon="fa-solid fa-arrow-up"
+            class="ml-1"
+          />
+          <font-awesome-icon
+            v-if="viewOrder == 'asc'"
+            icon="fa-solid fa-arrow-down"
+            class="ml-1"
+          />
+        </span>
+        <span v-else class="ml-6 cursor-pointer" @click="selectView">
+          <font-awesome-icon icon="fa-solid fa-eye" class="text-slate-400" />
+          <span class="text-sm ml-1 hidden sm:inline text-slate-400">조회순</span>
+          <font-awesome-icon icon="fa-solid fa-arrow-up" class="ml-1 text-slate-400" />
+        </span>
+      </div>
     </div>
     <ProjectList :projects="projects" :menu="menu"></ProjectList>
   </div>
 </template>
 
 <script setup>
-import { inject, onMounted, ref } from "vue";
+import { inject, onMounted, ref, computed } from "vue";
 import { useRouter } from "vue-router";
-import { onSnapshotPost } from "../../firebase/post";
 import { useRouteParams } from "@vueuse/router";
 import { user } from "../../firebase/user";
 import {
   pushLike,
   updateViewsCount,
-  onSnapshotProjects,
   deleteProjectPost,
+  onSnapshotPost,
 } from "../../firebase/post";
+import { db } from "../../firebase/firebase";
+import { useFirestore } from "@vueuse/firebase";
+import { collection, orderBy, query } from "@firebase/firestore";
 
 import ProjectList from "../../components/ProjectList.vue";
 
@@ -153,8 +216,92 @@ const router = useRouter();
 const userProfile = inject("userProfile");
 const postId = useRouteParams("post_id").value;
 const postData = onSnapshotPost("contests", postId);
-const projects = onSnapshotProjects("contests", postId);
+
+const postsOrder = ref("timestamp");
+const postsOrderOption = ref("desc");
+const postsQuery = computed(() =>
+  query(
+    collection(db, "contests", postId, "projects"),
+    orderBy(postsOrder.value, postsOrderOption.value)
+  )
+);
+const projects = useFirestore(postsQuery);
+
 const menu = ref("contest");
+
+const selectedTime = ref(true);
+const selectedHot = ref(false);
+const selectedView = ref(false);
+
+const timeOrder = ref("desc");
+const hotOrder = ref("desc");
+const viewOrder = ref("desc");
+
+const onClickTime = () => {
+  if (timeOrder.value == "desc") {
+    timeOrder.value = "asc";
+  } else if (timeOrder.value == "asc") {
+    timeOrder.value = "desc";
+  }
+  postsOrderOption.value = timeOrder.value;
+};
+
+const onClickHot = () => {
+  if (hotOrder.value == "desc") {
+    hotOrder.value = "asc";
+  } else if (hotOrder.value == "asc") {
+    hotOrder.value = "desc";
+  }
+  postsOrderOption.value = hotOrder.value;
+};
+
+const onClickView = () => {
+  if (viewOrder.value == "desc") {
+    viewOrder.value = "asc";
+  } else if (viewOrder.value == "asc") {
+    viewOrder.value = "desc";
+  }
+  postsOrderOption.value = viewOrder.value;
+};
+
+const selectTime = () => {
+  selectedTime.value = true;
+  selectedHot.value = false;
+  selectedView.value = false;
+
+  timeOrder.value = "desc";
+  hotOrder.value = "desc";
+  viewOrder.value = "desc";
+
+  postsOrder.value = "timestamp";
+  postsOrderOption.value = timeOrder.value;
+};
+
+const selectHot = () => {
+  selectedTime.value = false;
+  selectedHot.value = true;
+  selectedView.value = false;
+
+  timeOrder.value = "desc";
+  hotOrder.value = "desc";
+  viewOrder.value = "desc";
+
+  postsOrder.value = "likes";
+  postsOrderOption.value = hotOrder.value;
+};
+
+const selectView = () => {
+  selectedTime.value = false;
+  selectedHot.value = false;
+  selectedView.value = true;
+
+  timeOrder.value = "desc";
+  hotOrder.value = "desc";
+  viewOrder.value = "desc";
+
+  postsOrder.value = "views";
+  postsOrderOption.value = viewOrder.value;
+};
 
 const props = defineProps({
   projects: Object,

@@ -129,9 +129,7 @@ const year = ref("2022");
 const university = ref("");
 const department = ref("");
 const url = ref("");
-const previewImgSrc = ref(
-  "https://via.placeholder.com/384x500?text=Upload+Image"
-);
+const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
 const imgSrc = ref("");
 
 const loading = ref(false);
@@ -160,7 +158,7 @@ const handleFileChange = (input) => {
       fileNameSum = fileNameSum + fileNameArray[i] + ".";
     }
   }
-  const fixFileName = fileNameSum + "_400x700.webp";
+  const fixFileName = fileNameSum + "_800x1200.webp";
   formFixFilePath = "images/graduations/" + fixFileName;
 };
 
@@ -169,8 +167,7 @@ const upload = async () => {
   if (formFile !== null && formFilePath !== null) {
     await uploadFile(formFilePath, formFile);
     imgSrc.value =
-      "https://storage.googleapis.com/aedi--project.appspot.com/" +
-      formFixFilePath;
+      "https://storage.googleapis.com/aedi--project.appspot.com/" + formFixFilePath;
   }
   await createGraduation(
     title,

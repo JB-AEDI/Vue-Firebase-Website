@@ -231,7 +231,7 @@ const handleFileChange = (input) => {
       fileNameSum = fileNameSum + fileNameArray[i] + ".";
     }
   }
-  const fixFileName = fileNameSum + "_400x700.webp";
+  const fixFileName = fileNameSum + "_800x1200.webp";
   formFixFilePath = "images/contests/" + fixFileName;
 };
 

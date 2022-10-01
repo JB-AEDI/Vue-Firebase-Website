@@ -30,7 +30,7 @@
         >이벤트</RouterLink
       >
     </div>
-    <div class="w-2/12 flex justify-center sm:justify-end ml-1 sm:ml-0">
+    <div class="w-2/12 flex justify-center sm:justify-end sm:mr-3 ml-1 sm:ml-0">
       <div v-if="user === null">
         <RouterLink
           :to="{ name: '로그인' }"

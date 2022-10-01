@@ -94,10 +94,7 @@
 
     <div v-else class="flex justify-between mb-4">
       <span class="font-bold text-lg">이미지를 변경하시겠습니까?</span>
-      <button
-        class="py-2 px-3 bg-indigo-500 text-white rounded-md"
-        @click="deleteBefore"
-      >
+      <button class="py-2 px-3 bg-indigo-500 text-white rounded-md" @click="deleteBefore">
         변경
       </button>
     </div>
@@ -148,9 +145,7 @@ const title = ref("");
 const year = ref("");
 const university = ref("");
 const department = ref("");
-const previewImgSrc = ref(
-  "https://via.placeholder.com/384x500?text=Upload+Image"
-);
+const previewImgSrc = ref("https://via.placeholder.com/384x500?text=Upload+Image");
 const imgSrc = ref("");
 const url = ref("");
 
@@ -191,7 +186,7 @@ const handleFileChange = (input) => {
       fileNameSum = fileNameSum + fileNameArray[i] + ".";
     }
   }
-  const fixFileName = fileNameSum + "_400x700.webp";
+  const fixFileName = fileNameSum + "_800x1200.webp";
   formFixFilePath = "images/graduations/" + fixFileName;
 };
 
@@ -205,8 +200,7 @@ const upload = async () => {
   if (formFile !== null && formFilePath !== null) {
     await uploadFile(formFilePath, formFile);
     imgSrc.value =
-      "https://storage.googleapis.com/aedi--project.appspot.com/" +
-      formFixFilePath;
+      "https://storage.googleapis.com/aedi--project.appspot.com/" + formFixFilePath;
   }
   await updateGraduation(
     title,

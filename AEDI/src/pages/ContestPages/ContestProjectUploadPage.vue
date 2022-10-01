@@ -167,7 +167,7 @@ const handleImgFileChange = (input) => {
       fileNameSum = fileNameSum + fileNameArray[i] + ".";
     }
   }
-  const fixFileName = fileNameSum + "_400x700.webp";
+  const fixFileName = fileNameSum + "_800x1200.webp";
   formImgFixFilePath = `images/graduations/${postId}/projects/` + fixFileName;
   console.log(formImgFixFilePath);
 };
@@ -230,7 +230,7 @@ const addImage = async (file, callback) => {
       fileNameSum = fileNameSum + fileNameArray[i] + ".";
     }
   }
-  const fixFileName = fileNameSum + "_400x700.webp";
+  const fixFileName = fileNameSum + "_800x1200.webp";
   const imgFixPath = `images/contests/${postId}/projects/` + fixFileName;
   editorImgPath.value.push(imgFixPath);
   const image = "https://storage.googleapis.com/aedi--project.appspot.com/" + imgFixPath;

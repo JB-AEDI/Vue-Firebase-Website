@@ -57,3 +57,18 @@ export const deleteProjectAllFiles = async (
     }
   }
 };
+
+export const deletePostEditorImg = async (editorImgPath) => {
+  if (editorImgPath.length > 0) {
+    for (const index in editorImgPath) {
+      const path = editorImgPath[index];
+      const delEditorImgRef = ref(storage, path);
+      await deleteObject(delEditorImgRef);
+    }
+  }
+};
+
+export const deletePostImg = async (imgPath) => {
+  const delImgRef = ref(storage, imgPath);
+  await deleteObject(delImgRef);
+};

@@ -7,14 +7,23 @@
     </div>
     <div class="sm:pl-6 w-full sm:w-4/5">
       <div class="h-5/6">
-        <div class="border-b border-gray-300 pb-2">
-          <span class="text-red-400 mr-1.5"
-            ><font-awesome-icon icon="fa-solid fa-heart"
-          /></span>
-          <span class="mr-4">{{ postData?.likes }}</span>
-          <span>프로젝트 수 - </span>
-          <span>{{ postData?.projects }}</span>
-          <span class="float-right mr-2">조회수 - {{ postData?.views }}</span>
+        <div class="border-b border-gray-300 pb-4 flex justify-between">
+          <div>
+            <span class="text-red-400 mr-1.5"
+              ><font-awesome-icon icon="fa-solid fa-heart"
+            /></span>
+            <span class="mr-4">{{ postData?.likes }}</span>
+            <span>프로젝트 수 - </span>
+            <span>{{ postData?.projects }}</span>
+          </div>
+          <button
+            class="bg-blue-400 hover:bg-blue-500 py-1 px-2 rounded-md text-white"
+            @click="[(options.title = postData?.title), startShare()]"
+            :disabled="!isSupported"
+          >
+            <font-awesome-icon icon="fa-solid fa-share-nodes" />
+            <span class="text-sm ml-1">공유하기</span>
+          </button>
         </div>
         <div class="border-b border-gray-300 py-2">
           <h1 class="text-xl font-bold mb-3">
@@ -75,9 +84,19 @@
             </div>
           </div>
         </div>
+        <div class="mt-1">
+          <div class="flex flex-col gap-1">
+            <div class="flex">
+              <span class="text-gray-400 inline-block w-24">조회수</span>
+              <div>
+                {{ postData?.views }}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div class="h-1/6 flex flex-col justify-end items-start mt-2 sm:mt-0">
+      <div class="h-1/6 flex flex-col justify-end items-start mt-1">
         <div class="w-full flex-col">
           <div class="text-xs sm:text-base">
             <button class="p-3 bg-yellow-300 rounded-md" @click="openUrl(postData?.url)">
@@ -208,6 +227,8 @@ import {
 import { db } from "../../firebase/firebase";
 import { useFirestore } from "@vueuse/firebase";
 import { collection, orderBy, query } from "@firebase/firestore";
+import { isClient } from "@vueuse/shared";
+import { useShare } from "@vueuse/core";
 
 import ProjectList from "../../components/ProjectList.vue";
 
@@ -216,6 +237,18 @@ const router = useRouter();
 const userProfile = inject("userProfile");
 const postId = useRouteParams("post_id").value;
 const postData = onSnapshotPost("contests", postId);
+
+const options = ref({
+  title: "ADEI",
+  text: `"AEDI 프로젝트 평가 플랫폼"에서 당신의 의견을 공유하고 여러 프로젝트를 평가해서 지원하세요 😀`,
+  url: isClient ? location.href : "",
+});
+
+const { share, isSupported } = useShare(options);
+
+const startShare = () => {
+  share().catch((err) => err);
+};
 
 const postsOrder = ref("timestamp");
 const postsOrderOption = ref("desc");

@@ -43,7 +43,7 @@ import { ref, inject } from "vue";
 
 import TuiEditor from "../../components/editor/TuiEditor.vue";
 import { createNotice } from "../../firebase/post";
-import { uploadFile, getUrl } from "../../firebase/firestore";
+import { uploadFile } from "../../firebase/firestore";
 import { useRouter } from "vue-router";
 import { user } from "../../firebase/user";
 
@@ -51,6 +51,8 @@ const router = useRouter();
 
 const title = ref("");
 const content = ref("");
+
+const editorImgPath = ref([]);
 
 const loading = ref(false);
 
@@ -63,7 +65,8 @@ const upload = async () => {
     title,
     content,
     user?.value?.displayName,
-    userProfile?.value?.admin
+    userProfile?.value?.admin,
+    editorImgPath
   );
   loading.value = false;
   router.push({
@@ -72,9 +75,22 @@ const upload = async () => {
 };
 
 const addImage = async (file, callback) => {
-  const imagePath = `images/${file.name}`;
+  const imagePath = `images/notices/${file.name}`;
   await uploadFile(imagePath, file);
-  const image = await getUrl(imagePath);
+  const fileNameArray = file.name.split(".");
+  let fileNameSum = "";
+  for (let i = 0; i < fileNameArray.length - 1; i++) {
+    if (i == fileNameArray.length - 2) {
+      fileNameSum = fileNameSum + fileNameArray[i];
+    } else {
+      fileNameSum = fileNameSum + fileNameArray[i] + ".";
+    }
+  }
+  const fixFileName = fileNameSum + "_800x1200.webp";
+  const imgFixPath = `images/notices/` + fixFileName;
+  editorImgPath.value.push(imgFixPath);
+  console.log(editorImgPath.value);
+  const image = "https://storage.googleapis.com/aedi--project.appspot.com/" + imgFixPath;
 
   callback(image);
 };

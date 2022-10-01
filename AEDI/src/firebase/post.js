@@ -17,7 +17,11 @@ import {
 import { onUnmounted, ref } from "vue";
 import { db } from "./firebase";
 import { user } from "./user";
-import { deleteProjectAllFiles } from "./firestore";
+import {
+  deleteProjectAllFiles,
+  deletePostEditorImg,
+  deletePostImg,
+} from "./firestore";
 
 // Create Post
 
@@ -30,13 +34,20 @@ import { deleteProjectAllFiles } from "./firestore";
  * @param {Promise<string>} name 이름
  * @param {boolean} admin 사용자권한
  */
-export const createNotice = async (title, description, name, admin) => {
+export const createNotice = async (
+  title,
+  description,
+  name,
+  admin,
+  editorImgPath
+) => {
   await addDoc(collection(db, "notices"), {
     title: title?.value,
     description: description?.value,
     uid: user?.value?.uid,
     name: name,
     admin: admin,
+    editorImgPath: editorImgPath?.value,
     timestamp: serverTimestamp(),
     views: 0,
   });
@@ -58,7 +69,8 @@ export const createEvent = async (
   endDate,
   description,
   name,
-  admin
+  admin,
+  editorImgPath
 ) => {
   await addDoc(collection(db, "events"), {
     title: title?.value,
@@ -68,6 +80,7 @@ export const createEvent = async (
     uid: user?.value?.uid,
     name: name,
     admin: admin,
+    editorImgPath: editorImgPath?.value,
     timestamp: serverTimestamp(),
     views: 0,
   });
@@ -659,6 +672,7 @@ export const updateNotice = async (
   description,
   name,
   admin,
+  editorImgPath,
   post_id
 ) => {
   await updateDoc(doc(db, "notices", post_id), {
@@ -667,6 +681,7 @@ export const updateNotice = async (
     uid: user?.value?.uid,
     name: name,
     admin: admin,
+    editorImgPath: editorImgPath?.value,
   });
 };
 
@@ -688,6 +703,7 @@ export const updateEvent = async (
   description,
   name,
   admin,
+  editorImgPath,
   post_id
 ) => {
   await updateDoc(doc(db, "events", post_id), {
@@ -698,6 +714,7 @@ export const updateEvent = async (
     uid: user?.value?.uid,
     name: name,
     admin: admin,
+    editorImgPath: editorImgPath?.value,
   });
 };
 
@@ -847,6 +864,10 @@ export const updateViewsProjectCount = async (menu, post_id, project_id) => {
  * @param {string} post_id 포스트 아이디
  */
 export const deletePost = async (menu, post_id) => {
+  const post = await getDoc(doc(db, menu, post_id));
+  const editorImgPath = post.data().editorImgPath;
+  await deletePostEditorImg(editorImgPath);
+
   await deleteDoc(doc(db, menu, post_id));
 };
 
@@ -866,6 +887,10 @@ export const deleteProjectPost = async (menu, post_id) => {
   projects.docs.forEach(async (project) => {
     await deleteProject(menu, post_id, project.id);
   });
+  // 포스트 포스터 이미지 삭제
+  const post = await getDoc(doc(db, menu, post_id));
+  const imgPath = post.data().imgFilePath;
+  await deletePostImg(imgPath);
   // 포스트 삭제
   await deleteDoc(doc(db, menu, post_id));
 };

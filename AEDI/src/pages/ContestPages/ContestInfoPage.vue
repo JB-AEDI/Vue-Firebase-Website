@@ -1,9 +1,11 @@
 <template>
-  <div v-if="postData" class="px-5 flex">
-    <div class="w-64 h-96 bg-gray-200 flex justify-center items-center">
+  <div v-if="postData" class="px-8 sm:flex">
+    <div
+      class="w-full sm:w-64 sm:h-96 bg-gray-200 flex justify-center items-center mb-4 sm:mb-0"
+    >
       <img :src="postData?.img" alt="poster" class="w-full" />
     </div>
-    <div class="pl-6 w-4/5">
+    <div class="sm:pl-6 w-full sm:w-4/5">
       <div class="h-5/6">
         <div class="border-b border-gray-300 pb-2">
           <span class="text-red-400 mr-1.5"
@@ -75,20 +77,17 @@
         </div>
       </div>
 
-      <div class="h-1/6 flex flex-col justify-end items-start">
-        <div class="w-full flex justify-between">
-          <div>
-            <button
-              class="ml-2 p-3 bg-yellow-300 rounded-md"
-              @click="openUrl(postData?.url)"
-            >
+      <div class="h-1/6 flex flex-col justify-end items-start mt-2 sm:mt-0">
+        <div class="w-full flex-col">
+          <div class="text-xs sm:text-base">
+            <button class="p-3 bg-yellow-300 rounded-md" @click="openUrl(postData?.url)">
               <span class="font-bold">공모전 페이지 바로가기</span>
-              <span class="ml-3"
+              <span class="ml-1 sm:ml-3"
                 ><font-awesome-icon icon="fa-solid fa-chevron-right"
               /></span>
             </button>
             <button
-              class="ml-12 p-2 border-4 border-red-400 rounded-md box-content"
+              class="mt-2 ml-4 sm:mt-0 sm:ml-12 p-2 border-4 border-red-400 rounded-md box-content"
               @click="pushLike('contests', postId)"
             >
               <span class="text-red-400"
@@ -97,7 +96,7 @@
               <span class="font-bold ml-2">좋아요</span>
             </button>
           </div>
-          <div class="flex items-end">
+          <div class="flex sm:justify-end mt-2 sm:mt-0">
             <button
               v-if="userProfile.admin"
               @click="updatePost(postId)"

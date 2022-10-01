@@ -1,5 +1,5 @@
 <template>
-  <Carousel :itemsToShow="3.95" :wrapAround="true">
+  <Carousel :itemsToShow="itemsToShow" :wrapAround="true">
     <Slide v-for="slide in projects" :key="slide">
       <div
         class="carousel__item w-5/6 h-full pb-[133%] bg-white shadow-md bg-cover"
@@ -31,6 +31,7 @@ export default defineComponent({
   },
   props: {
     projects: Array,
+    itemsToShow: Number,
   },
   methods: {
     goUrl(url) {

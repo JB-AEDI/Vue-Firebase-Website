@@ -1,8 +1,8 @@
 <template>
   <div
-    class="flex items-center justify-between h-20 bg-stone-100 sticky top-0 shadow-xl z-10"
+    class="flex items-center justify-between h-20 bg-stone-100 sticky top-0 shadow-xl z-10 pl-3"
   >
-    <div class="flex items-center justify-between w-10/12 pl-3">
+    <div class="flex items-center justify-between w-10/12">
       <RouterLink :to="{ name: 'main' }">
         <a href="@">
           <div class="flex items-center">
@@ -30,11 +30,11 @@
         >이벤트</RouterLink
       >
     </div>
-    <div class="w-2/12 flex justify-end pr-3">
+    <div class="w-2/12 flex justify-center sm:justify-end ml-1 sm:ml-0">
       <div v-if="user === null">
         <RouterLink
           :to="{ name: '로그인' }"
-          class="font-medium border border-gray-400 py-1 px-2 rounded hover:bg-gray-200"
+          class="font-medium border border-gray-400 py-1 px-2 rounded hover:bg-gray-200 text-xs sm:text-base"
         >
           <a href="@">로그인</a>
         </RouterLink>

@@ -1,11 +1,11 @@
 <template>
-  <div class="sm:flex px-5">
+  <div class="sm:flex px-8">
     <div
-      class="w-full px-8 mb-4 sm:mb-0 sm:p-0 sm:w-64 sm:h-96 bg-gray-200 flex justify-center items-center"
+      class="w-full mb-4 sm:mb-0 sm:w-64 sm:h-96 bg-gray-200 flex justify-center items-center"
     >
       <img :src="postData?.img" alt="poster" class="w-full" />
     </div>
-    <div class="pl-6 w-full sm:w-4/5">
+    <div class="sm:pl-6 w-full sm:w-4/5">
       <div class="h-5/6">
         <div class="border-b border-gray-300 pb-2">
           <span class="text-red-400 mr-1.5"
@@ -62,7 +62,7 @@
 
       <div class="h-1/6 flex flex-col justify-end items-start mt-2 sm:mt-0">
         <div class="w-full flex-col">
-          <div class="text-xs">
+          <div class="text-xs sm:text-base">
             <button class="p-3 bg-yellow-300 rounded-md" @click="openUrl(postData?.url)">
               <span class="font-bold">졸업작품 발표회 바로가기</span>
               <span class="ml-1 sm:ml-3"

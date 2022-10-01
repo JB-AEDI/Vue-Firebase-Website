@@ -1,8 +1,8 @@
 <template>
   <div class="mx-5">
-    <div class="flex justify-center pb-[35%]">
+    <div class="flex justify-center pb-[35%] mb-40 sm:mb-0">
       <div class="w-11/12 h-0">
-        <Carousel :projects="projects"></Carousel>
+        <Carousel :projects="projects" :itemsToShow="itemsToShow"></Carousel>
       </div>
     </div>
     <div class="flex justify-center lg:gap-12 md:gap-10 sm:gap-8 gap-4 mt-7 mb-5">
@@ -86,10 +86,34 @@
 <script setup>
 import Carousel from "../components/Carousel.vue";
 import { RouterLink } from "vue-router";
-import { ref } from "vue";
+import { onUnmounted, ref, watchEffect } from "vue";
+import { breakpointsTailwind, useBreakpoints } from "@vueuse/core";
 
 const props = defineProps({
   projects: Array,
+  itemsToShow: Number,
+});
+
+const breakpoints = useBreakpoints(breakpointsTailwind);
+const smallerSm = breakpoints.smaller("sm");
+const itemsToShow = ref(3.95);
+
+const smWatch = watchEffect(
+  () => {
+    if (smallerSm.value) {
+      itemsToShow.value = 1.8;
+    } else {
+      itemsToShow.value = 3.95;
+    }
+  },
+  {
+    immediate: true,
+    flush: "pre",
+  }
+);
+
+onUnmounted(() => {
+  smWatch();
 });
 
 const projects = ref([

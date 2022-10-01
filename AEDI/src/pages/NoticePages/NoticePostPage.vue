@@ -1,7 +1,7 @@
 <template>
   <div class="mx-5">
     <h1 class="font-bold text-lg mb-5">{{ postSnapshot?.value?.title }}</h1>
-    <div class="flex gap-3 justify-end bg-gray-50 py-2 px-4 mb-8">
+    <div class="flex gap-3 justify-end bg-gray-50 py-2 px-4 mb-8 text-sm sm:text-base">
       <div>{{ postSnapshot?.value?.name }}<span v-if="postSnapshot?.value?.admin">(관리자)</span></div>
       <div class="text-sm">&#124</div>
       <div v-if="postSnapshot?.value?.timestamp">

@@ -28,7 +28,7 @@
                 <span class="ml-1">{{ project.views }}</span>
               </div>
               <div>
-                <span class="text-yellow-300 mr-1">★</span>
+                <font-awesome-icon icon="fa-solid fa-heart" class="text-red-400 mr-1" />
                 <span>{{ project.likes }}</span>
               </div>
             </div>
@@ -59,6 +59,9 @@ const moveProject = (menu, project_id) => {
 </script>
 <style>
 .project-description img {
+  display: none;
+}
+.project-description hr {
   display: none;
 }
 </style>

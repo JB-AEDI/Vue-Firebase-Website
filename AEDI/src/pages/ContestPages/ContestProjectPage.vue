@@ -1,26 +1,26 @@
 <template>
   <div v-if="projectData" class="px-10">
-    <div class="flex">
+    <div class="sm:flex">
       <div
-        class="w-full max-w-[260px] h-80 bg-cover shadow-lg"
+        class="w-full sm:max-w-[260px] mb-6 sm:mb-0 h-80 bg-cover shadow-lg"
         :style="{ backgroundImage: `url(${projectData?.img})` }"
       ></div>
-      <div class="w-full pl-6 flex flex-col gap-2 mt-2">
+      <div class="w-full sm:pl-6 flex flex-col gap-2 mt-2">
         <div class="grid grid-cols-12">
-          <div class="col-span-2 font-bold">졸업작품</div>
-          <div class="col-span-10">{{ contestTitle }}</div>
+          <div class="col-span-4 sm:col-span-2 font-bold">졸업작품</div>
+          <div class="col-span-8 sm:col-span-10">{{ contestTitle }}</div>
         </div>
         <div class="grid grid-cols-12">
-          <div class="col-span-2 font-bold">프로젝트명</div>
-          <div class="col-span-10">{{ projectData?.title }}</div>
+          <div class="col-span-4 sm:col-span-2 font-bold">프로젝트명</div>
+          <div class="col-span-8 sm:col-span-10">{{ projectData?.title }}</div>
         </div>
         <div class="grid grid-cols-12">
-          <div class="col-span-2 font-bold">작성자</div>
-          <div class="col-span-10">{{ projectData?.name }}</div>
+          <div class="col-span-4 sm:col-span-2 font-bold">작성자</div>
+          <div class="col-span-8 sm:col-span-10">{{ projectData?.name }}</div>
         </div>
         <div class="grid grid-cols-12">
-          <div class="col-span-2 font-bold">작성시간</div>
-          <div class="col-span-10">
+          <div class="col-span-4 sm:col-span-2 font-bold">작성시간</div>
+          <div class="col-span-8 sm:col-span-10">
             <span>{{ projectData?.timestamp.toDate().getFullYear() }}</span>
             <span class="mx-0.5">-</span>
             <span v-if="projectData?.timestamp.toDate().getMonth() < 9"
@@ -52,13 +52,13 @@
           </div>
         </div>
         <div class="grid grid-cols-12">
-          <div class="col-span-2 font-bold">조회수</div>
-          <div class="col-span-10">{{ projectData?.views }}</div>
+          <div class="col-span-4 sm:col-span-2 font-bold">조회수</div>
+          <div class="col-span-8 sm:col-span-10">{{ projectData?.views }}</div>
         </div>
 
         <div class="grid grid-cols-12">
-          <div class="col-span-2 font-bold">첨부파일</div>
-          <div class="col-span-10">
+          <div class="col-span-4 sm:col-span-2 font-bold">첨부파일</div>
+          <div class="col-span-8 sm:col-span-10">
             <a
               v-for="(name, i) in projectData?.filesName"
               :key="i"

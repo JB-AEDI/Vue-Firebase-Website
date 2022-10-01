@@ -1,23 +1,26 @@
 <template>
-  <div class="px-5 pt-4 pb-2 flex justify-between items-center">
-    <h3 class="ml-1 text-xl font-bold">이벤트</h3>
-    <button
-      @click="pushUpload"
-      v-if="userProfile.admin"
-      class="mr-5 bg-indigo-500 py-2 px-3 rounded-md text-white"
-    >
+  <div v-if="userProfile.admin" class="px-5 pt-4 pb-2 flex justify-end">
+    <button @click="pushUpload" class="bg-indigo-500 py-2 px-3 rounded-md text-white">
       <font-awesome-icon icon="fa-solid fa-upload" class="mr-2" />업로드
     </button>
   </div>
 
   <div class="p-5">
     <div
-      class="grid grid-cols-12 bg-indigo-500 text-white text-center border-b border-white"
+      class="grid grid-cols-12 bg-indigo-500 text-white border-b border-white text-xs sm:text-base"
     >
-      <div class="col-span-5 border-y p-3">제목</div>
-      <div class="col-span-2 border p-3">주최사</div>
-      <div class="col-span-2 border-y border-r p-3">조회수</div>
-      <div class="col-span-3 border-y border-r p-3">진행상태</div>
+      <div class="flex justify-center items-center col-span-5 border-y p-3">제목</div>
+      <div class="flex justify-center items-center col-span-2 border p-1 sm:p-3">
+        주최사
+      </div>
+      <div
+        class="flex justify-center items-center col-span-2 border-y border-r p-1 sm:p-3"
+      >
+        조회수
+      </div>
+      <div class="flex justify-center items-center col-span-3 border-y border-r p-3">
+        진행상태
+      </div>
     </div>
 
     <div
@@ -26,18 +29,26 @@
       class="grid grid-cols-12 bg-gray-200"
     >
       <div class="col-span-5 border-r border-b border-white p-3">
-        <span class="cursor-pointer" @click="movePost(event)">
+        <span class="cursor-pointer font-bold" @click="movePost(event)">
           {{ event?.title }}
         </span>
       </div>
-      <div class="col-span-2 border-r border-b border-white p-3 text-center">AEDI</div>
-      <div class="col-span-2 border-r border-b border-white p-3 text-center">
+      <div
+        class="col-span-2 border-r border-b border-white p-3 text-center text-sm sm:text-base"
+      >
+        AEDI
+      </div>
+      <div
+        class="col-span-2 border-r border-b border-white p-3 text-center text-sm sm:text-base"
+      >
         {{ event?.views }}
       </div>
-      <div class="col-span-3 border-r border-b border-white p-3 text-center">
-        <span>{{ event?.startDate }}</span>
-        <span class="mx-2">~</span>
-        <span>{{ event?.endDate }}</span>
+      <div
+        class="col-span-3 border-r border-b border-white p-2 sm:p-3 text-center text-xs sm:text-base"
+      >
+        <span class="block sm:inline">{{ event?.startDate }}</span>
+        <span class="block sm:inline sm:mx-2">~</span>
+        <span class="block sm:inline">{{ event?.endDate }}</span>
       </div>
     </div>
   </div>

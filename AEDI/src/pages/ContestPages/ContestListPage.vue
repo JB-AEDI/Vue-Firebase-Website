@@ -1,13 +1,6 @@
 <template>
-  <!--<Catgory></Catgory>-->
-
-  <div class="px-5 pt-4 pb-2 flex justify-between items-center">
-    <h3 class="ml-1 text-xl font-bold"><!--IT/웹/모바일/게임--></h3>
-    <button
-      v-if="userProfile.admin"
-      @click="pushUpload"
-      class="bg-indigo-500 py-2 px-3 rounded-md text-white"
-    >
+  <div v-if="userProfile.admin" class="px-5 pt-4 pb-2 flex justify-end items-center">
+    <button @click="pushUpload" class="bg-indigo-500 py-2 px-3 rounded-md text-white">
       <font-awesome-icon icon="fa-solid fa-upload" class="mr-2" />업로드
     </button>
   </div>
@@ -28,11 +21,13 @@
     >
       <div class="col-span-7 border-x border-b border-white p-3 sm:pl-12">
         <div>
-          <span class="font-bold cursor-pointer" @click="movePost(contest)">{{
-            contest?.title
-          }}</span>
+          <span
+            class="font-bold cursor-pointer text-sm sm:text-base"
+            @click="movePost(contest)"
+            >{{ contest?.title }}</span
+          >
         </div>
-        <div class="flex items-center mt-1">
+        <div class="mt-1">
           <div
             class="inline-block border-2 border-red-400 py-0.5 px-1.5 rounded-lg text-sm"
           >
@@ -41,12 +36,16 @@
             /></span>
             <span class="ml-1">{{ contest?.likes }}</span>
           </div>
-          <span class="font-semibold text-gray-800 text-sm mx-2">[분야]</span>
-          <span class="text-gray-600">{{ contest?.field }}</span>
+          <div class="block sm:inline">
+            <span class="font-semibold text-gray-800 text-xs sm:text-sm mr-1 sm:mx-2"
+              >[분야]</span
+            >
+            <span class="text-gray-600 text-xs sm:text-base">{{ contest?.field }}</span>
+          </div>
         </div>
       </div>
       <div
-        class="flex justify-center items-center col-span-2 border-r border-b border-white p-3"
+        class="flex justify-center items-center col-span-2 border-r border-b border-white p-3 text-sm sm:text-base"
       >
         {{ contest?.host }}
       </div>

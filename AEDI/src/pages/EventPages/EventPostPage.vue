@@ -2,7 +2,7 @@
   <div class="mx-5">
     <h1 class="font-bold text-lg mb-5">{{ postSnapshot?.value?.title }}</h1>
 
-    <div class="flex justify-between bg-gray-50 py-2 px-4 mb-8">
+    <div class="flex flex-col items-end sm:flex-row sm:justify-between sm:items-center bg-gray-50 py-2 px-4 mb-8 text-sm sm:text-base">
       <div>
         <span class="mr-4 font-bold">이벤트 기간</span>
         <span>{{ postSnapshot?.value?.startDate }}</span>

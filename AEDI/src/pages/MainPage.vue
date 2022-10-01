@@ -1,6 +1,6 @@
 <template>
   <div class="mx-5">
-    <div class="flex justify-center pb-[35%] mb-40 sm:mb-0">
+    <div class="flex justify-center pb-[35%] mb-[45%] sm:mb-0">
       <div class="w-11/12 h-0">
         <Carousel :projects="projects" :itemsToShow="itemsToShow"></Carousel>
       </div>

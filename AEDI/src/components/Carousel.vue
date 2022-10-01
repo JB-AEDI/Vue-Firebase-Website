@@ -2,7 +2,7 @@
   <Carousel :itemsToShow="itemsToShow" :wrapAround="true">
     <Slide v-for="slide in projects" :key="slide">
       <div
-        class="carousel__item w-5/6 h-full pb-[133%] bg-white shadow-md bg-cover"
+        class="carousel__item w-5/6 h-full pb-[133%] bg-white shadow-md bg-cover cursor-pointer"
         :style="{ backgroundImage: `url(${slide.img})` }"
         @dblclick="goUrl(slide.url)"
       ></div>

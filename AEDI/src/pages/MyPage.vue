@@ -1,5 +1,5 @@
 <template>
-  <div class="px-28">
+  <div class="px-5 md:px-10 lg:px-16">
     <div>
       <div v-if="isEditUserProfile" class="flex justify-between items-center mb-4">
         <h3 class="font-bold text-xl">사용자정보 수정</h3>
@@ -23,7 +23,7 @@
 
       <div
         v-if="isEditUserProfile"
-        class="py-8 px-10 border border-gray-400 rounded-md bg-white"
+        class="py-4 sm:py-8 px-5 sm:px-10 border border-gray-400 rounded-md bg-white"
       >
         <div class="border-b border-gray-300 pb-5 flex items-center">
           <div class="w-1/6 font-bold">사진</div>
@@ -89,11 +89,16 @@
         </div>
       </div>
 
-      <div v-else class="py-8 px-10 border border-gray-400 rounded-md bg-white">
+      <div
+        v-else
+        class="py-4 sm:py-8 px-5 sm:px-10 border border-gray-400 rounded-md bg-white"
+      >
         <div class="border-b border-gray-300 pb-5 flex items-center">
-          <div class="w-1/6 font-bold">사진</div>
+          <div class="w-1/6 font-bold text-sm sm:text-base">사진</div>
           <div class="w-5/6 flex items-center justify-between">
-            <span>프로필사진으로 당신의 개성을 표현해보세요.</span>
+            <span class="text-xs sm:text-base"
+              >프로필사진으로 당신의 개성을 표현해보세요.</span
+            >
             <div class="relative">
               <img :src="user?.photoURL" alt="프로필사진" class="w-16 h-16 rounded-md" />
               <div
@@ -105,17 +110,17 @@
           </div>
         </div>
         <div class="border-b border-gray-300 flex py-5">
-          <div class="w-1/6 font-bold">이름</div>
-          <div class="w-5/6">{{ user?.displayName }}</div>
+          <div class="w-1/6 font-bold text-sm sm:text-base">이름</div>
+          <div class="w-5/6 text-xs sm:text-base">{{ user?.displayName }}</div>
         </div>
         <div class="flex pt-5">
-          <div class="w-1/6 font-bold">이메일</div>
-          <div class="w-5/6">{{ user?.email }}</div>
+          <div class="w-1/6 font-bold text-sm sm:text-base">이메일</div>
+          <div class="w-5/6 text-xs sm:text-base">{{ user?.email }}</div>
         </div>
       </div>
     </div>
 
-    <div class="my-6 flex gap-8">
+    <div class="my-6 sm:flex gap-8">
       <div class="flex-1">
         <h3 class="font-bold text-xl mb-3">인증메일 다시보내기</h3>
         <div
@@ -155,14 +160,14 @@
         </div>
       </div>
       <div class="flex-1">
-        <h3 class="font-bold text-xl mb-3">비밀번호 재설정</h3>
+        <h3 class="font-bold text-xl mb-3 mt-3 sm:mt-0">비밀번호 재설정</h3>
         <div
-          class="py-8 px-10 border border-gray-400 rounded-md h-32 flex justify-between items-center bg-white"
+          class="px-5 sm:py-8 sm:px-10 border border-gray-400 rounded-md h-32 flex justify-between items-center bg-white"
         >
-          <div class="flex justify-between items-center w-full">
+          <div class="sm:flex justify-between items-center w-full">
             <p class="text-xs">비밀번호 재설정을 위해서 이메일을 보냅니다.</p>
             <button
-              class="border-2 border-gray-400 bg-gray-200 hover:bg-gray-300 font-bold py-1 px-2 rounded-md"
+              class="border-2 border-gray-400 bg-gray-200 hover:bg-gray-300 font-bold py-1 sm:px-2 px-1 rounded-md text-sm mt-2 sm:mt-0 float-right sm:float-none sm:text-base"
               @click="pushSendEmailPasswordReset"
             >
               <font-awesome-icon icon="fa-solid fa-paper-plane" />
@@ -181,24 +186,26 @@
           기존에 작성하신 게시물들은 자동으로 삭제되지 않습니다. 작성한 모든 게시물을
           삭제하고 계정을 삭제하시기 바랍니다.
         </p>
-        <div class="flex justify-end items-center mt-4">
+        <div class="sm:flex justify-end items-center mt-4">
           <p class="flex-1">
             <span class="text-red-600 font-bold">계정삭제</span>를 입력하시고
             계정삭제버튼을 누르십시오.
           </p>
-          <input
-            type="text"
-            v-model="isDelete"
-            class="border-2 border-gray-400 border-r-0 rounded-l-md pl-2 py-1"
-            placeholder="계정삭제"
-          />
-          <button
-            class="border-2 border-gray-400 bg-gray-200 hover:bg-gray-300 font-bold py-1 px-2 rounded-r-md"
-            @click="pushDeleteUser"
-          >
-            <font-awesome-icon icon="fa-solid fa-user-slash" />
-            계정삭제
-          </button>
+          <div class="flex sm:block text-xs sm:text-base mt-2 sm:mt-0">
+            <input
+              type="text"
+              v-model="isDelete"
+              class="border-2 border-gray-400 border-r-0 rounded-l-md pl-2 py-1"
+              placeholder="계정삭제"
+            />
+            <button
+              class="border-2 border-gray-400 bg-gray-200 hover:bg-gray-300 font-bold py-1 px-2 rounded-r-md"
+              @click="pushDeleteUser"
+            >
+              <font-awesome-icon icon="fa-solid fa-user-slash" />
+              계정삭제
+            </button>
+          </div>
         </div>
       </div>
     </div>

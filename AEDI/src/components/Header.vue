@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex items-center justify-between h-20 bg-stone-100 sticky top-0 shadow-xl z-10 pl-3"
+    class="flex items-center justify-between h-20 bg-stone-100 sticky top-0 shadow-xl z-50 pl-3"
   >
     <div class="flex items-center justify-between w-10/12">
       <RouterLink :to="{ name: 'main' }">

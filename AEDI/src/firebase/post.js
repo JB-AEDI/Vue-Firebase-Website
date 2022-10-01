@@ -103,6 +103,7 @@ export const createGraduation = async (
     views: 0,
     likes: 0,
     projects: 0,
+    reviews: 0,
     timestamp: serverTimestamp(),
   });
 };
@@ -149,6 +150,7 @@ export const createContest = async (
     views: 0,
     likes: 0,
     projects: 0,
+    reviews: 0,
     timestamp: serverTimestamp(),
   });
 };
@@ -338,6 +340,9 @@ export const createProjectReview = async (
       design: design,
     }
   );
+  await updateDoc(doc(db, menu, post_id), {
+    reviews: increment(1),
+  });
 };
 
 // 프로젝트 평가 - 유무확인
@@ -426,6 +431,9 @@ export const deleteMyProjectReview = async (menu, post_id, project_id) => {
         querySnapshot.docs[0].id
       )
     );
+    await updateDoc(doc(db, menu, post_id), {
+      reviews: increment(-1),
+    });
   }
 };
 
@@ -913,6 +921,29 @@ export const deleteProject = async (menu, post_id, project_id) => {
 };
 
 // Loading Post
+
+export const getPostCount = (menu) => {
+  const projectCount = ref(0);
+  const eventCount = ref(0);
+  const reviewCount = ref(0);
+
+  let unsub = () => {};
+  unsub();
+
+  unsub = onSnapshot(collection(db, menu), (snapshot) => {
+    snapshot.docs.forEach((doc) => {
+      projectCount.value += doc.data().projects;
+    });
+    snapshot.docs.forEach((doc) => {
+      reviewCount.value += doc.data().reviews;
+    });
+    eventCount.value = snapshot.docs.length;
+  });
+
+  onUnmounted(() => unsub());
+
+  return { projectCount, eventCount, reviewCount };
+};
 
 // 리스트 페이지 - 스냅샷
 /**

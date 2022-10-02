@@ -7,7 +7,7 @@
         <div class="rounded-md h-96 border-2 border-black">
           <div
             class="w-full h-56 rounded-t cursor-pointer bg-cover border-b"
-            :style="{ backgroundImage: `url(${project.img})` }"
+            :style="{ backgroundImage: `url(${encodeURI(project?.img)})` }"
             @click="moveProject(menu, project.id)"
           ></div>
           <div class="px-3 mt-2 truncate">

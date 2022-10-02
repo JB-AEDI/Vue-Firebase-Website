@@ -2,9 +2,10 @@
   <div v-if="projectData" class="px-10">
     <div class="sm:flex">
       <div
-        class="w-full sm:max-w-[260px] mb-6 sm:mb-0 h-80 bg-cover shadow-lg"
-        :style="{ backgroundImage: `url(${projectData?.img})` }"
-      ></div>
+        class="w-full sm:max-w-[260px] mb-6 sm:mb-0 h-80 shadow-lg flex justify-center bg-gray-200"
+      >
+        <img :src="projectData?.img" alt="프로젝트 이미지" class="h-full" />
+      </div>
       <div class="w-full sm:pl-6 flex flex-col gap-2 mt-2">
         <div class="grid grid-cols-12">
           <div class="col-span-4 sm:col-span-2 font-bold">졸업작품</div>

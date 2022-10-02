@@ -157,7 +157,7 @@ const handleImgFileChange = (input) => {
 
   formImgFile = input.target.files[0];
   const fileName = formImgFile.name;
-  formImgFilePath = `images/graduations/${postId}/projects/` + fileName;
+  formImgFilePath = `images/contests/${postId}/projects/` + fileName;
   const fileNameArray = fileName.split(".");
   let fileNameSum = "";
   for (let i = 0; i < fileNameArray.length - 1; i++) {
@@ -168,7 +168,7 @@ const handleImgFileChange = (input) => {
     }
   }
   const fixFileName = fileNameSum + "_800x1200.webp";
-  formImgFixFilePath = `images/graduations/${postId}/projects/` + fixFileName;
+  formImgFixFilePath = `images/contests/${postId}/projects/` + fixFileName;
   console.log(formImgFixFilePath);
 };
 

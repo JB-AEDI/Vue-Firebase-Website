@@ -54,9 +54,7 @@
                 <span v-if="postData?.timestamp.toDate().getMonth() < 9"
                   >0{{ postData?.timestamp.toDate().getMonth() + 1 }}</span
                 >
-                <span v-else>{{
-                  postData?.timestamp.toDate().getMonth() + 1
-                }}</span>
+                <span v-else>{{ postData?.timestamp.toDate().getMonth() + 1 }}</span>
                 <span>-</span>
                 <span v-if="postData?.timestamp.toDate().getDate() < 10"
                   >0{{ postData?.timestamp.toDate().getDate() }}</span
@@ -75,10 +73,7 @@
       <div class="h-1/6 flex flex-col justify-end items-start mt-2 sm:mt-0">
         <div class="w-full flex-col">
           <div class="text-xs sm:text-base">
-            <button
-              class="p-3 bg-yellow-300 rounded-md"
-              @click="openUrl(postData?.url)"
-            >
+            <button class="p-3 bg-yellow-300 rounded-md" @click="openUrl(postData?.url)">
               <span class="font-bold">졸업작품 발표회 바로가기</span>
               <span class="ml-1 sm:ml-3"
                 ><font-awesome-icon icon="fa-solid fa-chevron-right"
@@ -145,19 +140,10 @@
         </span>
         <span v-else class="cursor-pointer" @click="selectTime">
           <font-awesome-icon icon="fa-solid fa-clock" class="text-slate-400" />
-          <span class="text-sm ml-1 hidden sm:inline text-slate-400"
-            >시간순</span
-          >
-          <font-awesome-icon
-            icon="fa-solid fa-arrow-up"
-            class="ml-1 text-slate-400"
-          />
+          <span class="text-sm ml-1 hidden sm:inline text-slate-400">시간순</span>
+          <font-awesome-icon icon="fa-solid fa-arrow-up" class="ml-1 text-slate-400" />
         </span>
-        <span
-          v-if="selectedHot"
-          class="ml-6 cursor-pointer"
-          @click="onClickHot"
-        >
+        <span v-if="selectedHot" class="ml-6 cursor-pointer" @click="onClickHot">
           <font-awesome-icon icon="fa-brands fa-hotjar" class="text-red-600" />
           <span class="text-sm ml-1 hidden sm:inline text-red-600">추천순</span>
           <font-awesome-icon
@@ -172,27 +158,13 @@
           />
         </span>
         <span v-else class="ml-6 cursor-pointer" @click="selectHot">
-          <font-awesome-icon
-            icon="fa-brands fa-hotjar"
-            class="text-slate-400"
-          />
-          <span class="text-sm ml-1 hidden sm:inline text-slate-400"
-            >추천순</span
-          >
-          <font-awesome-icon
-            icon="fa-solid fa-arrow-up"
-            class="ml-1 text-slate-400"
-          />
+          <font-awesome-icon icon="fa-brands fa-hotjar" class="text-slate-400" />
+          <span class="text-sm ml-1 hidden sm:inline text-slate-400">추천순</span>
+          <font-awesome-icon icon="fa-solid fa-arrow-up" class="ml-1 text-slate-400" />
         </span>
-        <span
-          v-if="selectedView"
-          class="ml-6 cursor-pointer"
-          @click="onClickView"
-        >
+        <span v-if="selectedView" class="ml-6 cursor-pointer" @click="onClickView">
           <font-awesome-icon icon="fa-solid fa-eye" class="text-emerald-600" />
-          <span class="text-sm ml-1 hidden sm:inline text-emerald-600"
-            >조회순</span
-          >
+          <span class="text-sm ml-1 hidden sm:inline text-emerald-600">조회순</span>
           <font-awesome-icon
             v-if="viewOrder == 'desc'"
             icon="fa-solid fa-arrow-up"
@@ -206,13 +178,8 @@
         </span>
         <span v-else class="ml-6 cursor-pointer" @click="selectView">
           <font-awesome-icon icon="fa-solid fa-eye" class="text-slate-400" />
-          <span class="text-sm ml-1 hidden sm:inline text-slate-400"
-            >조회순</span
-          >
-          <font-awesome-icon
-            icon="fa-solid fa-arrow-up"
-            class="ml-1 text-slate-400"
-          />
+          <span class="text-sm ml-1 hidden sm:inline text-slate-400">조회순</span>
+          <font-awesome-icon icon="fa-solid fa-arrow-up" class="ml-1 text-slate-400" />
         </span>
       </div>
     </div>

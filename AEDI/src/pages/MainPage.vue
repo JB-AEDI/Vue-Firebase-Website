@@ -55,7 +55,7 @@
       </div>
     </div>
     <div class="flex justify-center">
-      <RouterLink to="/graduation/info/">
+      <RouterLink to="/graduation/info/IlIieAXNmAKLG7alvrf6">
         <img src="../assets/banner.gif" alt="banner" class="my-10" />
       </RouterLink>
     </div>

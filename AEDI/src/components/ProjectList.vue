@@ -4,9 +4,9 @@
       class="grid xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 mt-3"
     >
       <div v-for="project in projects">
-        <div class="rounded-md h-96 border-2 border-black">
+        <div class="rounded-md border-2 border-black">
           <div
-            class="w-full h-56 rounded-t cursor-pointer bg-cover border-b"
+            class="w-full pb-[100%] rounded-t cursor-pointer bg-cover border-b"
             :style="{ backgroundImage: `url(${encodeURI(project?.img)})` }"
             @click="moveProject(menu, project.id)"
           ></div>
@@ -22,7 +22,7 @@
                 class="project-description text-sm"
               ></div>
             </div>
-            <div class="flex justify-between text-sm mt-2">
+            <div class="flex justify-between text-sm mt-2 mb-4">
               <div>
                 <span>조회수</span>
                 <span class="ml-1">{{ project.views }}</span>

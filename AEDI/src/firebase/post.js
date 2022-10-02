@@ -994,7 +994,7 @@ export const onSnapshotPostsPage = (menu) => {
   };
 
   const postRef = collection(db, menu);
-  const q = query(postRef, orderBy("timestamp"));
+  const q = query(postRef, orderBy("timestamp", "desc"));
 
   let unsub = () => {};
   // 포스트 리스트 실시간 가져오기

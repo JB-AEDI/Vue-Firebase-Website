@@ -1,5 +1,16 @@
 <template>
   <form v-if="userProfile?.admin" class="px-5" @submit.prevent="upload">
+    <div class="font-bold text-lg mb-2">
+      <input
+        type="checkbox"
+        name="important"
+        id="important"
+        class="mr-3"
+        v-model="important"
+      />
+      <label for="important">중요공지 설정</label>
+    </div>
+
     <div>
       <label
         for="title"
@@ -45,21 +56,23 @@ import { ref, inject, onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
 
 import TuiEditor from "../../components/editor/TuiEditor.vue";
-import { updateNotice, getContent, getTitle } from "../../firebase/post";
+import { updateNotice, getContent, getTitle, getImportant } from "../../firebase/post";
 import { uploadFile } from "../../firebase/firestore";
 
 const router = useRouter();
 const postId = useRouteParams("post_id").value;
 
 const userProfile = inject("userProfile");
-const content = ref("");
+const important = ref(false);
 const title = ref("");
+const content = ref("");
 
 const editorImgPath = ref([]);
 
 const loading = ref(false);
 
 onBeforeMount(async () => {
+  important.value = await getImportant("notices", postId);
   title.value = await getTitle("notices", postId);
   content.value = await getContent("notices", postId);
 });
@@ -72,6 +85,7 @@ const upload = async () => {
     userProfile?.value?.name,
     userProfile?.value?.admin,
     editorImgPath,
+    important,
     postId
   );
   loading.value = false;

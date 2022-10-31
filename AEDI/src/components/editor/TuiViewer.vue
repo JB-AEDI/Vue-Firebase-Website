@@ -15,6 +15,22 @@ onMounted(() => {
   viewer.value = new Viewer({
     el: editorRef.value,
     initialValue: props.content,
+    customHTMLRenderer: {
+      htmlBlock: {
+        iframe(node) {
+          return [
+            {
+              type: "openTag",
+              tagName: "iframe",
+              outerNewLine: true,
+              attributes: node.attrs,
+            },
+            { type: "html", content: node.childrenHTML },
+            { type: "closeTag", tagName: "iframe", outerNewLine: true },
+          ];
+        },
+      },
+    },
   });
 });
 </script>

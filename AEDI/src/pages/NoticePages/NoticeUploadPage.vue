@@ -1,5 +1,16 @@
 <template>
   <form v-if="userProfile?.admin" class="px-5" @submit.prevent="upload">
+    <div class="font-bold text-lg mb-2">
+      <input
+        type="checkbox"
+        name="important"
+        id="important"
+        class="mr-3"
+        v-model="important"
+      />
+      <label for="important">중요공지 설정</label>
+    </div>
+
     <div>
       <label
         for="title"
@@ -49,6 +60,7 @@ import { user } from "../../firebase/user";
 
 const router = useRouter();
 
+const important = ref(false);
 const title = ref("");
 const content = ref("");
 
@@ -66,7 +78,8 @@ const upload = async () => {
     content,
     user?.value?.displayName,
     userProfile?.value?.admin,
-    editorImgPath
+    editorImgPath,
+    important
   );
   loading.value = false;
   router.push({

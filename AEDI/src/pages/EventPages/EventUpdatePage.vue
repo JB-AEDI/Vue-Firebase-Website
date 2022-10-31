@@ -1,5 +1,16 @@
 <template>
   <form v-if="userProfile?.admin" class="px-5" @submit.prevent="upload">
+    <div class="font-bold text-lg mb-2">
+      <input
+        type="checkbox"
+        name="important"
+        id="important"
+        class="mr-3"
+        v-model="important"
+      />
+      <label for="important">중요공지 설정</label>
+    </div>
+
     <div>
       <label
         for="title"
@@ -80,6 +91,7 @@ import {
   getContent,
   getStartDate,
   getEndDate,
+  getImportant,
 } from "../../firebase/post";
 import { uploadFile } from "../../firebase/firestore";
 import { useRouter } from "vue-router";
@@ -90,6 +102,7 @@ const router = useRouter();
 const postId = useRouteParams("post_id").value;
 
 const userProfile = inject("userProfile");
+const important = ref(false);
 const title = ref();
 const startDate = ref();
 const endDate = ref();
@@ -100,6 +113,7 @@ const editorImgPath = ref([]);
 const loading = ref(false);
 
 onBeforeMount(async () => {
+  important.value = await getImportant("events", postId);
   title.value = await getTitle("events", postId);
   content.value = await getContent("events", postId);
   startDate.value = await getStartDate("events", postId);
@@ -117,6 +131,7 @@ const upload = async () => {
     userProfile?.value?.name,
     userProfile?.value?.admin,
     editorImgPath,
+    important,
     postId
   );
   loading.value = false;

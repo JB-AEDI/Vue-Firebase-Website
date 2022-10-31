@@ -30,6 +30,8 @@ export const createUser = async (email, password, name) => {
     name: name,
     admin: false,
     photo: "https://picsum.photos/250/250",
+    myReviewList: [],
+    myReviewCount: 0,
   });
   updateProfile(auth.currentUser, {
     displayName: name,

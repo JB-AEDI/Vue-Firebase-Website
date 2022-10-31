@@ -23,6 +23,45 @@
       </div>
     </div>
 
+    <!-- 중요 공지 -->
+    <div
+      class="grid grid-cols-12 bg-gray-300"
+      v-if="importantNotices"
+      v-for="importantNotice in importantNotices?.value"
+    >
+      <div class="col-span-5 border-r border-b border-white p-3">
+        <span class="cursor-pointer font-bold" @click="movePost(importantNotice)">{{
+          importantNotice?.title
+        }}</span>
+      </div>
+      <div
+        class="sm:flex justify-center items-center col-span-3 border-r border-b border-white py-3 px-2 sm:px-3 text-xs text-center"
+      >
+        <span>{{ importantNotice?.timestamp.toDate().getFullYear() }}</span>
+        <span>-</span>
+        <span v-if="importantNotice?.timestamp.toDate().getMonth() < 9"
+          >0{{ importantNotice?.timestamp.toDate().getMonth() + 1 }}</span
+        >
+        <span v-else>{{ importantNotice?.timestamp.toDate().getMonth() + 1 }}</span>
+        <span>-</span>
+        <span v-if="importantNotice?.timestamp.toDate().getDate() < 10"
+          >0{{ importantNotice?.timestamp.toDate().getDate() }}</span
+        >
+        <span v-else>{{ importantNotice?.timestamp.toDate().getDate() }}</span>
+      </div>
+      <div
+        class="col-span-2 border-r border-b border-white p-3 text-center text-sm sm:text-base"
+      >
+        {{ importantNotice?.views }}
+      </div>
+      <div
+        class="col-span-2 border-r border-b border-white p-2 sm:p-3 text-center text-xs"
+      >
+        <span>{{ importantNotice?.name }}</span>
+        <span v-if="importantNotice?.admin" class="block sm:inline">(관리자)</span>
+      </div>
+    </div>
+
     <div v-for="notice in noticesPage[currentPage]" class="grid grid-cols-12 bg-gray-200">
       <div class="col-span-5 border-r border-b border-white p-3">
         <span class="cursor-pointer font-bold" @click="movePost(notice)">
@@ -80,14 +119,18 @@
 
 <script setup>
 import { useRouter } from "vue-router";
-import { inject, ref } from "vue";
-import { onSnapshotPostsPage } from "../../firebase/post";
+import { inject, ref, onBeforeMount } from "vue";
+import { onSnapshotPostsPage, onSnapshotImportantPosts } from "../../firebase/post";
 
 const router = useRouter();
 
 const userProfile = inject("userProfile");
 const currentPage = ref(0);
 const noticesPage = onSnapshotPostsPage("notices");
+const importantNotices = ref([]);
+onBeforeMount(async () => {
+  importantNotices.value = await onSnapshotImportantPosts("notices");
+});
 
 const pushUpload = async () => router.push({ path: "/notice/upload" });
 

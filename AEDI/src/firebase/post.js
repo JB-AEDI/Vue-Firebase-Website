@@ -13,6 +13,7 @@ import {
   onSnapshot,
   where,
   arrayUnion,
+  arrayRemove,
 } from "firebase/firestore";
 import { onUnmounted, ref } from "vue";
 import { db } from "./firebase";
@@ -39,7 +40,8 @@ export const createNotice = async (
   description,
   name,
   admin,
-  editorImgPath
+  editorImgPath,
+  important
 ) => {
   await addDoc(collection(db, "notices"), {
     title: title?.value,
@@ -48,6 +50,7 @@ export const createNotice = async (
     name: name,
     admin: admin,
     editorImgPath: editorImgPath?.value,
+    important: important?.value,
     timestamp: serverTimestamp(),
     views: 0,
   });
@@ -62,6 +65,8 @@ export const createNotice = async (
  * @param {Promise<string>} description 내용
  * @param {string} name 이름
  * @param {boolean} admin 사용자권한
+ * @param {array} editorImgPath 에디터 이미지 경로 배열
+ * @param {Promise<boolean>} important 중요공지
  */
 export const createEvent = async (
   title,
@@ -70,7 +75,8 @@ export const createEvent = async (
   description,
   name,
   admin,
-  editorImgPath
+  editorImgPath,
+  important
 ) => {
   await addDoc(collection(db, "events"), {
     title: title?.value,
@@ -81,6 +87,7 @@ export const createEvent = async (
     name: name,
     admin: admin,
     editorImgPath: editorImgPath?.value,
+    important: important?.value,
     timestamp: serverTimestamp(),
     views: 0,
   });
@@ -356,6 +363,10 @@ export const createProjectReview = async (
   await updateDoc(doc(db, menu, post_id), {
     reviews: increment(1),
   });
+  await updateDoc(doc(db, "profiles", user?.value?.uid), {
+    myReviewList: arrayUnion(project_id),
+    myReviewCount: increment(1),
+  });
 };
 
 // 프로젝트 평가 - 유무확인
@@ -446,6 +457,10 @@ export const deleteMyProjectReview = async (menu, post_id, project_id) => {
     );
     await updateDoc(doc(db, menu, post_id), {
       reviews: increment(-1),
+    });
+    await updateDoc(doc(db, "profiles", user?.value?.uid), {
+      myReviewList: arrayRemove(project_id),
+      myReviewCount: increment(-1),
     });
   }
 };
@@ -673,6 +688,7 @@ export const updateNotice = async (
   name,
   admin,
   editorImgPath,
+  important,
   post_id
 ) => {
   await updateDoc(doc(db, "notices", post_id), {
@@ -682,6 +698,7 @@ export const updateNotice = async (
     name: name,
     admin: admin,
     editorImgPath: editorImgPath?.value,
+    important: important?.value,
   });
 };
 
@@ -704,6 +721,7 @@ export const updateEvent = async (
   name,
   admin,
   editorImgPath,
+  important,
   post_id
 ) => {
   await updateDoc(doc(db, "events", post_id), {
@@ -715,6 +733,7 @@ export const updateEvent = async (
     name: name,
     admin: admin,
     editorImgPath: editorImgPath?.value,
+    important: important?.value,
   });
 };
 
@@ -911,15 +930,28 @@ export const deleteProject = async (menu, post_id, project_id) => {
       doc(db, menu, post_id, "projects", project_id, "likes", like.id)
     );
   });
+
   // 프로젝트 평가 삭제
   const reviews = await getDocs(
     collection(db, menu, post_id, "projects", project_id, "reviews")
   );
+
   reviews.docs.forEach(async (review) => {
+    // 각 유저프로필 프로젝트 평가리스트 필드삭제
+    await updateDoc(doc(db, "profiles", review.data().uid), {
+      myReviewList: arrayRemove(project_id),
+      myReviewCount: increment(-1),
+    });
+    // 포스트 리뷰 카운트 감소
+    await updateDoc(doc(db, menu, post_id), {
+      reviews: increment(-1),
+    });
+    // 프로젝트 평가 삭제
     await deleteDoc(
       doc(db, menu, post_id, "projects", project_id, "reviews", review.id)
     );
   });
+
   // 프로젝트 댓글 삭제
   const comments = await getDocs(
     collection(db, menu, post_id, "projects", project_id, "comments")
@@ -970,6 +1002,43 @@ export const getPostCount = (menu) => {
   return { projectCount, eventCount, reviewCount };
 };
 
+// 평가 참여현황
+export const onSnapshotUserReviewCount = () => {
+  const reviewCount = ref(0);
+
+  let unsub = () => {};
+  unsub();
+  unsub = onSnapshot(collection(db, "profiles"), (snapshot) => {
+    snapshot.docs.forEach((doc) => {
+      reviewCount.value += doc.data().myReviewList.length;
+    });
+  });
+
+  onUnmounted(() => unsub());
+
+  return reviewCount;
+};
+
+// 평가 참여 랭킹
+export const onSnapshotUserReviewRank = () => {
+  const users = ref([]);
+
+  const q = query(collection(db, "profiles"), orderBy("myReviewCount", "desc"));
+
+  let unsub = () => {};
+  unsub();
+  unsub = onSnapshot(q, (snapshot) => {
+    users.value = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  });
+
+  onUnmounted(() => unsub());
+
+  return users;
+};
+
 // 리스트 페이지 - 스냅샷
 /**
  * 포스트 리스트 실시간 가져오기
@@ -1010,6 +1079,33 @@ export const onSnapshotPostsPage = (menu) => {
   onUnmounted(() => unsub());
 
   return postsPage;
+};
+
+// 중요 공지 포스트 실시간 가져오기
+export const onSnapshotImportantPosts = async (menu) => {
+  const posts = ref([]);
+  let unsub = () => {};
+
+  unsub();
+
+  const postRef = collection(db, menu);
+  const q = query(
+    postRef,
+    where("important", "==", true)
+    // orderBy("timestamp", "desc")
+  );
+
+  // 포스트 리스트 실시간 가져오기
+  unsub = onSnapshot(q, (snapshot) => {
+    posts.value = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+  });
+  // 마운트 종료됬을 때 실시간 가져오기 종료
+  onUnmounted(() => unsub());
+
+  return posts;
 };
 
 // 포스트 sort 테스트 중
@@ -1483,6 +1579,13 @@ export const getField = async (menu, id) => {
   const docSnap = await getDoc(docRef);
 
   return docSnap.data().field;
+};
+
+export const getImportant = async (menu, id) => {
+  const docRef = doc(db, menu, id);
+  const docSnap = await getDoc(docRef);
+
+  return docSnap.data().important;
 };
 
 // Project getDoc

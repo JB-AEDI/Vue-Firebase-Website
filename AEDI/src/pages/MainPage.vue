@@ -78,6 +78,7 @@
         </div>
       </div>
     </div>
+    <!--
     <div class="flex justify-center">
       <div class="mt-10 w-[1000px]">
         <RouterLink to="/contest/page">
@@ -97,6 +98,7 @@
         </div>
       </div>
     </div>
+    -->
   </div>
 </template>
 
